@@ -1,0 +1,38 @@
+{
+  "name": "senlin_website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Maintainable local React + Vite rebuild of the mirrored personal site.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:python": "python -m unittest tests/test_mirror_site.py"
+  },
+  "dependencies": {
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^1.20.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "wouter": "^3.10.0"
+  },
+  "keywords": [
+    "react",
+    "vite",
+    "site-mirror"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@vitejs/plugin-react": "^6.0.2",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.8.4",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.9"
+  }
+}

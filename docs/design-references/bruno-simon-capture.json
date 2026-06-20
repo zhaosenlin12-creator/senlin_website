@@ -1,0 +1,29 @@
+{
+  "title": "Bruno's",
+  "url": "https://bruno-simon.com/",
+  "bodyTextLength": 5,
+  "headings": [],
+  "navLinks": [],
+  "buttons": [],
+  "hasCanvas": true,
+  "canvasCount": 1,
+  "videoCount": 0,
+  "svgCount": 7,
+  "resourceTypes": {
+    "link": 7,
+    "script": 2,
+    "css": 1,
+    "fetch": 14,
+    "img": 1,
+    "other": 1,
+    "xmlhttprequest": 1
+  },
+  "scripts": [
+    "www.googletagmanager.com/gtag/js",
+    "bruno-simon.com/assets/index-ORr3L4no.js"
+  ],
+  "stylesheets": [
+    "fonts.googleapis.com/css2",
+    "bruno-simon.com/assets/index-Di03QkGT.css"
+  ]
+}

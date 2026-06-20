@@ -1,0 +1,42 @@
+{
+  "title": "Active Theory · Creative Digital Experiences",
+  "url": "https://activetheory.net/",
+  "bodyTextLength": 202,
+  "headings": [],
+  "navLinks": [
+    {
+      "tag": "a",
+      "text": "Toggle Audio",
+      "className": "link"
+    },
+    {
+      "tag": "a",
+      "text": "Work",
+      "className": "link"
+    },
+    {
+      "tag": "a",
+      "text": "Contact",
+      "className": "link"
+    }
+  ],
+  "buttons": [],
+  "hasCanvas": true,
+  "canvasCount": 1,
+  "videoCount": 1,
+  "svgCount": 0,
+  "resourceTypes": {
+    "script": 1,
+    "link": 3,
+    "fetch": 8,
+    "other": 9,
+    "css": 1,
+    "video": 1
+  },
+  "scripts": [
+    "activetheory.net/assets/js/app.1780406240914.js",
+    "www.googletagmanager.com/gtag/js",
+    "activetheory.net/assets/js/modules.1780406240914.js"
+  ],
+  "stylesheets": []
+}
