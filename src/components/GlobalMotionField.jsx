@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const PARTICLE_COUNT = 74;
+const PARTICLE_COUNT = 118;
 
 function createParticle(index, width, height) {
   const column = (index % 11) / 10;
@@ -52,26 +52,6 @@ export default function GlobalMotionField() {
       particles = buildParticles(window.innerWidth, window.innerHeight);
     };
 
-    const drawGrid = (time, width, height) => {
-      const offset = (time * 0.012) % 80;
-      context.lineWidth = 1;
-      context.strokeStyle = "rgba(0, 216, 255, 0.025)";
-
-      for (let x = -80 + offset; x < width + 80; x += 80) {
-        context.beginPath();
-        context.moveTo(x, 0);
-        context.lineTo(x + height * 0.18, height);
-        context.stroke();
-      }
-
-      for (let y = -80 + offset * 0.55; y < height + 80; y += 80) {
-        context.beginPath();
-        context.moveTo(0, y);
-        context.lineTo(width, y - width * 0.04);
-        context.stroke();
-      }
-    };
-
     const draw = (time = 0) => {
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -79,14 +59,21 @@ export default function GlobalMotionField() {
       pointer.y += (pointer.ty - pointer.y) * 0.09;
 
       context.clearRect(0, 0, width, height);
-      drawGrid(time, width, height);
 
       const glow = context.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, Math.max(width, height) * 0.42);
-      glow.addColorStop(0, pointer.active ? "rgba(0, 216, 255, 0.2)" : "rgba(0, 216, 255, 0.11)");
-      glow.addColorStop(0.28, "rgba(34, 90, 110, 0.08)");
+      glow.addColorStop(0, pointer.active ? "rgba(0, 216, 255, 0.34)" : "rgba(0, 216, 255, 0.18)");
+      glow.addColorStop(0.22, pointer.active ? "rgba(215, 180, 106, 0.14)" : "rgba(34, 90, 110, 0.1)");
+      glow.addColorStop(0.48, "rgba(0, 72, 96, 0.08)");
       glow.addColorStop(1, "rgba(0, 0, 0, 0)");
       context.fillStyle = glow;
       context.fillRect(0, 0, width, height);
+
+      const cursorCore = context.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 96);
+      cursorCore.addColorStop(0, pointer.active ? "rgba(238, 252, 255, 0.84)" : "rgba(238, 252, 255, 0.42)");
+      cursorCore.addColorStop(0.12, "rgba(0, 216, 255, 0.42)");
+      cursorCore.addColorStop(1, "rgba(0, 216, 255, 0)");
+      context.fillStyle = cursorCore;
+      context.fillRect(pointer.x - 96, pointer.y - 96, 192, 192);
 
       particles.forEach((particle, index) => {
         const swayX = Math.cos(time * 0.00026 + particle.phase) * 16;
@@ -102,29 +89,30 @@ export default function GlobalMotionField() {
         const dx = particle.x - pointer.x;
         const dy = particle.y - pointer.y;
         const distance = Math.hypot(dx, dy);
-        if (distance < 210) {
-          const alpha = (1 - distance / 210) * (pointer.active ? 0.34 : 0.2);
+        if (distance < 260) {
+          const alpha = (1 - distance / 260) * (pointer.active ? 0.62 : 0.34);
           context.beginPath();
           context.moveTo(pointer.x, pointer.y);
           context.lineTo(particle.x, particle.y);
           context.strokeStyle = `rgba(0, 216, 255, ${alpha})`;
-          context.lineWidth = 1;
+          context.lineWidth = pointer.active ? 1.25 : 0.85;
           context.stroke();
         }
 
         const next = particles[(index + 9) % particles.length];
         const linkedDistance = Math.hypot(particle.x - next.x, particle.y - next.y);
-        if (linkedDistance < 185) {
+        if (linkedDistance < 210) {
           context.beginPath();
           context.moveTo(particle.x, particle.y);
           context.lineTo(next.x, next.y);
-          context.strokeStyle = `rgba(215, 180, 106, ${0.06 * (1 - linkedDistance / 185)})`;
+          context.strokeStyle = `rgba(215, 180, 106, ${0.16 * (1 - linkedDistance / 210)})`;
+          context.lineWidth = 0.75;
           context.stroke();
         }
 
         context.beginPath();
-        context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        context.fillStyle = index % 8 === 0 ? "rgba(215, 180, 106, 0.48)" : "rgba(0, 216, 255, 0.42)";
+        context.arc(particle.x, particle.y, particle.size * 1.22, 0, Math.PI * 2);
+        context.fillStyle = index % 8 === 0 ? "rgba(215, 180, 106, 0.72)" : "rgba(0, 216, 255, 0.68)";
         context.fill();
       });
 

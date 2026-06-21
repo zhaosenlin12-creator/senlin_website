@@ -206,7 +206,7 @@ function AboutSection() {
     <section id="about" className="editorial-section about-section">
       <div className="section-shell about-grid">
         <div className="portrait-frame">
-          <img src="/photo-hero.jpg" alt="赵森林老师" data-testid="img-profile" />
+          <img src="/photo-hero.jpg" alt="赵森林老师" data-testid="img-profile" loading="lazy" />
         </div>
         <div className="about-copy">
           <p className="section-kicker">人物 / Educator</p>
@@ -285,7 +285,7 @@ function AchievementsSection() {
         </div>
 
         <div className="wrcc-feature">
-          <img src="/photo-wrcc.jpg" alt="WRCC 2025 比赛现场" data-testid="img-wrcc" />
+          <img src="/photo-wrcc.jpg" alt="WRCC 2025 比赛现场" data-testid="img-wrcc" loading="lazy" />
           <div>
             <p className="section-kicker">WRCC 2025 / 宜昌</p>
             <h3>从训练到领奖的完整链路</h3>
@@ -351,7 +351,7 @@ function ContactSection({ onSelectQr }) {
               data-testid={item.testId}
             >
               <span className="section-kicker">{item.label}</span>
-              <img src={item.src} alt={item.label} />
+              <img src={item.src} alt={item.label} loading="lazy" />
               <strong>{item.sub}</strong>
               <span className="zoom-label">
                 点击放大

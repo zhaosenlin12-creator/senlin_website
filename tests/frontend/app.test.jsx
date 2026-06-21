@@ -1,7 +1,8 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { vi } from "vitest";
 
 import App from "../../src/App.jsx";
+import { APP_SHOWCASE_ITEMS, FEATURED_VIDEOS, STAGE_APPS } from "../../src/mediaData.js";
 
 const SECTION_IDS = [
   "hero",
@@ -17,7 +18,7 @@ const SECTION_IDS = [
 ];
 
 describe("personal site rebuild", () => {
-  test("renders the rebuilt sections and navigation shell", () => {
+  test("renders the rebuilt sections and navigation shell with readable Chinese copy", () => {
     render(<App />);
 
     expect(screen.getByText("赵森林")).toBeInTheDocument();
@@ -30,6 +31,7 @@ describe("personal site rebuild", () => {
       expect(screen.getByTestId(`nav-dot-${id}`)).toBeInTheDocument();
     }
 
+    expect(screen.getByTestId("global-motion-field")).toBeInTheDocument();
     expect(screen.getByTestId("btn-scroll")).toBeInTheDocument();
     expect(screen.getByTestId("img-profile")).toBeInTheDocument();
     expect(screen.getByTestId("img-wrcc")).toBeInTheDocument();
@@ -67,29 +69,67 @@ describe("personal site rebuild", () => {
     });
   });
 
-  test("renders featured Douyin cards and direct-open app links", () => {
+  test("uses local Chinese app screenshots and precise app links", () => {
     render(<App />);
 
     expect(screen.getByText("主舞台应用")).toBeInTheDocument();
     expect(screen.getByText("应用作品集")).toBeInTheDocument();
-    expect(screen.getByText("课堂反馈系统")).toBeInTheDocument();
-    expect(screen.getByText("抖音内容入口")).toBeInTheDocument();
     expect(screen.getByText("教学现场档案")).toBeInTheDocument();
-    expect(screen.getByTestId("video-cover-knowledge-tool")).toBeInTheDocument();
-    expect(screen.getByTestId("video-cover-free-english-resources")).toBeInTheDocument();
 
-    const knowledgeVideoLink = screen.getByTestId("video-link-knowledge-tool");
-    expect(knowledgeVideoLink).toHaveAttribute(
+    expect(STAGE_APPS).toHaveLength(2);
+    expect(STAGE_APPS.map((app) => app.name)).toEqual(["Python 冒险岛", "class 教学系统"]);
+
+    const pythonAdventureCard = screen.getByTestId("app-card-python-adventure");
+    expect(pythonAdventureCard).toHaveAttribute("href", "https://game.codebn.cn/");
+    expect(pythonAdventureCard).toHaveStyle({
+      "--app-screenshot": `url(${STAGE_APPS[0].screenshot})`,
+    });
+
+    const classSystemCard = screen.getByTestId("app-card-class-system");
+    expect(classSystemCard).toHaveAttribute("href", "https://class.codebn.cn/");
+    expect(classSystemCard).toHaveStyle({
+      "--app-screenshot": `url(${STAGE_APPS[1].screenshot})`,
+    });
+
+    const showcaseRail = screen.getByTestId("app-showcase-rail");
+    expect(showcaseRail.querySelector(".showcase-rail-track")).toBeInTheDocument();
+
+    const showcasedNames = APP_SHOWCASE_ITEMS.map((app) => app.name);
+    expect(showcasedNames).toEqual([
+      "AI 互动课堂",
+      "Code Research",
+      "仿真模拟实验室",
+      "乐启享宠物",
+      "乐启享打字",
+      "乐启享管理系统",
+      "模型训练",
+    ]);
+
+    expect(screen.getByTestId("app-showcase-card-ai-classroom")).toHaveAttribute("href", "https://ai.codebn.cn/");
+    expect(screen.getByTestId("app-showcase-card-code-research")).toHaveAttribute(
       "href",
-      "https://v.douyin.com/t9L2hN3pYNA/",
+      "https://game.codebn.cn/code-research",
     );
-    expect(knowledgeVideoLink).toHaveAttribute("target", "_blank");
-    expect(knowledgeVideoLink).toHaveAttribute("rel", "noreferrer");
+    expect(screen.getByTestId("app-showcase-card-simulation-lab")).toHaveAttribute(
+      "href",
+      "https://phet.colorado.edu/",
+    );
+    expect(screen.getByTestId("app-showcase-card-typing-fun")).toHaveAttribute(
+      "href",
+      expect.stringContaining("https://game.codebn.cn/typing/index.html"),
+    );
+    expect(screen.getByTestId("app-showcase-card-management-system")).toHaveAttribute("href", "https://stu.codebn.cn/");
+    expect(screen.getByTestId("app-showcase-card-model-training")).toHaveAttribute(
+      "href",
+      "https://www.aibase.com/de/tool/12518",
+    );
+  });
 
-    const englishVideoLink = screen.getByTestId("video-link-free-english-resources");
-    expect(englishVideoLink).toHaveAttribute("href", "https://v.douyin.com/nYzhLyIvGDc/");
-    expect(englishVideoLink).toHaveAttribute("target", "_blank");
-    expect(englishVideoLink).toHaveAttribute("rel", "noreferrer");
+  test("renders local Douyin videos and opens a video lightbox", async () => {
+    render(<App />);
+
+    expect(screen.getByText("抖音内容入口")).toBeInTheDocument();
+    expect(FEATURED_VIDEOS.map((video) => video.filename)).toEqual(["个人建站.mp4", "交互知识.mp4", "涂色英语.mp4"]);
 
     const douyinHomeLink = screen.getByTestId("douyin-home-link");
     expect(douyinHomeLink).toHaveAttribute(
@@ -99,20 +139,21 @@ describe("personal site rebuild", () => {
     expect(douyinHomeLink).toHaveAttribute("target", "_blank");
     expect(douyinHomeLink).toHaveAttribute("rel", "noreferrer");
 
-    const pythonAdventureCard = screen.getByTestId("app-card-python-adventure");
-    expect(pythonAdventureCard).toHaveAttribute("href", "https://game.codebn.cn/");
-    expect(pythonAdventureCard).toHaveAttribute("target", "_blank");
-    expect(pythonAdventureCard).toHaveAttribute("rel", "noreferrer");
+    for (const video of FEATURED_VIDEOS) {
+      const card = screen.getByTestId(`video-card-${video.id}`);
+      expect(within(card).getByTestId(`video-preview-${video.id}`)).toHaveAttribute("src", video.src);
+    }
 
-    const typingCard = screen.getByTestId("app-card-typing-fun");
-    expect(typingCard).toHaveAttribute("href", "https://class.codebn.cn/");
-    expect(typingCard).toHaveAttribute("target", "_blank");
-    expect(typingCard).toHaveAttribute("rel", "noreferrer");
+    fireEvent.click(screen.getByTestId("video-card-personal-site"));
 
-    const feedbackCard = screen.getByTestId("app-card-classroom-feedback");
-    expect(feedbackCard).toHaveAttribute("href", "https://stu.codebn.cn/");
-    expect(feedbackCard).toHaveAttribute("target", "_blank");
-    expect(feedbackCard).toHaveAttribute("rel", "noreferrer");
+    const lightbox = await screen.findByTestId("video-lightbox");
+    expect(within(lightbox).getByTestId("video-lightbox-player")).toHaveAttribute("src", FEATURED_VIDEOS[0].src);
+
+    fireEvent.keyDown(window, { key: "Escape" });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("video-lightbox")).not.toBeInTheDocument();
+    });
   });
 
   test("renders the stage rail and expanded gallery block", () => {
@@ -120,6 +161,6 @@ describe("personal site rebuild", () => {
 
     expect(screen.getByTestId("app-showcase-rail")).toBeInTheDocument();
     expect(screen.getByTestId("gallery-ring")).toBeInTheDocument();
-    expect(screen.getByText("教学现场档案")).toBeInTheDocument();
+    expect(screen.getAllByTestId(/^gallery-card-/)).toHaveLength(20);
   });
 });
