@@ -13,6 +13,8 @@ __pycache__/
 .chrome-screenshot.log
 .chrome-site.png
 .chrome-redesign-*.png
+.chrome-motion-*.png
+.chrome-cdp-profile/
 
 .docx_extract/
 site_mirror/

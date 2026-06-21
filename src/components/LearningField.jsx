@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const NODE_COUNT = 38;
+const NODE_COUNT = 58;
 
 function createNodes(width, height) {
   const centerX = width / 2;
@@ -12,8 +12,8 @@ function createNodes(width, height) {
     return {
       angle,
       orbit: Math.min(width, height) * ring,
-      speed: 0.00008 + (index % 7) * 0.000018,
-      size: 1.2 + (index % 4) * 0.35,
+      speed: 0.00009 + (index % 7) * 0.000022,
+      size: 1 + (index % 5) * 0.36,
       x: centerX + Math.cos(angle) * Math.min(width, height) * ring,
       y: centerY + Math.sin(angle) * Math.min(width, height) * ring,
     };
@@ -48,38 +48,50 @@ export default function LearningField() {
     const draw = (time = 0) => {
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
-      const centerX = width / 2 + pointerX * 18;
-      const centerY = height / 2 + pointerY * 12;
+      const centerX = width / 2 + pointerX * 72;
+      const centerY = height / 2 + pointerY * 44;
 
       context.clearRect(0, 0, width, height);
       context.fillStyle = "#05070a";
       context.fillRect(0, 0, width, height);
 
       const gradient = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, width * 0.62);
-      gradient.addColorStop(0, "rgba(0, 216, 255, 0.12)");
-      gradient.addColorStop(0.46, "rgba(31, 94, 132, 0.045)");
+      gradient.addColorStop(0, "rgba(0, 216, 255, 0.2)");
+      gradient.addColorStop(0.28, "rgba(215, 180, 106, 0.07)");
+      gradient.addColorStop(0.58, "rgba(31, 94, 132, 0.055)");
       gradient.addColorStop(1, "rgba(5, 7, 10, 0)");
       context.fillStyle = gradient;
       context.fillRect(0, 0, width, height);
 
       nodes.forEach((node, index) => {
         const phase = node.angle + time * node.speed;
-        node.x = centerX + Math.cos(phase) * node.orbit * (1 + pointerX * 0.025);
-        node.y = centerY + Math.sin(phase * 0.92) * node.orbit * 0.62;
+        node.x = centerX + Math.cos(phase) * node.orbit * (1 + pointerX * 0.055);
+        node.y = centerY + Math.sin(phase * 0.92) * node.orbit * (0.62 + pointerY * 0.045);
 
-        if (index % 3 === 0) {
+        if (index % 2 === 0) {
           const next = nodes[(index + 7) % nodes.length];
           context.beginPath();
           context.moveTo(node.x, node.y);
           context.lineTo(next.x, next.y);
-          context.strokeStyle = "rgba(0, 216, 255, 0.07)";
+          context.strokeStyle = "rgba(0, 216, 255, 0.095)";
           context.lineWidth = 1;
+          context.stroke();
+        }
+
+        const pointerScreenX = width / 2 + pointerX * width;
+        const pointerScreenY = height / 2 + pointerY * height;
+        const distanceToPointer = Math.hypot(node.x - pointerScreenX, node.y - pointerScreenY);
+        if (distanceToPointer < 240) {
+          context.beginPath();
+          context.moveTo(pointerScreenX, pointerScreenY);
+          context.lineTo(node.x, node.y);
+          context.strokeStyle = `rgba(0, 216, 255, ${0.22 * (1 - distanceToPointer / 240)})`;
           context.stroke();
         }
 
         context.beginPath();
         context.arc(node.x, node.y, node.size, 0, Math.PI * 2);
-        context.fillStyle = index % 5 === 0 ? "rgba(215, 180, 106, 0.62)" : "rgba(0, 216, 255, 0.58)";
+        context.fillStyle = index % 5 === 0 ? "rgba(215, 180, 106, 0.72)" : "rgba(0, 216, 255, 0.64)";
         context.fill();
       });
 

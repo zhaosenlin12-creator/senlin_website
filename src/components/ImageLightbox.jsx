@@ -30,6 +30,11 @@ export default function ImageLightbox({ item, onClose }) {
           className="image-lightbox-backdrop"
           onClick={onClose}
         >
+          <div className="smoke-burst" aria-hidden="true">
+            {Array.from({ length: 18 }, (_, index) => (
+              <span key={index} style={{ "--smoke-index": index }} />
+            ))}
+          </div>
           <motion.div
             initial={{ opacity: 0, scale: 0.94, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}

@@ -12,9 +12,35 @@ function ExternalArrow() {
   );
 }
 
+function handleCardPointerMove(event) {
+  const rect = event.currentTarget.getBoundingClientRect();
+  const x = (event.clientX - rect.left) / rect.width - 0.5;
+  const y = (event.clientY - rect.top) / rect.height - 0.5;
+  event.currentTarget.style.setProperty("--tilt-x", `${(-y * 8).toFixed(2)}deg`);
+  event.currentTarget.style.setProperty("--tilt-y", `${(x * 10).toFixed(2)}deg`);
+  event.currentTarget.style.setProperty("--glow-x", `${((x + 0.5) * 100).toFixed(2)}%`);
+  event.currentTarget.style.setProperty("--glow-y", `${((y + 0.5) * 100).toFixed(2)}%`);
+}
+
+function handleCardPointerLeave(event) {
+  event.currentTarget.style.setProperty("--tilt-x", "0deg");
+  event.currentTarget.style.setProperty("--tilt-y", "0deg");
+  event.currentTarget.style.setProperty("--glow-x", "50%");
+  event.currentTarget.style.setProperty("--glow-y", "50%");
+}
+
 function StageAppCard({ app }) {
   return (
-    <a href={app.href} target="_blank" rel="noreferrer" data-testid={`app-card-${app.id}`} className="case-panel">
+    <a
+      href={app.href}
+      target="_blank"
+      rel="noreferrer"
+      data-testid={`app-card-${app.id}`}
+      className="case-panel motion-product-card"
+      onPointerMove={handleCardPointerMove}
+      onPointerLeave={handleCardPointerLeave}
+    >
+      <div className="product-card-bg" style={{ backgroundImage: `url(${app.screenshot})` }} />
       <div className="case-panel-copy">
         <p className="section-kicker">{app.category}</p>
         <h3>{app.name}</h3>
@@ -24,6 +50,10 @@ function StageAppCard({ app }) {
             <li key={item}>{item}</li>
           ))}
         </ul>
+        <span className="product-open-link">
+          打开真实应用
+          <ExternalArrow />
+        </span>
       </div>
       <div className={`case-poster case-poster-${app.accent}`}>
         <span>{app.kicker}</span>
@@ -49,8 +79,11 @@ function ShowcaseRailCard({ app }) {
       target="_blank"
       rel="noreferrer"
       data-testid={testId}
-      className={`showcase-card showcase-card-${app.palette}`}
+      className={`showcase-card motion-product-card showcase-card-${app.palette}`}
+      onPointerMove={handleCardPointerMove}
+      onPointerLeave={handleCardPointerLeave}
     >
+      <div className="showcase-screenshot" style={{ backgroundImage: `url(${app.screenshot})` }} />
       <div className="showcase-card-poster">
         <span>{app.poster.eyebrow}</span>
         <strong>{app.poster.title}</strong>
@@ -170,7 +203,8 @@ export default function MediaSection() {
                 key={item.slug}
                 type="button"
                 data-testid={`gallery-card-${item.slug}`}
-                className={`archive-card archive-card-${(index % 4) + 1}`}
+                className={`archive-card archive-card-${(index % 4) + 1} depth-card-${(index % 6) + 1}`}
+                style={{ "--float-delay": `${index * -0.7}s` }}
                 onClick={() => setActiveImage(item)}
               >
                 <img src={item.src} alt={item.title} />

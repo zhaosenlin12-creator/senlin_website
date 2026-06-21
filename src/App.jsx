@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
+import GlobalMotionField from "./components/GlobalMotionField.jsx";
 import LearningField from "./components/LearningField.jsx";
 import LearningUniverse from "./components/LearningUniverse.jsx";
 import MediaSection from "./components/MediaSection.jsx";
@@ -113,6 +114,19 @@ function Header() {
 
 function HeroSection() {
   const { ChevronDown } = HERO_ICONS;
+  const [activeLine, setActiveLine] = useState(0);
+
+  useEffect(() => {
+    if (TYPEWRITER_LINES.length <= 1) {
+      return undefined;
+    }
+
+    const timer = window.setInterval(() => {
+      setActiveLine((current) => (current + 1) % TYPEWRITER_LINES.length);
+    }, 2800);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   return (
     <section id="hero" className="hero-section">
@@ -141,7 +155,25 @@ function HeroSection() {
           机器人
         </h1>
         <p className="hero-statement">把编程教育做成可体验的未来现场</p>
-        <p className="hero-subline">{TYPEWRITER_LINES[0]}</p>
+        <div className="hero-dynamic-copy" aria-live="polite">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={TYPEWRITER_LINES[activeLine]}
+              className="hero-subline"
+              initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -10, filter: "blur(8px)" }}
+              transition={{ duration: 0.45 }}
+            >
+              {TYPEWRITER_LINES[activeLine]}
+            </motion.p>
+          </AnimatePresence>
+          <div className="hero-line-dots" aria-hidden="true">
+            {TYPEWRITER_LINES.map((line, index) => (
+              <span key={line} className={index === activeLine ? "is-active" : ""} />
+            ))}
+          </div>
+        </div>
       </motion.div>
 
       <button
@@ -338,6 +370,7 @@ function HomePage() {
 
   return (
     <main className="site-page">
+      <GlobalMotionField />
       <SectionNav />
       <Header />
       {selectedQr ? <QrModal src={selectedQr.src} label={selectedQr.label} onClose={() => setSelectedQr(null)} /> : null}
