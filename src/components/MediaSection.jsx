@@ -1,5 +1,6 @@
-import { AnimatePresence, motion } from "framer-motion";
+﻿import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 import ImageLightbox from "./ImageLightbox.jsx";
 import { GALLERY_ITEMS } from "../galleryAssets.js";
@@ -8,7 +9,7 @@ import { APP_SHOWCASE_ITEMS, DOUYIN_PROFILE, FEATURED_VIDEOS, STAGE_APPS } from 
 function ExternalArrow() {
   return (
     <span aria-hidden="true" className="external-arrow">
-      →
+      ↗
     </span>
   );
 }
@@ -110,21 +111,25 @@ function ShowcaseRailCard({ app, clone = false }) {
 
 function VideoLightbox({ video, onClose }) {
   useEffect(() => {
-    if (!video) {
-      return undefined;
-    }
+    if (!video) return undefined;
 
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
+      if (event.key === "Escape") onClose();
     };
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [video, onClose]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <AnimatePresence>
       {video ? (
         <motion.div
@@ -136,16 +141,11 @@ function VideoLightbox({ video, onClose }) {
           exit={{ opacity: 0 }}
           onClick={onClose}
         >
-          <div className="smoke-burst" aria-hidden="true">
-            {Array.from({ length: 18 }, (_, index) => (
-              <span key={index} style={{ "--smoke-index": index }} />
-            ))}
-          </div>
           <motion.div
             className="image-lightbox-card video-lightbox-card"
-            initial={{ opacity: 0, scale: 0.92, y: 22, filter: "blur(10px)" }}
+            initial={{ opacity: 0, scale: 0.92, y: 16, filter: "blur(10px)" }}
             animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 0.94, y: 18, filter: "blur(10px)" }}
+            exit={{ opacity: 0, scale: 0.94, y: 16, filter: "blur(10px)" }}
             transition={{ type: "spring", stiffness: 210, damping: 24 }}
             onClick={(event) => event.stopPropagation()}
           >
@@ -154,23 +154,17 @@ function VideoLightbox({ video, onClose }) {
                 <p className="image-lightbox-category">{video.badge}</p>
                 <h3 className="image-lightbox-title">{video.title}</h3>
               </div>
-              <button type="button" data-testid="btn-close-video" className="image-lightbox-close" onClick={onClose}>
-                关闭
+              <button type="button" data-testid="btn-close-video" className="image-lightbox-close" onClick={onClose} aria-label="关闭">
+                ×
               </button>
             </div>
-            <video
-              className="video-lightbox-player"
-              data-testid="video-lightbox-player"
-              src={video.src}
-              controls
-              autoPlay
-              playsInline
-            />
+            <video className="video-lightbox-player" data-testid="video-lightbox-player" src={video.src} controls autoPlay playsInline />
             <p className="image-lightbox-description">{video.summary}</p>
           </motion.div>
         </motion.div>
       ) : null}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
 
@@ -214,7 +208,7 @@ function VideoCard({ video, onSelect }) {
 export default function MediaSection() {
   const [activeImage, setActiveImage] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
-  const featuredGallery = useMemo(() => GALLERY_ITEMS.filter((item) => item.src).slice(0, 20), []);
+  const featuredGallery = useMemo(() => GALLERY_ITEMS.filter((item) => item.src), []);
   const categories = ["师生合影", "学生团队", "教学现场", "竞赛成果", "活动出行", "项目展示"];
   const railItems = useMemo(() => [...APP_SHOWCASE_ITEMS, ...APP_SHOWCASE_ITEMS], []);
 
@@ -223,19 +217,20 @@ export default function MediaSection() {
       <div className="section-shell media-section-stack" data-testid="section-media">
         <div className="media-section-intro">
           <p className="section-kicker">作品与现场 / Portfolio</p>
-          <h2 className="media-section-title">把真实应用、课堂现场和内容传播放进同一个艺术科技展厅</h2>
-          <p className="media-section-description">
-            这里不再只是文字介绍，而是用真实截图、现场影像和可点击入口证明：课程、应用、服务和内容表达可以形成一条完整的专业叙事线。
-          </p>
+          <h2 className="media-section-title">
+            <span>作品、课程与内容的</span>
+            <span className="media-title-keyword">成长展厅</span>
+          </h2>
+          <p className="media-section-description">每个入口都对应真实应用、课堂图片和视频内容，让学习成果一眼可见。</p>
         </div>
 
         <section className="media-stage-panel">
           <div className="media-stage-head">
             <div>
-              <p className="section-kicker">Stage Feature</p>
-              <h3 className="media-block-title">主舞台应用</h3>
+              <p className="section-kicker">学习工具</p>
+              <h3 className="media-block-title">核心项目入口</h3>
             </div>
-            <p>以 Python 冒险岛和 class 教学系统为双核心，把学习体验和教学服务中枢同时摆在前台。</p>
+            <p>学生从闯关学习进入编程，老师用课程系统完成组织、反馈和服务。</p>
           </div>
           <div className="stage-app-grid">
             {STAGE_APPS.map((app, index) => (
@@ -247,10 +242,10 @@ export default function MediaSection() {
         <section className="media-showcase-panel">
           <div className="media-stage-head">
             <div>
-              <p className="section-kicker">Product Rail</p>
-              <h3 className="media-block-title">应用作品集</h3>
+              <p className="section-kicker">工具集合</p>
+              <h3 className="media-block-title">个人项目集合</h3>
             </div>
-            <p>下方作品变成立体卡片自动滚动，访问者可以暂停、悬停、点击，像浏览产品发布会的应用矩阵。</p>
+            <p>自动轮播展示更多工具入口，鼠标停留时可查看细节，点击即可打开体验。</p>
           </div>
           <div className="showcase-rail" data-testid="app-showcase-rail">
             <div className="showcase-rail-track">
@@ -264,10 +259,10 @@ export default function MediaSection() {
         <section className="gallery-stage-panel">
           <div className="media-stage-head">
             <div>
-              <p className="section-kicker">Scene Archive</p>
-              <h3 className="media-block-title">教学现场档案</h3>
+              <p className="section-kicker">教学现场</p>
+              <h3 className="media-block-title">教学现场</h3>
             </div>
-            <p>更多课堂、比赛、合影和项目现场用流动照片墙呈现，图片会有呼吸感，点击后以烟雾模糊层放大查看。</p>
+            <p>更多课堂、比赛、合影和项目现场会以流动照片墙呈现，点击后可查看大图。</p>
           </div>
 
           <div className="archive-gallery" data-testid="gallery-ring">
@@ -276,7 +271,7 @@ export default function MediaSection() {
                 key={item.slug}
                 type="button"
                 data-testid={`gallery-card-${item.slug}`}
-                className={`archive-card archive-card-${index + 1} depth-card-${(index % 6) + 1}`}
+                className={`archive-card archive-card-${index + 1} depth-card-${(index % 6) + 1} is-loaded`}
                 style={{ "--float-delay": `${index * -0.55}s`, "--wave-index": index }}
                 onClick={() => setActiveImage(item)}
               >
@@ -299,13 +294,11 @@ export default function MediaSection() {
         </section>
 
         <section className="douyin-stage-panel">
-          <a
-            href={DOUYIN_PROFILE.href}
-            target="_blank"
-            rel="noreferrer"
-            className="douyin-profile-card"
-            data-testid="douyin-home-link"
-          >
+          <a href={DOUYIN_PROFILE.href} target="_blank" rel="noreferrer" className="douyin-profile-card" data-testid="douyin-home-link">
+            <div className="douyin-profile-visual" data-testid="douyin-profile-visual" aria-hidden="true">
+              <video src={FEATURED_VIDEOS[0]?.src} muted loop autoPlay playsInline preload="metadata" />
+              <span />
+            </div>
             <p className="section-kicker">Douyin Profile</p>
             <h3>{DOUYIN_PROFILE.name}</h3>
             <p>{DOUYIN_PROFILE.subtitle}</p>
@@ -315,7 +308,7 @@ export default function MediaSection() {
               ))}
             </div>
             <strong className="product-open-link">
-              打开抖音主页
+              进入主页继续了解
               <ExternalArrow />
             </strong>
           </a>
@@ -323,10 +316,10 @@ export default function MediaSection() {
           <div className="douyin-content-panel">
             <div className="media-stage-head">
               <div>
-                <p className="section-kicker">Video Picks</p>
-                <h3 className="media-block-title">抖音内容入口</h3>
+                <p className="section-kicker">视频精选</p>
+                <h3 className="media-block-title">短视频内容入口</h3>
               </div>
-              <p>直接引用本地视频素材，先在站内播放预览，点击后放大观看，再从左侧进入抖音主页继续看完整内容流。</p>
+              <p>精选课堂工具、作品演示和学习资源，先快速预览，再进入主页继续了解。</p>
             </div>
             <div className="douyin-video-grid">
               {FEATURED_VIDEOS.map((video) => (

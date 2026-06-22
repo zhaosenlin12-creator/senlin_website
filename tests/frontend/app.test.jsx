@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { vi } from "vitest";
 
 import App from "../../src/App.jsx";
+import { GALLERY_ITEMS } from "../../src/galleryAssets.js";
 import { APP_SHOWCASE_ITEMS, FEATURED_VIDEOS, STAGE_APPS } from "../../src/mediaData.js";
 
 const SECTION_IDS = [
@@ -18,25 +19,18 @@ const SECTION_IDS = [
 ];
 
 describe("personal site rebuild", () => {
-  test("renders the rebuilt sections and navigation shell with readable Chinese copy", () => {
+  test("renders the rebuilt sections and navigation shell", () => {
     render(<App />);
 
-    expect(screen.getByText("赵森林")).toBeInTheDocument();
-    expect(screen.getByText("副校长 / 合伙人 / 乐启享机器人")).toBeInTheDocument();
-    expect(screen.getByText("把编程教育做成可体验的未来现场")).toBeInTheDocument();
+    expect(screen.getByTestId("hero-background")).toBeInTheDocument();
     expect(screen.getByTestId("learning-universe")).toBeInTheDocument();
+    expect(screen.getByTestId("hero-type-lines")).toBeInTheDocument();
+    expect(screen.getByTestId("btn-scroll")).toBeInTheDocument();
 
     for (const id of SECTION_IDS) {
       expect(document.getElementById(id)).toBeInTheDocument();
       expect(screen.getByTestId(`nav-dot-${id}`)).toBeInTheDocument();
     }
-
-    expect(screen.getByTestId("global-motion-field")).toBeInTheDocument();
-    expect(screen.getByTestId("btn-scroll")).toBeInTheDocument();
-    expect(screen.getByTestId("img-profile")).toBeInTheDocument();
-    expect(screen.getByTestId("img-wrcc")).toBeInTheDocument();
-    expect(screen.getByTestId("contact-wechat")).toBeInTheDocument();
-    expect(screen.getByTestId("contact-douyin")).toBeInTheDocument();
   });
 
   test("uses smooth scrolling for the hero CTA and section dots", () => {
@@ -69,12 +63,38 @@ describe("personal site rebuild", () => {
     });
   });
 
-  test("uses local Chinese app screenshots and precise app links", () => {
+  test("renders clean close labels and play copy in media overlays", async () => {
     render(<App />);
 
-    expect(screen.getByText("主舞台应用")).toBeInTheDocument();
-    expect(screen.getByText("应用作品集")).toBeInTheDocument();
-    expect(screen.getByText("教学现场档案")).toBeInTheDocument();
+    expect(screen.getAllByText("播放").length).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByTestId("gallery-card-classroom-guidance"));
+
+    const imageLightbox = await screen.findByTestId("image-lightbox");
+    expect(within(imageLightbox).getByText("×")).toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: "Escape" });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("image-lightbox")).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId("video-card-personal-site"));
+
+    const videoLightbox = await screen.findByTestId("video-lightbox");
+    expect(within(videoLightbox).getByText("×")).toBeInTheDocument();
+  });
+
+  test("shows the hero background media shell", () => {
+    render(<App />);
+
+    const heroBackground = screen.getByTestId("hero-background");
+    expect(heroBackground.querySelector("video")).toHaveAttribute("src", "/video/hero.mp4");
+    expect(heroBackground.querySelector("img")).toHaveAttribute("src", "/media/hero-background.png");
+  });
+
+  test("uses local Chinese app screenshots and precise app links", () => {
+    render(<App />);
 
     expect(STAGE_APPS).toHaveLength(2);
     expect(STAGE_APPS.map((app) => app.name)).toEqual(["Python 冒险岛", "class 教学系统"]);
@@ -132,6 +152,7 @@ describe("personal site rebuild", () => {
     expect(FEATURED_VIDEOS.map((video) => video.filename)).toEqual(["个人建站.mp4", "交互知识.mp4", "涂色英语.mp4"]);
 
     const douyinHomeLink = screen.getByTestId("douyin-home-link");
+    expect(within(douyinHomeLink).getByTestId("douyin-profile-visual")).toBeInTheDocument();
     expect(douyinHomeLink).toHaveAttribute(
       "href",
       "https://www.douyin.com/user/MS4wLjABAAAAxHHFo-1JZJ3GPL_HYbgUo6X7hN5jWrk5wJUYl42rgW0",
@@ -161,6 +182,20 @@ describe("personal site rebuild", () => {
 
     expect(screen.getByTestId("app-showcase-rail")).toBeInTheDocument();
     expect(screen.getByTestId("gallery-ring")).toBeInTheDocument();
-    expect(screen.getAllByTestId(/^gallery-card-/)).toHaveLength(20);
+    expect(screen.getAllByTestId(/^gallery-card-/)).toHaveLength(GALLERY_ITEMS.filter((item) => item.src).length);
+    expect(screen.getByTestId("gallery-card-classroom-guidance")).toHaveClass("is-loaded");
+  });
+
+  test("adds proof visuals to learning universe and shared interactive surfaces", () => {
+    render(<App />);
+
+    expect(screen.getByTestId("learning-proof-visual")).toBeInTheDocument();
+    expect(screen.getByTestId("learning-proof-image")).toBeInTheDocument();
+    expect(screen.getByTestId("learning-proof-image")).toHaveAttribute("src", "/media/learning-scenes/python-path.png");
+
+    expect(screen.getByTestId("stats")).toHaveClass("interactive-surface");
+    expect(screen.getByTestId("expertise-0")).toHaveClass("interactive-surface");
+    expect(screen.getByTestId("achievement-0")).toHaveClass("interactive-surface");
+    expect(screen.getByTestId("contact-wechat")).toHaveClass("interactive-surface");
   });
 });

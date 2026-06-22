@@ -7,6 +7,9 @@ __pycache__/
 
 .vite-*.log
 .vite-codex.*.log
+dev-server*.log
+dev*.log
+output/
 
 .chrome-*-profile/
 .chrome-dump-dom.txt

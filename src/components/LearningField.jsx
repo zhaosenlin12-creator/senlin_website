@@ -52,8 +52,6 @@ export default function LearningField() {
       const centerY = height / 2 + pointerY * 44;
 
       context.clearRect(0, 0, width, height);
-      context.fillStyle = "#05070a";
-      context.fillRect(0, 0, width, height);
 
       const gradient = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, width * 0.62);
       gradient.addColorStop(0, "rgba(0, 216, 255, 0.2)");
@@ -95,14 +93,6 @@ export default function LearningField() {
         context.fill();
       });
 
-      context.strokeStyle = "rgba(243, 241, 236, 0.08)";
-      context.lineWidth = 1;
-      for (let i = 0; i < 4; i += 1) {
-        context.beginPath();
-        context.ellipse(centerX, centerY, width * (0.18 + i * 0.09), height * (0.08 + i * 0.045), 0, 0, Math.PI * 2);
-        context.stroke();
-      }
-
       if (!prefersReducedMotion) {
         animationFrame = window.requestAnimationFrame(draw);
       }
@@ -115,9 +105,10 @@ export default function LearningField() {
     };
 
     resize();
-    draw(0);
 
-    if (!prefersReducedMotion) {
+    if (prefersReducedMotion) {
+      draw(0);
+    } else {
       animationFrame = window.requestAnimationFrame(draw);
       window.addEventListener("pointermove", handlePointerMove);
     }

@@ -1,23 +1,28 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export default function ImageLightbox({ item, onClose }) {
   useEffect(() => {
-    if (!item) {
-      return undefined;
-    }
+    if (!item) return undefined;
 
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
+      if (event.key === "Escape") onClose();
     };
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [item, onClose]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <AnimatePresence>
       {item ? (
         <motion.div
@@ -36,9 +41,9 @@ export default function ImageLightbox({ item, onClose }) {
             ))}
           </div>
           <motion.div
-            initial={{ opacity: 0, scale: 0.94, y: 20 }}
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 20 }}
+            exit={{ opacity: 0, scale: 0.94, y: 16 }}
             transition={{ type: "spring", stiffness: 210, damping: 22 }}
             className="image-lightbox-card"
             onClick={(event) => event.stopPropagation()}
@@ -48,8 +53,8 @@ export default function ImageLightbox({ item, onClose }) {
                 <p className="image-lightbox-category">{item.category}</p>
                 <h3 className="image-lightbox-title">{item.title}</h3>
               </div>
-              <button type="button" data-testid="btn-close-image" className="image-lightbox-close" onClick={onClose}>
-                关闭
+              <button type="button" data-testid="btn-close-image" className="image-lightbox-close" onClick={onClose} aria-label="关闭">
+                ×
               </button>
             </div>
             <div className="image-lightbox-frame">
@@ -59,6 +64,7 @@ export default function ImageLightbox({ item, onClose }) {
           </motion.div>
         </motion.div>
       ) : null}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
