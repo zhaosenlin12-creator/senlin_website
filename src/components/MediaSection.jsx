@@ -1,10 +1,16 @@
 ﻿import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import ImageLightbox from "./ImageLightbox.jsx";
 import { GALLERY_ITEMS } from "../galleryAssets.js";
 import { APP_SHOWCASE_ITEMS, DOUYIN_PROFILE, FEATURED_VIDEOS, STAGE_APPS } from "../mediaData.js";
+
+const VIDEO_POSTERS = {
+  "personal-site": "/iamges/11.jpg",
+  "interactive-knowledge": "/iamges/4e7cde1d67137f31dbbaceea09b3ba97.jpg",
+  "color-english": "/iamges/bf42704d89c36b8f7175792f2c6406df.jpg",
+};
 
 function ExternalArrow() {
   return (
@@ -29,6 +35,36 @@ function handleCardPointerLeave(event) {
   event.currentTarget.style.setProperty("--tilt-y", "0deg");
   event.currentTarget.style.setProperty("--glow-x", "50%");
   event.currentTarget.style.setProperty("--glow-y", "50%");
+}
+
+function useDeferredMedia() {
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || shouldLoad) return undefined;
+
+    if (typeof IntersectionObserver === "undefined") {
+      setShouldLoad(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "180px 0px" },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
+
+  return { ref, shouldLoad, loadNow: () => setShouldLoad(true) };
 }
 
 function StageAppCard({ app, index }) {
@@ -169,26 +205,36 @@ function VideoLightbox({ video, onClose }) {
 }
 
 function VideoCard({ video, onSelect }) {
+  const preview = useDeferredMedia();
+  const poster = VIDEO_POSTERS[video.id] ?? "/media/hero-background.png";
+
   return (
     <button
       type="button"
       data-testid={`video-card-${video.id}`}
       className="video-card motion-product-card"
       onClick={() => onSelect(video)}
+      onPointerEnter={preview.loadNow}
+      onFocus={preview.loadNow}
       onPointerMove={handleCardPointerMove}
       onPointerLeave={handleCardPointerLeave}
     >
-      <div className="video-preview-shell">
-        <video
-          data-testid={`video-preview-${video.id}`}
-          src={video.src}
-          className="video-preview"
-          muted
-          loop
-          autoPlay
-          playsInline
-          preload="metadata"
-        />
+      <div ref={preview.ref} className="video-preview-shell">
+        <img src={poster} alt="" className="video-preview video-preview-poster" loading="lazy" decoding="async" />
+        {preview.shouldLoad ? (
+          <video
+            data-testid={`video-preview-${video.id}`}
+            src={video.src}
+            className="video-preview video-preview-live"
+            muted
+            loop
+            autoPlay
+            playsInline
+            preload="none"
+          />
+        ) : (
+          <div data-testid={`video-preview-${video.id}`} className="video-preview video-preview-placeholder" aria-hidden="true" />
+        )}
         <span className="video-play-pulse">播放</span>
       </div>
       <div className="video-card-copy">
@@ -205,15 +251,16 @@ function VideoCard({ video, onSelect }) {
   );
 }
 
-export default function MediaSection() {
+export default function MediaSection({ sectionId = "media" }) {
   const [activeImage, setActiveImage] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
+  const douyinPreview = useDeferredMedia();
   const featuredGallery = useMemo(() => GALLERY_ITEMS.filter((item) => item.src), []);
   const categories = ["师生合影", "学生团队", "教学现场", "竞赛成果", "活动出行", "项目展示"];
   const railItems = useMemo(() => [...APP_SHOWCASE_ITEMS, ...APP_SHOWCASE_ITEMS], []);
 
   return (
-    <section id="media" className="media-section-shell">
+    <section id={sectionId} className="media-section-shell">
       <div className="section-shell media-section-stack" data-testid="section-media">
         <div className="media-section-intro">
           <p className="section-kicker">作品与现场 / Portfolio</p>
@@ -295,8 +342,11 @@ export default function MediaSection() {
 
         <section className="douyin-stage-panel">
           <a href={DOUYIN_PROFILE.href} target="_blank" rel="noreferrer" className="douyin-profile-card" data-testid="douyin-home-link">
-            <div className="douyin-profile-visual" data-testid="douyin-profile-visual" aria-hidden="true">
-              <video src={FEATURED_VIDEOS[0]?.src} muted loop autoPlay playsInline preload="metadata" />
+            <div ref={douyinPreview.ref} className="douyin-profile-visual" data-testid="douyin-profile-visual" aria-hidden="true">
+              <img src={VIDEO_POSTERS["personal-site"]} alt="" className="douyin-profile-poster" loading="lazy" decoding="async" />
+              {douyinPreview.shouldLoad ? (
+                <video src={FEATURED_VIDEOS[0]?.src} muted loop autoPlay playsInline preload="none" />
+              ) : null}
               <span />
             </div>
             <p className="section-kicker">Douyin Profile</p>

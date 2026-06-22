@@ -11,12 +11,12 @@ const proofByFocus = {
   "class-system": "/media/learning-scenes/service-loop-path.png",
 };
 
-export default function LearningUniverse() {
+export default function LearningUniverse({ sectionId = "learning-universe" }) {
   const [activeId, setActiveId] = useState(LEARNING_NODES[0].id);
   const activeNode = LEARNING_NODES.find((node) => node.id === activeId) ?? LEARNING_NODES[0];
 
   return (
-    <section id="learning-universe" data-testid="learning-universe" className="learning-universe-section">
+    <section id={sectionId} data-testid="learning-universe" className="learning-universe-section">
       <div className="section-shell learning-universe-shell">
         <div className="section-kicker">Interactive Map</div>
         <div className="learning-universe-head">

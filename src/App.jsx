@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+﻿import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 
 import LearningUniverse from "./components/LearningUniverse.jsx";
@@ -16,6 +16,36 @@ import {
   SECTION_NAV_ITEMS,
   STAT_ITEMS,
 } from "./data.js";
+
+function useDeferredSection(rootMargin = "260px 0px") {
+  const [isReady, setIsReady] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || isReady) return undefined;
+
+    if (typeof IntersectionObserver === "undefined") {
+      setIsReady(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setIsReady(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isReady, rootMargin]);
+
+  return { ref, isReady };
+}
 
 function SectionNav() {
   const scrollToSection = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -96,6 +126,7 @@ function HeroSection() {
   const [activeCopy, setActiveCopy] = useState(0);
   const [titleHover, setTitleHover] = useState(false);
   const videoRefs = useRef([]);
+  const activeSlideItem = slides[activeSlide];
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -133,32 +164,41 @@ function HeroSection() {
   return (
     <section id="hero" className="hero-section">
       <div className="hero-background" aria-hidden="true" data-testid="hero-background">
-        {slides.map((item, index) =>
-          item.type === "video" ? (
-            <video
-              key={item.src}
+        <AnimatePresence mode="wait">
+          {activeSlideItem.type === "video" ? (
+            <motion.video
+              key={activeSlideItem.src}
               ref={(node) => {
-                videoRefs.current[index] = node;
+                videoRefs.current[activeSlide] = node;
               }}
-              src={item.src}
-              className={`hero-background-video hero-background-video-${index + 1} ${index === activeSlide ? "is-active" : ""}`}
+              src={activeSlideItem.src}
+              className="hero-background-video is-active"
+              initial={{ opacity: 0, scale: 1.03 }}
+              animate={{ opacity: 1, scale: 1.01 }}
+              exit={{ opacity: 0, scale: 1.03 }}
+              transition={{ duration: 0.75, ease: "easeOut" }}
               autoPlay
               muted
               loop
               playsInline
-              preload={index === 0 ? "auto" : "metadata"}
+              preload="metadata"
+              poster="/media/hero-background.png"
             />
           ) : (
-            <img
-              key={item.src}
-              src={item.src}
+            <motion.img
+              key={activeSlideItem.src}
+              src={activeSlideItem.src}
               alt=""
-              loading={index === 0 ? "eager" : "lazy"}
+              loading="eager"
               decoding="async"
-              className={`hero-background-image hero-background-image-${index + 1} ${index === activeSlide ? "is-active" : ""}`}
+              className="hero-background-image is-active"
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 1, scale: 1.01 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 0.75, ease: "easeOut" }}
             />
-          )
-        )}
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="hero-status hero-status-left">
@@ -183,9 +223,9 @@ function HeroSection() {
               exit={{ opacity: 0, y: -14, filter: "blur(10px)" }}
               transition={{ duration: 0.55, ease: "easeOut" }}
             >
-              <p className="hero-eyebrow">{slides[activeSlide].eyebrow}</p>
+              <p className="hero-eyebrow">{activeSlideItem.eyebrow}</p>
               <h1 data-testid="hero-type-lines" className={`hero-type-lines ${titleHover ? "is-hovered" : ""}`}>
-                {slides[activeSlide].title.map((line, index) => (
+                {activeSlideItem.title.map((line, index) => (
                   <motion.span
                     key={line}
                     className={index === 1 ? "is-outline" : ""}
@@ -198,7 +238,7 @@ function HeroSection() {
                   </motion.span>
                 ))}
               </h1>
-              <p className="hero-statement">{slides[activeSlide].statement}</p>
+              <p className="hero-statement">{activeSlideItem.statement}</p>
             </motion.div>
           </AnimatePresence>
           <div className="hero-dynamic-copy" aria-live="polite">
@@ -297,7 +337,7 @@ function ContactSection({ onSelectQr }) {
   );
 }
 
-function EvidenceSection() {
+function EvidenceSection({ sectionId = "evidence" }) {
   const titleFrames = [
     ["成果", "被看见"],
     ["作品", "会发声"],
@@ -328,7 +368,7 @@ function EvidenceSection() {
   };
 
   return (
-    <section id="evidence" className="evidence-section">
+    <section id={sectionId} className="evidence-section">
       <div className="section-shell evidence-shell">
         <div className="evidence-heading">
           <div className="evidence-copy">
@@ -455,6 +495,9 @@ function EvidenceSection() {
 
 function HomePage() {
   const [selectedQr, setSelectedQr] = useState(null);
+  const mediaSection = useDeferredSection();
+  const evidenceSection = useDeferredSection();
+  const learningSection = useDeferredSection();
 
   return (
     <main className="site-page">
@@ -464,9 +507,15 @@ function HomePage() {
       <HeroSection />
       <MarqueeStrip />
       <AboutSection />
-      <MediaSection />
-      <EvidenceSection />
-      <LearningUniverse />
+      <section ref={mediaSection.ref} id="media" className="deferred-section-shell">
+        {mediaSection.isReady ? <MediaSection sectionId="media" /> : <div className="deferred-section-placeholder" aria-hidden="true" />}
+      </section>
+      <section ref={evidenceSection.ref} id="evidence" className="deferred-section-shell">
+        {evidenceSection.isReady ? <EvidenceSection sectionId="evidence" /> : <div className="deferred-section-placeholder deferred-section-placeholder-wide" aria-hidden="true" />}
+      </section>
+      <section ref={learningSection.ref} id="learning-universe" className="deferred-section-shell">
+        {learningSection.isReady ? <LearningUniverse sectionId="learning-universe" /> : <div className="deferred-section-placeholder deferred-section-placeholder-tall" aria-hidden="true" />}
+      </section>
       <ContactSection onSelectQr={setSelectedQr} />
       <footer className="site-footer">
         <span>© {new Date().getFullYear()} 赵森林 / 乐启教育 / 保留所有权利</span>
