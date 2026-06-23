@@ -7,10 +7,26 @@ import { GALLERY_ITEMS } from "../galleryAssets.js";
 import { APP_SHOWCASE_ITEMS, DOUYIN_PROFILE, FEATURED_VIDEOS, STAGE_APPS } from "../mediaData.js";
 
 const VIDEO_POSTERS = {
-  "personal-site": "/iamges/11.jpg",
-  "interactive-knowledge": "/iamges/4e7cde1d67137f31dbbaceea09b3ba97.jpg",
-  "color-english": "/iamges/bf42704d89c36b8f7175792f2c6406df.jpg",
+  "personal-site": "/media/video-posters/personal-site.webp",
+  "interactive-knowledge": "/media/video-posters/interactive-knowledge.webp",
+  "color-english": "/media/video-posters/color-english.webp",
 };
+
+function primeAndPlayVideo(video) {
+  if (!video) return;
+
+  video.muted = true;
+  video.defaultMuted = true;
+
+  try {
+    const playPromise = video.play?.();
+    if (playPromise?.catch) {
+      playPromise.catch(() => {});
+    }
+  } catch {
+    // Ignore autoplay rejections and keep the poster visible.
+  }
+}
 
 function ExternalArrow() {
   return (
@@ -37,9 +53,16 @@ function handleCardPointerLeave(event) {
   event.currentTarget.style.setProperty("--glow-y", "50%");
 }
 
-function useDeferredMedia() {
+function useDeferredMedia({
+  rootMargin = "180px 0px",
+  autoLoadOnIntersect = true,
+  autoActivate = false,
+  autoActivateDelay = 600,
+} = {}) {
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [active, setActive] = useState(false);
   const ref = useRef(null);
+  const autoTimerRef = useRef(null);
 
   useEffect(() => {
     const node = ref.current;
@@ -47,24 +70,58 @@ function useDeferredMedia() {
 
     if (typeof IntersectionObserver === "undefined") {
       setShouldLoad(true);
+      if (autoActivate) {
+        if (autoTimerRef.current) window.clearTimeout(autoTimerRef.current);
+        autoTimerRef.current = window.setTimeout(() => setActive(true), autoActivateDelay);
+      }
       return undefined;
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (!autoLoadOnIntersect) return;
         if (entries.some((entry) => entry.isIntersecting)) {
           setShouldLoad(true);
+          if (autoActivate) {
+            if (autoTimerRef.current) window.clearTimeout(autoTimerRef.current);
+            autoTimerRef.current = window.setTimeout(() => setActive(true), autoActivateDelay);
+          }
           observer.disconnect();
         }
       },
-      { rootMargin: "180px 0px" },
+      { rootMargin },
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
-  }, [shouldLoad]);
+    return () => {
+      observer.disconnect();
+      if (autoTimerRef.current) {
+        window.clearTimeout(autoTimerRef.current);
+        autoTimerRef.current = null;
+      }
+    };
+  }, [autoActivate, autoActivateDelay, autoLoadOnIntersect, rootMargin, shouldLoad]);
 
-  return { ref, shouldLoad, loadNow: () => setShouldLoad(true) };
+  return {
+    ref,
+    shouldLoad,
+    active,
+    loadNow: () => {
+      if (autoTimerRef.current) {
+        window.clearTimeout(autoTimerRef.current);
+        autoTimerRef.current = null;
+      }
+      setShouldLoad(true);
+      setActive(true);
+    },
+    activate: () => {
+      if (autoTimerRef.current) {
+        window.clearTimeout(autoTimerRef.current);
+        autoTimerRef.current = null;
+      }
+      setActive(true);
+    },
+  };
 }
 
 function StageAppCard({ app, index }) {
@@ -146,6 +203,9 @@ function ShowcaseRailCard({ app, clone = false }) {
 }
 
 function VideoLightbox({ video, onClose }) {
+  const playerRef = useRef(null);
+  const poster = video ? VIDEO_POSTERS[video.id] ?? "/media/video-posters/personal-site.webp" : undefined;
+
   useEffect(() => {
     if (!video) return undefined;
 
@@ -162,6 +222,31 @@ function VideoLightbox({ video, onClose }) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [video, onClose]);
+
+  useEffect(() => {
+    if (!video) return undefined;
+    const player = playerRef.current;
+    if (!player) return undefined;
+
+    player.currentTime = 0;
+    player.muted = false;
+    player.defaultMuted = false;
+    player.load?.();
+
+    const handleCanPlay = () => {
+      const playPromise = player.play?.();
+      if (playPromise?.catch) {
+        playPromise.catch(() => {});
+      }
+    };
+
+    handleCanPlay();
+    player.addEventListener("canplay", handleCanPlay);
+
+    return () => {
+      player.removeEventListener("canplay", handleCanPlay);
+    };
+  }, [video]);
 
   if (typeof document === "undefined") return null;
 
@@ -194,7 +279,17 @@ function VideoLightbox({ video, onClose }) {
                 ×
               </button>
             </div>
-            <video className="video-lightbox-player" data-testid="video-lightbox-player" src={video.src} controls autoPlay playsInline />
+            <video
+              ref={playerRef}
+              className="video-lightbox-player"
+              data-testid="video-lightbox-player"
+              src={video.src}
+              poster={poster}
+              controls
+              autoPlay
+              playsInline
+              preload="metadata"
+            />
             <p className="image-lightbox-description">{video.summary}</p>
           </motion.div>
         </motion.div>
@@ -205,32 +300,60 @@ function VideoLightbox({ video, onClose }) {
 }
 
 function VideoCard({ video, onSelect }) {
-  const preview = useDeferredMedia();
-  const poster = VIDEO_POSTERS[video.id] ?? "/media/hero-background.png";
+  const preview = useDeferredMedia({ autoLoadOnIntersect: true, autoActivate: false });
+  const previewVideoRef = useRef(null);
+  const poster = VIDEO_POSTERS[video.id] ?? "/media/hero-background.webp";
+  const previewSrc = video.previewSrc ?? video.src;
+
+  useEffect(() => {
+    if (!preview.shouldLoad || !preview.active) return undefined;
+    const node = previewVideoRef.current;
+    if (!node) return undefined;
+
+    const handleLoadedData = () => primeAndPlayVideo(node);
+    primeAndPlayVideo(node);
+    node.addEventListener("loadeddata", handleLoadedData);
+
+    return () => {
+      node.removeEventListener("loadeddata", handleLoadedData);
+    };
+  }, [preview.active, preview.shouldLoad, previewSrc]);
 
   return (
     <button
       type="button"
       data-testid={`video-card-${video.id}`}
       className="video-card motion-product-card"
-      onClick={() => onSelect(video)}
-      onPointerEnter={preview.loadNow}
-      onFocus={preview.loadNow}
+      onClick={() => {
+        preview.loadNow();
+        onSelect(video);
+      }}
+      onPointerEnter={preview.activate}
+      onFocus={preview.activate}
       onPointerMove={handleCardPointerMove}
       onPointerLeave={handleCardPointerLeave}
     >
       <div ref={preview.ref} className="video-preview-shell">
-        <img src={poster} alt="" className="video-preview video-preview-poster" loading="lazy" decoding="async" />
+        <img
+          src={poster}
+          alt=""
+          data-testid={`video-poster-${video.id}`}
+          className="video-preview video-preview-poster"
+          loading="lazy"
+          decoding="async"
+        />
         {preview.shouldLoad ? (
           <video
+            ref={previewVideoRef}
             data-testid={`video-preview-${video.id}`}
-            src={video.src}
+            src={previewSrc}
+            poster={poster}
             className="video-preview video-preview-live"
             muted
             loop
             autoPlay
             playsInline
-            preload="none"
+            preload="metadata"
           />
         ) : (
           <div data-testid={`video-preview-${video.id}`} className="video-preview video-preview-placeholder" aria-hidden="true" />
@@ -254,10 +377,25 @@ function VideoCard({ video, onSelect }) {
 export default function MediaSection({ sectionId = "media" }) {
   const [activeImage, setActiveImage] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
-  const douyinPreview = useDeferredMedia();
+  const douyinPreview = useDeferredMedia({ autoLoadOnIntersect: true, autoActivate: true, autoActivateDelay: 700 });
+  const douyinPreviewVideoRef = useRef(null);
   const featuredGallery = useMemo(() => GALLERY_ITEMS.filter((item) => item.src), []);
   const categories = ["师生合影", "学生团队", "教学现场", "竞赛成果", "活动出行", "项目展示"];
   const railItems = useMemo(() => [...APP_SHOWCASE_ITEMS, ...APP_SHOWCASE_ITEMS], []);
+
+  useEffect(() => {
+    if (!douyinPreview.shouldLoad || !douyinPreview.active) return undefined;
+    const node = douyinPreviewVideoRef.current;
+    if (!node) return undefined;
+
+    const handleLoadedData = () => primeAndPlayVideo(node);
+    primeAndPlayVideo(node);
+    node.addEventListener("loadeddata", handleLoadedData);
+
+    return () => {
+      node.removeEventListener("loadeddata", handleLoadedData);
+    };
+  }, [douyinPreview.active, douyinPreview.shouldLoad]);
 
   return (
     <section id={sectionId} className="media-section-shell">
@@ -343,9 +481,26 @@ export default function MediaSection({ sectionId = "media" }) {
         <section className="douyin-stage-panel">
           <a href={DOUYIN_PROFILE.href} target="_blank" rel="noreferrer" className="douyin-profile-card" data-testid="douyin-home-link">
             <div ref={douyinPreview.ref} className="douyin-profile-visual" data-testid="douyin-profile-visual" aria-hidden="true">
-              <img src={VIDEO_POSTERS["personal-site"]} alt="" className="douyin-profile-poster" loading="lazy" decoding="async" />
+              <img
+                src={VIDEO_POSTERS["personal-site"]}
+                alt=""
+                data-testid="douyin-profile-poster"
+                className="douyin-profile-poster"
+                loading="lazy"
+                decoding="async"
+              />
               {douyinPreview.shouldLoad ? (
-                <video src={FEATURED_VIDEOS[0]?.src} muted loop autoPlay playsInline preload="none" />
+                <video
+                  ref={douyinPreviewVideoRef}
+                  data-testid="douyin-profile-video"
+                  src={FEATURED_VIDEOS[0]?.previewSrc ?? FEATURED_VIDEOS[0]?.src}
+                  poster={VIDEO_POSTERS["personal-site"]}
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                />
               ) : null}
               <span />
             </div>
@@ -385,3 +540,17 @@ export default function MediaSection({ sectionId = "media" }) {
     </section>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

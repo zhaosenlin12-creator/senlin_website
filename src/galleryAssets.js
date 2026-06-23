@@ -1,13 +1,4 @@
-const imageModules = import.meta.glob("../iamges/*.{jpg,jpeg,png}", {
-  eager: true,
-  import: "default",
-});
-
-const imageByName = Object.fromEntries(
-  Object.entries(imageModules)
-    .filter(([path]) => !path.endsWith("/_contact_sheet.jpg"))
-    .map(([path, src]) => [path.split("/").pop(), src]),
-);
+const imageByName = (filename) => `/media/gallery/${filename}`;
 
 const codebnGallery = [
   {
@@ -221,7 +212,7 @@ const curatedGallery = [
 export const GALLERY_ITEMS = [
   ...curatedGallery.map((item) => ({
     ...item,
-    src: imageByName[item.filename],
+    src: imageByName(item.filename),
   })),
   ...codebnGallery,
 ];

@@ -1,18 +1,24 @@
-const appImageModules = import.meta.glob("../iamges/app-photo/*.{jpg,jpeg,png,webp}", {
-  eager: true,
-  import: "default",
-});
-
-const videoModules = import.meta.glob("../video/*.{mp4,webm,mov}", {
-  eager: true,
-  import: "default",
-});
-
-const assetByName = (modules) =>
-  Object.fromEntries(Object.entries(modules).map(([path, src]) => [path.split("/").pop(), src]));
-
-const appImages = assetByName(appImageModules);
-const localVideos = assetByName(videoModules);
+const appImages = {
+  "python冒险岛.png": "/media/app-photo/python冒险岛.png",
+  "class教学系统.png": "/media/app-photo/class教学系统.png",
+  "ai互动课堂.png": "/media/app-photo/ai互动课堂.png",
+  "code research.png": "/media/app-photo/code research.png",
+  "仿真模拟实验室.png": "/media/app-photo/仿真模拟实验室.png",
+  "乐启享宠物.png": "/media/app-photo/乐启享宠物.png",
+  "乐启享打字.png": "/media/app-photo/乐启享打字.png",
+  "乐启享管理系统.png": "/media/app-photo/乐启享管理系统.png",
+  "模型训练.png": "/media/app-photo/模型训练.png",
+};
+const previewVideos = {
+  "personal-site": "/media/video-previews/personal-site-preview.mp4",
+  "interactive-knowledge": "/media/video-previews/interactive-knowledge-preview.mp4",
+  "color-english": "/media/video-previews/color-english-preview.mp4",
+};
+const playbackVideos = {
+  "personal-site": "/media/videos/personal-site.mp4",
+  "interactive-knowledge": "/media/videos/interactive-knowledge.mp4",
+  "color-english": "/media/videos/color-english.mp4",
+};
 
 const typingHref =
   "https://game.codebn.cn/typing/index.html?source=game-google&apiBase=%2Fapi%2Ftyping&returnUrl=https%3A%2F%2Fgame.codebn.cn%2F";
@@ -160,8 +166,9 @@ export const FEATURED_VIDEOS = [
   {
     id: "personal-site",
     title: "个人建站作品演示",
-    filename: "个人建站.mp4",
-    src: localVideos["个人建站.mp4"],
+    filename: "个人建站-small.mp4",
+    src: "/media/videos/personal-site.mp4",
+    previewSrc: previewVideos["personal-site"],
     badge: "Douyin Video 01",
     summary: "用短视频展示网站搭建、页面呈现和作品表达，把技术成果变成可传播内容。",
     chips: ["个人网站", "作品展示", "技术表达"],
@@ -170,7 +177,8 @@ export const FEATURED_VIDEOS = [
     id: "interactive-knowledge",
     title: "交互知识工具现场",
     filename: "交互知识.mp4",
-    src: localVideos["交互知识.mp4"],
+    src: "/media/videos/interactive-knowledge.mp4",
+    previewSrc: previewVideos["interactive-knowledge"],
     badge: "Douyin Video 02",
     summary: "把知识点拆成可操作、可观察的互动过程，让学习内容更适合被理解和复盘。",
     chips: ["互动工具", "知识理解", "课堂演示"],
@@ -179,7 +187,8 @@ export const FEATURED_VIDEOS = [
     id: "color-english",
     title: "涂色英语资源演示",
     filename: "涂色英语.mp4",
-    src: localVideos["涂色英语.mp4"],
+    src: "/media/videos/color-english.mp4",
+    previewSrc: previewVideos["color-english"],
     badge: "Douyin Video 03",
     summary: "把英语启蒙资源做成更轻松的视觉体验，适合作为家长和学生的第一触点。",
     chips: ["英语启蒙", "资源整理", "亲子学习"],

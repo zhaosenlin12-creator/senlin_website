@@ -3,12 +3,12 @@ import { useState } from "react";
 import { LEARNING_NODES } from "../data.js";
 
 const proofByFocus = {
-  "python-adventure": "/media/learning-scenes/python-path.png",
-  "competition-floor": "/media/learning-scenes/cpp-noi-path.png",
-  "ai-classroom": "/media/learning-scenes/ai-classroom-path.png",
-  "robot-competition-team": "/media/learning-scenes/robotics-path.png",
-  "code-research": "/media/learning-scenes/project-release-path.png",
-  "class-system": "/media/learning-scenes/service-loop-path.png",
+  "python-adventure": "/media/learning-scenes/python-path.webp",
+  "competition-floor": "/media/learning-scenes/cpp-noi-path.webp",
+  "ai-classroom": "/media/learning-scenes/ai-classroom-path.webp",
+  "robot-competition-team": "/media/learning-scenes/robotics-path.webp",
+  "code-research": "/media/learning-scenes/project-release-path.webp",
+  "class-system": "/media/learning-scenes/service-loop-path.webp",
 };
 
 export default function LearningUniverse({ sectionId = "learning-universe" }) {

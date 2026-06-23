@@ -103,13 +103,13 @@ export const CERTIFICATION_ITEMS = [
 export const CONTACT_ITEMS = [
   {
     label: "微信 / WeChat",
-    src: "/qr-wechat.jpg",
+    src: "/qr-wechat.webp",
     sub: "扫码添加联系",
     testId: "contact-wechat",
   },
   {
     label: "抖音 / Douyin",
-    src: "/qr-douyin.jpg",
+    src: "/qr-douyin.webp",
     sub: "查看作品与更新",
     testId: "contact-douyin",
   },

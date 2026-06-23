@@ -45,20 +45,43 @@ if (!window.matchMedia) {
 }
 
 class MockIntersectionObserver {
+  static instances = [];
+
   constructor(callback) {
     this.callback = callback;
+    this.targets = new Set();
+    MockIntersectionObserver.instances.push(this);
   }
 
   observe(target) {
-    this.callback([{ isIntersecting: true, target }]);
+    this.targets.add(target);
   }
 
-  disconnect() {}
+  disconnect() {
+    this.targets.clear();
+  }
 
-  unobserve() {}
+  unobserve(target) {
+    this.targets.delete(target);
+  }
 
   takeRecords() {
     return [];
+  }
+
+  trigger(isIntersecting = true) {
+    const entries = Array.from(this.targets).map((target) => ({ isIntersecting, target }));
+    this.callback(entries);
+  }
+
+  static triggerAll(isIntersecting = true) {
+    for (const instance of MockIntersectionObserver.instances) {
+      instance.trigger(isIntersecting);
+    }
+  }
+
+  static reset() {
+    MockIntersectionObserver.instances = [];
   }
 }
 
@@ -69,6 +92,12 @@ if (!window.IntersectionObserver) {
 if (!globalThis.IntersectionObserver) {
   globalThis.IntersectionObserver = MockIntersectionObserver;
 }
+
+globalThis.MockIntersectionObserver = MockIntersectionObserver;
+
+afterEach(() => {
+  MockIntersectionObserver.reset();
+});
 
 const canvasContextStub = {
   arc() {},

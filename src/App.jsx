@@ -103,10 +103,11 @@ function Header() {
 
 function HeroSection() {
   const { ChevronDown } = HERO_ICONS;
+  const heroPreviewVideo = "/media/hero-preview.mp4";
   const slides = [
     {
       type: "image",
-      src: "/media/hero-background.png",
+      src: "/media/hero-background.webp",
       eyebrow: "教育 / 代码 / 机器人",
       title: ["教育", "代码", "机器人"],
       statement: "把编程教育做成可被看见的作品现场。",
@@ -114,7 +115,7 @@ function HeroSection() {
     },
     {
       type: "video",
-      src: "/media/hero.mp4",
+      src: heroPreviewVideo,
       eyebrow: "作品发布 / 学习宇宙",
       title: ["作品发布", "学习宇宙", "成长现场"],
       statement: "让学习、展示和成长在同一块舞台上发生。",
@@ -125,8 +126,36 @@ function HeroSection() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeCopy, setActiveCopy] = useState(0);
   const [titleHover, setTitleHover] = useState(false);
+  const [heroVideoEnabled, setHeroVideoEnabled] = useState(false);
+  const [heroVideoReady, setHeroVideoReady] = useState(false);
   const videoRefs = useRef([]);
   const activeSlideItem = slides[activeSlide];
+
+  useEffect(() => {
+    let timeoutId;
+    let idleId;
+    const enableVideo = () => setHeroVideoEnabled(true);
+
+    if (typeof window === "undefined") {
+      setHeroVideoEnabled(true);
+      return undefined;
+    }
+
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(enableVideo, { timeout: 2200 });
+    } else {
+      timeoutId = window.setTimeout(enableVideo, 1800);
+    }
+
+    return () => {
+      if (typeof idleId === "number" && "cancelIdleCallback" in window) {
+        window.cancelIdleCallback(idleId);
+      }
+      if (typeof timeoutId === "number") {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -138,18 +167,35 @@ function HeroSection() {
 
   useEffect(() => {
     const activeItem = slides[activeSlide];
-    if (activeItem?.type !== "video") return;
+    if (activeItem?.type !== "video" || !heroVideoEnabled) return;
     const video = videoRefs.current[activeSlide];
     if (!video) return;
+
+    const handleCanPlay = () => {
+      setHeroVideoReady(true);
+      try {
+        video.pause?.();
+        video.currentTime = 0;
+        const playPromise = video.play?.();
+        if (playPromise?.catch) playPromise.catch(() => {});
+      } catch {
+        // Ignore browser autoplay restrictions.
+      }
+    };
+
+    setHeroVideoReady(video.readyState >= 3);
     try {
-      video.pause?.();
-      video.currentTime = 0;
-      const playPromise = video.play?.();
-      if (playPromise?.catch) playPromise.catch(() => {});
+      video.load?.();
     } catch {
-      // Ignore browser autoplay restrictions.
+      // Ignore load errors and keep the fallback image visible.
     }
-  }, [activeSlide, slides]);
+    handleCanPlay();
+    video.addEventListener("canplay", handleCanPlay);
+
+    return () => {
+      video.removeEventListener("canplay", handleCanPlay);
+    };
+  }, [activeSlide, heroVideoEnabled, slides]);
 
   const handlePointerMove = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -165,14 +211,15 @@ function HeroSection() {
     <section id="hero" className="hero-section">
       <div className="hero-background" aria-hidden="true" data-testid="hero-background">
         <AnimatePresence mode="wait">
-          {activeSlideItem.type === "video" ? (
+          {activeSlideItem.type === "video" && heroVideoEnabled ? (
             <motion.video
               key={activeSlideItem.src}
               ref={(node) => {
                 videoRefs.current[activeSlide] = node;
               }}
               src={activeSlideItem.src}
-              className="hero-background-video is-active"
+              data-testid="hero-background-video"
+              className={`hero-background-video ${heroVideoReady ? "is-active" : ""}`}
               initial={{ opacity: 0, scale: 1.03 }}
               animate={{ opacity: 1, scale: 1.01 }}
               exit={{ opacity: 0, scale: 1.03 }}
@@ -181,14 +228,15 @@ function HeroSection() {
               muted
               loop
               playsInline
-              preload="metadata"
-              poster="/media/hero-background.png"
+              preload="auto"
+              poster="/media/hero-background.webp"
             />
           ) : (
             <motion.img
-              key={activeSlideItem.src}
-              src={activeSlideItem.src}
+              key={activeSlideItem.type === "video" ? `${slides[0].src}-fallback` : activeSlideItem.src}
+              src={activeSlideItem.type === "video" ? slides[0].src : activeSlideItem.src}
               alt=""
+              data-testid="hero-background-image"
               loading="eager"
               decoding="async"
               className="hero-background-image is-active"
@@ -291,7 +339,7 @@ function AboutSection() {
     <section id="about" className="editorial-section about-section">
       <div className="section-shell about-grid">
         <div className="portrait-frame">
-          <img src="/photo-hero.jpg" alt="赵森林老师" loading="lazy" decoding="async" />
+          <img src="/photo-hero.webp" alt="赵森林老师" loading="lazy" decoding="async" />
         </div>
         <div className="about-copy">
           <p className="section-kicker">人物 / Educator</p>
@@ -404,7 +452,7 @@ function EvidenceSection({ sectionId = "evidence" }) {
         <div className="evidence-stage">
           <article className="evidence-spotlight evidence-surface" onPointerMove={handleSurfaceMove} onPointerLeave={resetSurfaceMove}>
             <div className="evidence-spotlight-media">
-              <img src="/photo-wrcc.jpg" alt="赵森林老师带学生在成果发布现场展示作品" loading="lazy" decoding="async" />
+          <img src="/photo-wrcc.webp" alt="赵森林老师带学生在成果发布现场展示作品" loading="lazy" decoding="async" />
               <div className="evidence-floating-stats">
                 {STAT_ITEMS.map((item, index) => (
                   <article key={item.label} className={`evidence-floating-stat evidence-floating-stat-${index + 1}`} data-testid={`stat-card-${index}`}>

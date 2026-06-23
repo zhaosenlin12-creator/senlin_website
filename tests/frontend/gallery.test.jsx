@@ -6,6 +6,9 @@ describe("teaching-scene gallery", () => {
   test("opens and closes the teaching-scene image lightbox", async () => {
     render(<App />);
 
+    MockIntersectionObserver.triggerAll(true);
+    await waitFor(() => expect(screen.getByTestId("gallery-card-classroom-guidance")).toBeInTheDocument());
+
     fireEvent.click(screen.getByTestId("gallery-card-classroom-guidance"));
 
     const lightbox = screen.getByTestId("image-lightbox");
