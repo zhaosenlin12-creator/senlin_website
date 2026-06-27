@@ -122,6 +122,8 @@ describe("personal site rebuild", () => {
       "乐启享宠物",
       "乐启享打字",
       "乐启享管理系统",
+      "诗云 Poetry Cloud",
+      "云游志愿",
       "模型训练",
     ]);
 
