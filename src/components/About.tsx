@@ -52,7 +52,7 @@ export default function About() {
             <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#101010]">
               <div className="relative aspect-[4/5] w-full overflow-hidden">
                 <img
-                  src="/media/photo-wrcc.webp"
+                  src="/media/photo-wrcc.jpg"
                   loading="eager"
                   decoding="async"
                   alt="森林 · 教学现场"

@@ -37,8 +37,9 @@ function FeatureCard({
         <div className="relative h-[44%] w-full overflow-hidden bg-[#1a1a1a]">
           <img
             src={card.media}
-            loading="eager"
+            loading="lazy"
             decoding="async"
+            fetchPriority="low"
             alt=""
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
           />

@@ -56,8 +56,9 @@ function AppCard({
         ) : (
           <img
             src={app.media}
-            loading="eager"
+            loading="lazy"
             decoding="async"
+            fetchPriority="low"
             alt={app.name}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
         )}
