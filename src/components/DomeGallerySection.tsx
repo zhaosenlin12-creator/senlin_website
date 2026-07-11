@@ -12,11 +12,11 @@ export default function DomeGallerySection() {
       <div className="absolute inset-0">
         <DomeGallery
           images={GALLERY_IMAGES}
-          fit={0.85}
-          minRadius={900}
-          segments={18}
+          fit={0.5}
+          minRadius={500}
+          segments={36}
           grayscale={false}
-          autoRotateDegPerSec={3}
+          autoRotateDegPerSec={5}
           overlayBlurColor="#070707"
           imageBorderRadius="18px"
           openedImageWidth="min(92vw, 720px)"
