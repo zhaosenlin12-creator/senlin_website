@@ -63,7 +63,7 @@ export default function VideoRow() {
           {VIDEOS.slice(0, 3).map((v, i) => (
             <motion.button key={v.id} type="button" onClick={() => openWith(i)} initial={{ opacity: 1, y: 0 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.9, ease: EASE, delay: (i + 1) * 0.1 }} className="group relative col-span-1 flex aspect-square flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-[#101010] text-left transition hover:border-white/20">
               <div className="absolute inset-0">
-                <video src={v.src} poster={v.poster} muted loop playsInline autoPlay preload="metadata" className="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" />
+                <img src={v.poster} alt={v.title} loading="lazy" decoding="async" fetchPriority="low" className="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
               </div>
               <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-5">
@@ -127,7 +127,7 @@ function VideoModal({ videos, activeIdx, setActiveIdx, onClose }: { videos: type
             {videos.map((v, i) => (
               <button key={v.id} onClick={() => setActiveIdx(i)} className={"flex items-center gap-3 rounded-xl p-2 text-left transition " + cls(i)}>
                 <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-black">
-                  <img src={v.poster} alt={v.title} className="h-full w-full object-cover" loading="eager" decoding="async" />
+                  <img src={v.poster} alt={v.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                   <span className="absolute inset-0 flex items-center justify-center bg-black/30"><Play size={12} fill="currentColor" className="text-white" /></span>
                 </div>
                 <div className="flex min-w-0 flex-col">

@@ -53,7 +53,7 @@ export default function About() {
               <div className="relative aspect-[4/5] w-full overflow-hidden">
                 <img
                   src="/media/photo-wrcc.jpg"
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
                   alt="森林 · 教学现场"
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />

@@ -39,7 +39,7 @@ export default function Contact() {
           {channels.map((c, i) => (
             <motion.button key={c.label} type="button" onClick={() => setActive(c)} initial={{ opacity: 1, y: 0 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.9, ease: EASE, delay: i * 0.15 }} className="group relative flex items-center gap-5 overflow-hidden rounded-2xl border border-white/10 bg-[#101010] p-5 text-left transition hover:-translate-y-0.5 hover:border-white/25 hover:shadow-[0_18px_50px_-20px_rgba(0,0,0,0.7)] sm:p-7">
               <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-white p-2 transition group-hover:scale-[1.04] sm:h-32 sm:w-32">
-                <img src={c.src} alt={cAlt(c.label)} className="h-full w-full object-contain" loading="eager" decoding="async" />
+                <img src={c.src} alt={cAlt(c.label)} className="h-full w-full object-contain" loading="lazy" decoding="async" />
                 <span className="pointer-events-none absolute inset-0 hidden items-center justify-center bg-black/55 text-white/90 backdrop-blur-sm transition group-hover:flex"><Maximize2 size={20} /></span>
               </div>
               <div className="flex flex-1 flex-col">
