@@ -1,0 +1,2 @@
+:root { --font-zh: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif; }
+html, body, button, input, textarea { font-family: var(--font-sans), var(--font-zh); }

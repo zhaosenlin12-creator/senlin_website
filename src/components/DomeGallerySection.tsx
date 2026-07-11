@@ -1,4 +1,4 @@
-﻿import DomeGallery from "./DomeGalleryWrap";
+import DomeGallery from "./DomeGalleryWrap";
 import { GALLERY_IMAGES } from "../content";
 
 // 球体自转:每秒 3 度。组件内部已实现暂停(放大/拖拽)。
@@ -12,9 +12,9 @@ export default function DomeGallerySection() {
       <div className="absolute inset-0">
         <DomeGallery
           images={GALLERY_IMAGES}
-          fit={0.45}
-          minRadius={520}
-          segments={34}
+          fit={0.85}
+          minRadius={900}
+          segments={18}
           grayscale={false}
           autoRotateDegPerSec={3}
           overlayBlurColor="#070707"
@@ -51,3 +51,4 @@ export default function DomeGallerySection() {
     </section>
   );
 }
+

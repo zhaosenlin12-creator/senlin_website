@@ -1,4 +1,4 @@
-﻿import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Quote } from "lucide-react";
 import WordsPullUpMultiStyle from "./WordsPullUpMultiStyle";
 import { KPI } from "../content";

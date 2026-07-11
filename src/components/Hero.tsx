@@ -76,7 +76,7 @@ export default function Hero() {
           src={SITE.heroVideos[1]}
           muted
           playsInline
-          preload="auto"
+          preload="none"
         />
 
         <div className="noise-overlay pointer-events-none absolute inset-0 opacity-[0.7] mix-blend-overlay" />

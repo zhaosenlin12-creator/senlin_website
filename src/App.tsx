@@ -1,4 +1,4 @@
-﻿import Hero from "./components/Hero";
+import Hero from "./components/Hero";
 import About from "./components/About";
 import Features from "./components/Features";
 import DomeGallerySection from "./components/DomeGallerySection";
