@@ -19,27 +19,58 @@ export default function Hero() {
     if (!a || !b) return;
     a.muted = true;
     b.muted = true;
-    a.loop = false;
-    b.loop = false;
-    a.play().catch(() => {});
-    b.pause();
-
+    let armed = false;
     let killed = false;
+    const arm = () => {
+      if (armed || killed) return;
+      armed = true;
+      a.src = SITE.heroVideos[0];
+      b.src = SITE.heroVideos[1];
+      a.loop = false;
+      b.loop = false;
+      a.play().catch(() => {});
+      b.pause();
+    };
+    let io: IntersectionObserver | null = null;
+    const target = a.parentElement;
+    if (typeof IntersectionObserver !== "undefined" && target) {
+      io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) { arm(); io?.disconnect(); break; }
+        }
+      }, { threshold: 0.1 });
+      io.observe(target);
+    }
+    const activate = () => {
+      arm();
+      window.removeEventListener("scroll", activate);
+      window.removeEventListener("touchstart", activate);
+      window.removeEventListener("keydown", activate);
+      window.removeEventListener("pointerdown", activate);
+    };
+    window.addEventListener("scroll", activate, { passive: true });
+    window.addEventListener("touchstart", activate, { passive: true });
+    window.addEventListener("keydown", activate);
+    window.addEventListener("pointerdown", activate);
     const id = window.setInterval(() => {
-      if (killed) return;
+      if (killed || !armed) return;
       setActive((cur) => 1 - cur);
     }, SWITCH_MS);
-
     return () => {
       killed = true;
       window.clearInterval(id);
+      io?.disconnect();
+      window.removeEventListener("scroll", activate);
+      window.removeEventListener("touchstart", activate);
+      window.removeEventListener("keydown", activate);
+      window.removeEventListener("pointerdown", activate);
     };
   }, []);
 
   useEffect(() => {
     const a = v0.current;
     const b = v1.current;
-    if (!a || !b) return;
+    if (!a || !b || !a.src) return;
     if (active === 0) {
       b.pause();
       a.currentTime = 0;
@@ -61,10 +92,10 @@ export default function Hero() {
             opacity: active === 0 ? 1 : 0,
             transitionDuration: `${CROSSFADE_MS}ms`,
           }}
-          src={SITE.heroVideos[0]}
+          poster="/media/photo-hero.jpg"
           muted
           playsInline
-          preload="auto"
+          preload="none"
         />
         <video
           ref={v1}
