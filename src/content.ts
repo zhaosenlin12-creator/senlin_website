@@ -9,8 +9,8 @@ export const SITE = {
   statement:
     "我是森林。这六年,我一边走在高中、创室、赛场里,一边把 Python、C++、网页与人工智能变成学生能拿起来、能带走的东西。",
   heroVideos: [
-    "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4",
-    "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_171521_25968ba2-b594-4b32-aab7-f6b69398a6fa.mp4",
+    "/media/videos/hero-teaching.mp4",
+    "/media/videos/hero-studio.mp4",
   ],
 };
 
@@ -95,10 +95,12 @@ export const APPS = [
   { id: "python-adventure", name: "Python 冒险岛", href: "https://game.codebn.cn/", screenshot: "/media/apps/python-adventure.jpg", media: "/media/scenes/python-path.jpg", kind: "image" as const, category: "冒险小岛", kicker: "冒险小岛", description: '一个不会让人喊"太难"的 Python 入门。在走完一座小岛之前,代码会在你脚下一步一步长出来。', highlights: ["玩着上手", "小关小卡", "一周一个作品"], accent: "cyan" },
   { id: "class-system", name: "class 教学系统", href: "https://class.codebn.cn/", screenshot: "/media/apps/class-system.jpg", media: "/media/videos/interactive-knowledge.mp4", kind: "video" as const, category: "课堂中枢", kicker: "课堂中枢", description: "上课下课、交付作业、预约课时——都在这里。它把教室里所有碎碎的事收拾起来,让老师能够安心上课。", highlights: ["一个后台搞定", "动态设置", "多课堂打通"], accent: "amber" },
   { id: "ai-classroom", name: "AI 互动课堂", href: "https://ai.codebn.cn/", screenshot: "/media/apps/ai-classroom.jpg", media: "/media/scenes/ai-classroom-path.jpg", kind: "image" as const, category: "AI 玩练场", kicker: "AI 玩练场", description: "在这里,AI 不是听听看看的新鲜事。学生会拿起它们,让 AI 变成可以动手、可以话剧、可以在课堂里交互的伙伴。", highlights: ["AI 随身带", "话剧式课堂", "实时互动"], accent: "mint" },
-  { id: "code-research", name: "Code Research", href: "https://codebn.cn/code-research", screenshot: "/media/apps/code-research.jpg", media: "/media/scenes/project-release-path.jpg", kind: "image" as const, category: "作品集", kicker: "作品集", description: "一面为学生举起的镜头。他们的作品、他们的笔记、他们在舞台上讲的事,都在这里被记下。", highlights: ["个人作品集", "笔记与随笔", "公开上架"], accent: "violet" },
-  { id: "typing-lab", name: "乐启享打字", href: "https://game.codebn.cn/typing/", screenshot: "/media/apps/typing.jpg", media: "/media/videos/color-english.mp4", kind: "video" as const, category: "打字小课", kicker: "打字小课", description: "一个不让人压力的打字场。上手就是一个个亮起来的灯泡,学生看着自己手指越来越熟。", highlights: ["打个卷上去", "一天一步", "顺带上手"], accent: "rose" },
-  { id: "sim-lab", name: "仿真模拟实验室", href: "https://codebn.cn/sim-lab", screenshot: "/media/apps/sim-lab.jpg", media: "/media/scenes/service-loop-path.jpg", kind: "image" as const, category: "实验室", kicker: "实验室", description: "一个仿真的实验台。抽象的算法变成可视的动画,学生不是在听,是在担任一台虚拟里的一部分。", highlights: ["小场景快试", "动手调参数", "看见中间过程"], accent: "blue" },
-  { id: "model-trainer", name: "模型训练", href: "https://codebn.cn/model-trainer", screenshot: "/media/apps/model-trainer.jpg", media: "/media/scenes/robotics-path.jpg", kind: "image" as const, category: "训练上手", kicker: "训练上手", description: "让学生一次二三个小时里,看见一个模型是怎么从不会说话,一步步变聪明。", highlights: ["看过程", "玩参数", "调出个性"], accent: "teal" },
+  { id: "code-research", name: "Code Research", href: "https://game.codebn.cn/code-research", screenshot: "/media/apps/code-research.jpg", media: "/media/scenes/project-release-path.jpg", kind: "image" as const, category: "作品集", kicker: "作品集", description: "一面为学生举起的镜头。他们的作品、他们的笔记、他们在舞台上讲的事,都在这里被记下。", highlights: ["个人作品集", "笔记与随笔", "公开上架"], accent: "violet" },
+  { id: "typing-lab", name: "乐启享打字", href: "https://game.codebn.cn/typing/index.html?source=game-google&apiBase=%2Fapi%2Ftyping&returnUrl=https%3A%2F%2Fgame.codebn.cn%2F&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwicHdkdiI6IjFiMTFhMWI5ZjMxOWFjMTUiLCJleHAiOjE3ODY0MTAyMTd9.lJsU1He9TOtnEuYbVFj_vqhZPqeh_CzOw_ciygMfnxg&userId=1&username=senlin&level=93", screenshot: "/media/apps/typing.jpg", media: "/media/videos/color-english.mp4", kind: "video" as const, category: "打字小课", kicker: "打字小课", description: "一个不让人压力的打字场。上手就是一个个亮起来的灯泡,学生看着自己手指越来越熟。", highlights: ["打个卷上去", "一天一步", "顺带上手"], accent: "rose" },
+  { id: "sim-lab", name: "仿真模拟实验室", href: "https://phet.colorado.edu/zh_CN/", screenshot: "/media/apps/sim-lab.jpg", media: "/media/scenes/service-loop-path.jpg", kind: "image" as const, category: "实验室", kicker: "实验室", description: "一个仿真的实验台。抽象的算法变成可视的动画,学生不是在听,是在担任一台虚拟里的一部分。", highlights: ["小场景快试", "动手调参数", "看见中间过程"], accent: "blue" },
+  { id: "model-trainer", name: "模型训练", href: "https://www.aibase.com/de/tool/12518", screenshot: "/media/apps/model-trainer.jpg", media: "/media/scenes/robotics-path.jpg", kind: "image" as const, category: "训练上手", kicker: "训练上手", description: "让学生一次二三个小时里,看见一个模型是怎么从不会说话,一步步变聪明。", highlights: ["看过程", "玩参数", "调出个性"], accent: "teal" },
+  { id: "english-game", name: "英语游戏", href: "https://www.gamestolearnenglish.com/", screenshot: "/media/apps/english-game.jpg", media: "/media/scenes/ai-classroom-path.jpg", kind: "image" as const, category: "英语游戏", kicker: "英语游戏", description: "GamesToLearnEnglish:把单词和句型变成可以通关的小游戏,孩子在玩里把英语拿起来。", highlights: ["单词通关", "句型挑战", "边玩边学"], accent: "rose" },
+  { id: "leqi-pets", name: "乐启宠物", href: "https://camp.codebn.cn/", screenshot: "/media/apps/leqi-pets.jpg", media: "/media/scenes/python-path.jpg", kind: "image" as const, category: "乐启宠物", kicker: "乐启宠物", description: "乐启享营地里的养宠小世界。学生带着一只数字宠物一起做任务、记笔记、养成每天上线的好习惯。", highlights: ["每日任务", "陪伴养成", "营地打卡"], accent: "amber" },
 ];
 
 export const GALLERY_IMAGES = [

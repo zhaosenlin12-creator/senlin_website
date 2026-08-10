@@ -19,58 +19,48 @@ export default function Hero() {
     if (!a || !b) return;
     a.muted = true;
     b.muted = true;
-    let armed = false;
     let killed = false;
-    const arm = () => {
-      if (armed || killed) return;
-      armed = true;
-      a.src = SITE.heroVideos[0];
-      b.src = SITE.heroVideos[1];
-      a.loop = false;
-      b.loop = false;
-      a.play().catch(() => {});
-      b.pause();
+
+    const tryPlay = (video: HTMLVideoElement) => {
+      const attempt = () => {
+        if (killed) return;
+        if (video.paused) video.play().catch(() => {});
+      };
+      attempt();
+      const onData = () => attempt();
+      video.addEventListener("loadeddata", onData, { once: true });
+      video.addEventListener("canplay", onData, { once: true });
+      const retryId = window.setInterval(attempt, 1500);
+      const onTouch = () => attempt();
+      window.addEventListener("pointerdown", onTouch, { once: true, passive: true });
+      window.addEventListener("touchstart", onTouch, { once: true, passive: true });
+      return () => {
+        window.clearInterval(retryId);
+        video.removeEventListener("loadeddata", onData);
+        video.removeEventListener("canplay", onData);
+        window.removeEventListener("pointerdown", onTouch);
+        window.removeEventListener("touchstart", onTouch);
+      };
     };
-    let io: IntersectionObserver | null = null;
-    const target = a.parentElement;
-    if (typeof IntersectionObserver !== "undefined" && target) {
-      io = new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) { arm(); io?.disconnect(); break; }
-        }
-      }, { threshold: 0.1 });
-      io.observe(target);
-    }
-    const activate = () => {
-      arm();
-      window.removeEventListener("scroll", activate);
-      window.removeEventListener("touchstart", activate);
-      window.removeEventListener("keydown", activate);
-      window.removeEventListener("pointerdown", activate);
-    };
-    window.addEventListener("scroll", activate, { passive: true });
-    window.addEventListener("touchstart", activate, { passive: true });
-    window.addEventListener("keydown", activate);
-    window.addEventListener("pointerdown", activate);
+
+    const cleanupA = tryPlay(a);
+    const cleanupB = tryPlay(b);
     const id = window.setInterval(() => {
-      if (killed || !armed) return;
+      if (killed) return;
       setActive((cur) => 1 - cur);
     }, SWITCH_MS);
     return () => {
       killed = true;
       window.clearInterval(id);
-      io?.disconnect();
-      window.removeEventListener("scroll", activate);
-      window.removeEventListener("touchstart", activate);
-      window.removeEventListener("keydown", activate);
-      window.removeEventListener("pointerdown", activate);
+      cleanupA();
+      cleanupB();
     };
   }, []);
 
   useEffect(() => {
     const a = v0.current;
     const b = v1.current;
-    if (!a || !b || !a.src) return;
+    if (!a || !b) return;
     if (active === 0) {
       b.pause();
       a.currentTime = 0;
@@ -85,6 +75,21 @@ export default function Hero() {
   return (
     <section className="h-screen w-full p-4 md:p-6">
       <div className="relative h-full w-full overflow-hidden rounded-2xl md:rounded-[2rem]">
+        <div
+          data-hero-fallback
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{ backgroundImage: "url(/media/photo-hero.jpg)", backgroundSize: "cover", backgroundPosition: "center" }}
+        >
+          <img
+            src="/media/photo-hero.jpg"
+            alt=""
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
         <video
           ref={v0}
           className="absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out"
@@ -92,10 +97,17 @@ export default function Hero() {
             opacity: active === 0 ? 1 : 0,
             transitionDuration: `${CROSSFADE_MS}ms`,
           }}
+          src={SITE.heroVideos[0]}
           poster="/media/photo-hero.jpg"
+          autoPlay
           muted
           playsInline
-          preload="none"
+          loop
+          preload="auto"
+          x5-video-player-type="h5-page"
+          x5-playsinline="true"
+          x5-video-orientation="portrait"
+          webkit-playsinline="true"
         />
         <video
           ref={v1}
@@ -105,9 +117,16 @@ export default function Hero() {
             transitionDuration: `${CROSSFADE_MS}ms`,
           }}
           src={SITE.heroVideos[1]}
+          poster="/media/photo-hero.jpg"
+          autoPlay
           muted
           playsInline
-          preload="none"
+          loop
+          preload="auto"
+          x5-video-player-type="h5-page"
+          x5-playsinline="true"
+          x5-video-orientation="portrait"
+          webkit-playsinline="true"
         />
 
         <div className="noise-overlay pointer-events-none absolute inset-0 opacity-[0.7] mix-blend-overlay" />
@@ -177,7 +196,7 @@ export default function Hero() {
                   className="text-[10px] uppercase tracking-[0.3em] text-[#DEDBC8] sm:text-[11px]"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
-                  Senlin Studio · {SITE.role}
+                  Senlin Studio ? {SITE.role}
                 </span>
               </div>
             </div>
