@@ -26,3 +26,12 @@ dist-ssr
 # Cloudflare
 .wrangler
 
+
+
+# Local deploy artifacts
+dist-bt-deploy.zip
+*.zip
+
+# Scratch / working dir (keep run-preview.bat)
+tmp/*
+!tmp/run-preview.bat
