@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, stat } from "node:fs/promises";
+import { access, readFile, stat } from "node:fs/promises";
 import { after, before, test } from "node:test";
 import path from "node:path";
 import { chromium } from "playwright";
@@ -247,3 +247,61 @@ test("Douyin works ship local cover images", async () => {
     await context.close();
   }
 });
+
+test("Every media path referenced by content.ts exists on disk", async () => {
+  const source = await readFile(
+    path.join(process.cwd(), "src", "content.ts"),
+    "utf8"
+  );
+  const refs = new Set(
+    [...source.matchAll(/["'`]\/media\/[^"'`\s]+["'`]/g)].map((m) => m[0].slice(1, -1))
+  );
+  assert.ok(refs.size > 30, `expected many media references, got ${refs.size}`);
+
+  const missing = [];
+  for (const ref of refs) {
+    const file = path.join(process.cwd(), "public", ref);
+    try {
+      await access(file);
+    } catch {
+      missing.push(ref);
+    }
+  }
+  assert.deepEqual(missing, [], `missing media files: ${missing.join(", ")}`);
+});
+
+test("Course cards expose a gallery and open a zoomable lightbox", async () => {
+  const { context, page } = await openMobilePage();
+  try {
+    const cards = page.locator("#courses article");
+    assert.ok((await cards.count()) >= 6, "expected six course cards");
+
+    const openers = page.locator('#courses button[aria-label*="完整介绍"]');
+    const count = await openers.count();
+    assert.equal(count, 6, `expected six course openers, got ${count}`);
+
+    const overlay = page.locator("div.fixed.z-\\[100\\]");
+    for (let i = 0; i < count; i++) {
+      await openers.nth(i).click();
+      await overlay.waitFor({ state: "visible" });
+
+      // 每门课至少两张图，弹窗里才有轮播指示点
+      const dots = await overlay.locator('button[aria-label^="第 "]').count();
+      assert.ok(dots >= 2, `course ${i} gallery needs 2+ images, got ${dots}`);
+
+      if (i === 0) {
+        // 点大图进入全屏预览
+        await overlay.locator("img.cursor-zoom-in").first().click();
+        await page.locator("div.fixed.z-\\[140\\]").waitFor({ state: "visible" });
+        await page.keyboard.press("Escape");
+        await page.locator("div.fixed.z-\\[140\\]").waitFor({ state: "hidden" });
+      }
+
+      await overlay.getByRole("button", { name: "关闭" }).click();
+      await overlay.waitFor({ state: "hidden" });
+    }
+  } finally {
+    await context.close();
+  }
+});
+

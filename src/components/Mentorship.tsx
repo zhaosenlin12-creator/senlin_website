@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import WordsPullUpMultiStyle from "./WordsPullUpMultiStyle";
-import { CONTACT, KPI, MENTORSHIP } from "../content";
+import KpiStrip from "./KpiStrip";
+import { CONTACT, MENTORSHIP } from "../content";
 import { accent } from "../lib/accent";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -131,25 +132,7 @@ export default function Mentorship() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-5 sm:gap-8 lg:w-[380px]">
-              {KPI.map((k) => (
-                <div
-                  key={k.label}
-                  className="flex flex-col gap-1 border-l border-white/15 pl-3 sm:pl-4"
-                >
-                  <span
-                    className="text-2xl font-medium tracking-tight text-[#E1E0CC] sm:text-3xl"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {k.value}
-                    <span className="text-mint">{k.suffix}</span>
-                  </span>
-                  <span className="text-[10px] uppercase tracking-[0.16em] text-white/45 sm:text-[11px]">
-                    {k.label}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <KpiStrip columns="two" className="lg:w-[360px]" />
           </div>
         </div>
       </div>

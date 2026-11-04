@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Quote } from "lucide-react";
-import { KPI, HEAD_LINES, STORY } from "../content";
+import KpiStrip from "./KpiStrip";
+import ShinyText from "./motion/ShinyText";
+import { HEAD_LINES, STORY } from "../content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -87,7 +89,11 @@ export default function About() {
                       "block " + (l.italic ? "italic text-primary" : "text-[#E1E0CC]")
                     }
                   >
-                    {l.text}
+                    {l.italic ? (
+                      <ShinyText from="#DEDBC8" to="#5ED29C">{l.text}</ShinyText>
+                    ) : (
+                      l.text
+                    )}
                   </motion.span>
                 </span>
               ))}
@@ -115,22 +121,7 @@ export default function About() {
               </p>
             </div>
 
-            <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5">
-              {KPI.map((k) => (
-                <div key={k.label} className="flex flex-col gap-1 border-l border-white/15 pl-3 sm:pl-4">
-                  <span
-                    className="text-xl font-medium tracking-tight text-[#E1E0CC] sm:text-2xl"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {k.value}
-                    <span className="text-mint">{k.suffix}</span>
-                  </span>
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-white/45 sm:text-[11px]">
-                    {k.label}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <KpiStrip className="mt-10" />
           </div>
         </div>
       </div>

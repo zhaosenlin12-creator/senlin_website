@@ -52,7 +52,7 @@ export const TRACKS: Track[] = [
     id: "k12",
     label: "少儿 · 编程与造物",
     note: "8–18 岁 · 课堂项目式推进",
-    grid: "sm:grid-cols-2",
+    grid: "sm:grid-cols-2 lg:grid-cols-3",
     cards: [
       {
         id: "scene",
@@ -61,7 +61,7 @@ export const TRACKS: Track[] = [
         summary: "一个课堂、一个舞台、一个创作者。",
         description: "",
         bullets: ["课堂幻灯片", "学生作品镜头", "每届人都上台"],
-        media: "/media/scene/prompt-class-wide.jpg",
+        media: "/media/posters/star-creation.jpg",
         kind: "image" as const,
         accent: "cream",
       },
@@ -71,10 +71,11 @@ export const TRACKS: Track[] = [
         title: "Python · 项目式",
         summary: "从一行代码到一份作品。",
         description: "Python 入门像是一座一座小岛。每座岛上都有任务、有同伴、有可带走的作品。",
-        bullets: ["从第一行到第一个作品", "关卡式进阶", "随手临场式指导"],
-        media: "/media/scenes/python-path.jpg",
+        bullets: ["从第一行到第一个作品", "5 个半天做出参赛作品", "对接白名单赛事"],
+        media: "/media/posters/camp-arcade.jpg",
         kind: "image" as const,
         accent: "mint",
+        badge: "Python Arcade 创赛",
       },
       {
         id: "cpp",
@@ -98,6 +99,32 @@ export const TRACKS: Track[] = [
         media: "/media/gallery/wrc7.jpg",
         kind: "image" as const,
         accent: "amber",
+      },
+      {
+        id: "creation",
+        number: "04",
+        title: "创赛 · 少年创意秀",
+        summary: "把作品搬上台面。",
+        description:
+          "少年创意秀、科创赛、创客答辩——孩子不只做完，还要讲得清它为什么值得做。",
+        bullets: ["获奖作品展示", "现场讲解与答辩", "把想法讲给评委听"],
+        media: "/media/posters/space-explore.jpg",
+        kind: "image" as const,
+        accent: "rose",
+        badge: "创赛 · 上台展示",
+      },
+      {
+        id: "geometry",
+        number: "05",
+        title: "图形化 · 几何世界",
+        summary: "用积木搭出一个世界。",
+        description:
+          "图形化编程 × 数字几何 × 创意游戏。孩子在拖拽与拼搭里理解坐标、形状与规则。",
+        bullets: ["5 个半天三大任务", "几何角色与场景搭建", "可参展的原创作品"],
+        media: "/media/posters/camp-geometry.jpg",
+        kind: "image" as const,
+        accent: "violet",
+        badge: "5 个半天",
       },
     ],
   },
@@ -127,7 +154,7 @@ export const TRACKS: Track[] = [
         description:
           "为企业员工做定制内训，围绕真实任务：文档表格自动化、资料与知识库、岗位专属提示词，把工具落到工位上。",
         bullets: ["岗位任务拆解", "定制课程与演练", "课后落地陪跑"],
-        media: "/media/scene/demo-outdoor.jpg",
+        media: "/media/scene/adult-workshop.jpg",
         kind: "image" as const,
         accent: "violet",
       },
@@ -139,7 +166,7 @@ export const TRACKS: Track[] = [
         description:
           "给普通人普及 AI：写材料、做表格、剪视频、做海报，把 AI 变成日常生产力，而不是新闻里的一个词。",
         bullets: ["办公场景实操", "从 0 到 1 交付", "一人也能上手"],
-        media: "/media/scene/student-lab.jpg",
+        media: "/media/scene/adult-office.jpg",
         kind: "image" as const,
         accent: "mint",
       },
@@ -260,43 +287,182 @@ export const DELIVERABLE_GROUPS: DeliverableGroup[] = [
   },
 ];
 
-// ── 课程体系：三门真实在开的课 ──────────────────────────────────────
+// ── 课程体系：少儿四门 + 成人两门 ──────────────────────────────────
 export type Course = {
   id: string;
   stage: string;
   title: string;
+  subtitle?: string;
   audience: string;
   lessons: string;
   poster: string;
+  /** 轮播图组：第一张是主海报 */
+  gallery: string[];
   summary: string;
   modules: string[];
+  /** 亮点条，弹窗里展示 */
+  highlights: string[];
+  /** 逐课明细 / 方向拆解 */
+  outline?: { title: string; items: string[] }[];
+  price?: string;
+  /** k12 = 少儿线，adult = 成人线 */
+  line: "k12" | "adult";
   accent: string;
+  featured?: boolean;
 };
 
 export const COURSES: Course[] = [
   {
     id: "magic-camp",
-    stage: "第一阶段",
+    stage: "第一阶段 · 少儿",
     title: "AI 魔法启蒙营",
     audience: "8–16 岁 · 零基础",
     lessons: "16 节课",
     poster: "/media/posters/ai-magic-camp.jpg",
+    gallery: [
+      "/media/posters/ai-magic-camp.jpg",
+      "/media/gallery/4e7cde1d67137f31dbbaceea09b3ba97.jpg",
+      "/media/scene/camp-project.jpg",
+    ],
     summary:
       "让孩子从「AI」开始，爱上创造。六大趣味主题，从和 AI 聊第一句开始，到用 vibe coding 做出人生第一个互动小游戏。",
     modules: ["AI 初体验", "提示词魔法", "AI 创意绘画", "故事创作", "动画小剧场", "AI 编程入门"],
+    highlights: ["零基础第一节课就能做出东西", "每节一作品，结课可展示", "课堂同款项目可带走"],
+    outline: [
+      {
+        title: "6 大主题 · 16 节课",
+        items: [
+          "AI 初体验：和 AI 聊第一句，学会描述需求",
+          "提示词魔法：把想法说得更准，拿到更好结果",
+          "AI 创意绘画：用自己的风格画一整组作品",
+          "故事创作：把一个点子写成有情节的故事",
+          "动画小剧场：让角色动起来，做成小短片",
+          "AI 编程入门：用 vibe coding 做出第一个互动小游戏",
+        ],
+      },
+    ],
+    line: "k12",
     accent: "amber",
   },
   {
     id: "humanities-camp",
-    stage: "第二阶段",
+    stage: "第二阶段 · 少儿",
     title: "AI 人文数字探索营",
     audience: "9–16 岁 · 跨学科",
     lessons: "16 节课",
     poster: "/media/posters/ai-humanities-camp.jpg",
+    gallery: [
+      "/media/posters/ai-humanities-camp.jpg",
+      "/media/scene/camp-digital-art.jpg",
+      "/media/gallery/7ea7aec2c2fc24cdff315baf30e19994.jpg",
+    ],
     summary:
       "把 AI 用起来，让知识变成作品。六大主题都在真实场景里用 AI 创造：修复老照片、复原古画、画古诗意境、搭自己的小工具。",
     modules: ["老照片修复", "古画数字复原", "古诗意境画", "英语对话工具", "个人记账工具", "智能问答助手"],
+    highlights: ["人文 + 工具的双线", "每个主题都产出一个真作品", "可作为科创赛参赛选题"],
+    outline: [
+      {
+        title: "6 大主题 · 16 节课",
+        items: [
+          "老照片修复：AI 把模糊的老照片重新拼回来",
+          "古画数字复原：补全残缺的名画局部",
+          "古诗意境画：把一句诗变成一张画",
+          "英语对话工具：做一个能聊天的单词陪练",
+          "个人记账工具：给自己做一个记账小程序",
+          "智能问答助手：把资料变成一个会答的机器人",
+        ],
+      },
+    ],
+    line: "k12",
     accent: "violet",
+  },
+  {
+    id: "arcade-camp",
+    stage: "创赛营 · 少儿",
+    title: "Python Arcade 创赛课",
+    subtitle: "5 个半天，做出一个参赛作品",
+    audience: "小学高段 – 初中",
+    lessons: "5 个半天",
+    poster: "/media/posters/camp-arcade.jpg",
+    gallery: [
+      "/media/posters/camp-arcade.jpg",
+      "/media/gallery/11.jpg",
+      "/media/scene/k12-stage.jpg",
+    ],
+    summary:
+      "Python Arcade 面向对象编程创赛课。从对象建模到关卡系统，5 个半天完成结构完整的创意编程作品，对接《星际科考先锋》参赛方向。",
+    modules: [
+      "对象建模与角色系统",
+      "跳跃物理与碰撞规则",
+      "地图关卡与机关设计",
+      "交互系统与智能障碍物",
+      "主题包装与参赛表达",
+    ],
+    highlights: ["5 个半天出完整作品", "对接白名单赛事方向", "讲得清才能参赛"],
+    outline: [
+      {
+        title: "5 个半天学什么",
+        items: [
+          "第 1 讲：对象建模与角色系统——学会用类管理角色、平台、状态与交互",
+          "第 2 讲：跳跃物理与碰撞规则——理解重力、速度、边界与精准判定",
+          "第 3 讲：地图关卡与机关设计——完成钥匙、舱门、移动平台与通路路线",
+          "第 4 讲：交互系统与智能障碍物——实现生命值、攻击、反馈、追踪 AI 与难度节奏",
+          "第 5 讲：主题包装与参赛表达——把闯关原型升级为《星际科考先锋》参赛作品",
+        ],
+      },
+      {
+        title: "学完能带走",
+        items: ["面向对象思维", "完整作品开发", "参赛讲解表达"],
+      },
+    ],
+    line: "k12",
+    accent: "cyan",
+    featured: true,
+  },
+  {
+    id: "creation-camp",
+    stage: "创赛营 · 少儿",
+    title: "少年造物创赛营",
+    subtitle: "5 个半天，一个能参赛的原创作品",
+    audience: "8–15 岁 · 零基础",
+    lessons: "5 个半天 · 三大营",
+    poster: "/media/posters/camp-mars.jpg",
+    gallery: [
+      "/media/posters/camp-mars.jpg",
+      "/media/posters/camp-geometry.jpg",
+      "/media/posters/space-explore.jpg",
+    ],
+    summary:
+      "图形化编程 × 动画创作 × 游戏设计。火星移民、几何世界、星际创赛三条线并行推进，做完就是一件能上台面的原创作品，对接电教馆白名单赛事。",
+    modules: [
+      "火星移民创作营",
+      "几何世界游戏创作营",
+      "星际创赛 · 少年创意秀",
+    ],
+    highlights: ["三大任务模块，作品即参赛件", "对接电教馆白名单赛事", "专业导师 + 家长反馈机制"],
+    outline: [
+      {
+        title: "三大营",
+        items: [
+          "火星移民创作营：加入火星战队 → 创作故事世界 → 制作动画开场 → 丰富剧情表现 → 设计游戏玩法",
+          "几何世界游戏创作营：进入几何王国 → 角色设计 → 世界搭建 → 玩法设计 → 作品完成",
+          "星际创赛 · 少年创意秀：把想法做成能上台展示的原创作品",
+        ],
+      },
+      {
+        title: "能力清单",
+        items: [
+          "动画创作能力：设计故事、制作动画",
+          "逻辑思维能力：拆解问题、解决问题",
+          "游戏设计能力：设计规则、制作挑战",
+          "表达讲解能力：作品讲解、自信展示",
+          "团队协作能力：分工合作、共同完成",
+        ],
+      },
+    ],
+    line: "k12",
+    accent: "rose",
+    featured: true,
   },
   {
     id: "ai-combat",
@@ -305,6 +471,11 @@ export const COURSES: Course[] = [
     audience: "职场人 · 创业者 · 大学生",
     lessons: "10 项实战能力",
     poster: "/media/posters/ai-combat-course.jpg",
+    gallery: [
+      "/media/posters/ai-combat-course.jpg",
+      "/media/scene/adult-workshop.jpg",
+      "/media/scene/adult-office.jpg",
+    ],
     summary:
       "从入门到实战交付，用 AI 解决真实工作问题。十项能力覆盖自动化办公、知识库、Agent、提示词工程、智能体与生产级建站，学完直接交付项目。",
     modules: [
@@ -319,7 +490,125 @@ export const COURSES: Course[] = [
       "视频剪辑与制作",
       "项目实战交付",
     ],
+    highlights: ["10 项能力做成可交付系统", "课后继续陪跑", "面向零基础到有项目的人"],
+    outline: [
+      {
+        title: "十项实战能力",
+        items: [
+          "自动化办公：把一天里的杂事交出去",
+          "个人知识库搭建：经验变成能检索的资产",
+          "理解 Agent 原理：知道它能做什么、不能做什么",
+          "专业提示词工程：把需求写成可复用的指令",
+          "生产级网站 / 小程序：从想法到上线",
+          "智能体产出课件：让 AI 帮你备一节课",
+          "个性化工作台：给自己搭一个专属操作台",
+          "自动化工作流：重复动作固化成一条流水线",
+          "视频剪辑与制作：从素材到成片",
+          "项目实战交付：拿出一个真东西",
+        ],
+      },
+    ],
+    line: "adult",
     accent: "cyan",
+  },
+  {
+    id: "ai-delivery",
+    stage: "高阶 · 定制",
+    title: "AI 交付定制课",
+    subtitle: "从会用 AI，到用 AI 交付",
+    audience: "职场人 · 创业者 · 教师 · 大学生",
+    lessons: "8 次课 · 只做你的一件事",
+    poster: "/media/posters/adult-delivery.jpg",
+    gallery: [
+      "/media/posters/adult-delivery.jpg",
+      "/media/scene/adult-1on1.jpg",
+      "/media/scene/adult-workshop.jpg",
+      "/media/scene/adult-office.jpg",
+    ],
+    summary:
+      "按你的场景定制 syllabus，现场把你的东西做出来。8 次课只做一个方向：从定目标、搭流程，到接真实数据、封装成 Skill，最后上线交付。",
+    modules: [
+      "工作流自动化",
+      "智能体与 Skill",
+      "知识库工程",
+      "全栈开发",
+      "AI 视频与内容",
+      "AI 编程与代码托管",
+      "数据采集与洞察",
+      "教学与教研",
+    ],
+    highlights: [
+      "课前 24 小时场景对齐，现场确认这次交付什么",
+      "课中 90 分钟动手做，我在旁边盯细节",
+      "课后 24 小时作业点评，答疑不限次数",
+    ],
+    outline: [
+      {
+        title: "8 次课逐课明细",
+        items: [
+          "第 1 课 需求诊断：把你的场景问清楚、定死交付物 ——《交付目标卡》",
+          "第 2 课 选型与搭环境：把工具装好，跑通一个最小闭环 —— 可运行环境 + 工具清单",
+          "第 3 课 拆主流程：把要做的事拆到每一步都能执行 —— 流程图 + 分步脚本",
+          "第 4 课 跑通 v1：端到端跑通一次，允许丑但不许假 —— 一个能跑的 v1",
+          "第 5 课 接真实数据：把你手上的真实数据接进来 —— 真实数据管道",
+          "第 6 课 质量与容错：加日志、异常处理、失败重试 —— 稳定性检查清单",
+          "第 7 课 封装成 Skill：让它能被反复调用，也能交给别人 —— 可复用的 Skill 包",
+          "第 8 课 上线与交付：部署、写教程、完整复盘 —— 上线地址 + 教程 + 复盘",
+        ],
+      },
+      {
+        title: "八方向按「要交付什么」挑",
+        items: [
+          "工作流自动化：把每周重复的手工活变成一条流水线",
+          "智能体与 Skill：让 AI 记住你的规矩、格式与判断标准",
+          "知识库工程：把散落的经验沉淀成能检索的资产",
+          "全栈开发：从想法到上线，Web、小程序与自动化",
+          "AI 视频与内容：一句话出片，从脚本一路走到成片",
+          "AI 编程与代码托管：让 AI 进仓库，读代码、改代码、跑测试",
+          "数据采集与洞察：把散落的信息变成能看的结论",
+          "教学与教研：备课出题批改答疑，把时间还给自己",
+        ],
+      },
+      {
+        title: "特别适合",
+        items: [
+          "手上一堆重复劳动的人 → 带走一条能跑的流水线",
+          "想做产品的开发者 → 带走一个能上线的小工具",
+          "一线教师与教研团队 → 带走一整套备课出题流程",
+          "内容创作者与电商 → 带走一条选题到发布的线",
+          "学生与求职者 → 带走可复现的项目与作品",
+          "团队负责人与主管 → 带走一套能照做的规范",
+          "小微创业者与商家 → 带走不招人的运营自动化",
+          "重度 AI 用户 → 带走可复用的 Skill 库",
+        ],
+      },
+    ],
+    price: "自学交付包 998 元 · 90 分钟陪跑 150 元/次（8 次 1200 元）",
+    line: "adult",
+    accent: "amber",
+    featured: true,
+  },
+];
+
+export const COURSE_LINES: {
+  id: "k12" | "adult";
+  label: string;
+  note: string;
+  intro: string;
+}[] = [
+  {
+    id: "k12",
+    label: "少儿 · 编程与造物",
+    note: "启蒙 → 进阶 → 创赛",
+    intro:
+      "从「AI 是什么」到「做出一个能上台的作品」。两阶营打底，创赛营出作品，每一阶段都有可带走的成品。",
+  },
+  {
+    id: "adult",
+    label: "成人 · AI 实战与交付",
+    note: "实战 → 高阶定制",
+    intro:
+      "一条主线：把 AI 从「工具」变成「交付」。十项实战能力打底，高阶定制课按你的场景定制，只做你的一件事。",
   },
 ];
 
@@ -330,6 +619,7 @@ export type ScenePhoto = {
   desc: string;
   tag: string;
   span: string;
+  height: string;
 };
 
 export const SCENE_PHOTOS: ScenePhoto[] = [
@@ -339,13 +629,23 @@ export const SCENE_PHOTOS: ScenePhoto[] = [
     desc: "同一个问题，两种问法。投影上是对比，桌面上是每个人自己的答案。",
     tag: "成人 · AI 赋能",
     span: "md:col-span-4",
+    height: "h-[260px] sm:h-[340px] md:h-[400px]",
   },
   {
     src: "/media/scene/prompt-wall.jpg",
     title: "工作坊现场",
     desc: "学员跟着屏幕上的对比，一边改自己的提问，一边改自己的流程。",
-    tag: "实战工作坊",
+    tag: "成人 · 实战工作坊",
     span: "md:col-span-2",
+    height: "h-[260px] sm:h-[340px] md:h-[400px]",
+  },
+  {
+    src: "/media/gallery/4e7cde1d67137f31dbbaceea09b3ba97.jpg",
+    title: "一对一辅导",
+    desc: "手把手教到能跑通为止——一个一个学生看，不放手。",
+    tag: "少儿 · 课堂",
+    span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
   },
   {
     src: "/media/scene/student-lab.jpg",
@@ -353,13 +653,47 @@ export const SCENE_PHOTOS: ScenePhoto[] = [
     desc: "学生在自己那台机器上动手，切模型、贴纹理、一点点把想法变成形状。",
     tag: "少儿 · 3D 造物",
     span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+  },
+  {
+    src: "/media/posters/camp-mars.jpg",
+    title: "火星移民创作营",
+    desc: "图形化编程 × 动画创作 × 游戏设计，5 个半天一个原创作品。",
+    tag: "创赛营 · 少儿",
+    span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+  },
+  {
+    src: "/media/posters/space-explore.jpg",
+    title: "星际创赛 · 少年创意秀",
+    desc: "孩子站在台上讲自己的作品——做完不算完，讲得清才算。",
+    tag: "创赛 · 上台展示",
+    span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+  },
+  {
+    src: "/media/scene/camp-project.jpg",
+    title: "创赛营 · 作品调试现场",
+    desc: "一台小车、一段代码、一个失败三次才通过的关卡。",
+    tag: "创赛营 · 现场",
+    span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+  },
+  {
+    src: "/media/scene/k12-stage.jpg",
+    title: "少年创意秀 · 现场",
+    desc: "大屏上是自己做的作品，台下是真的评委和同学。",
+    tag: "创赛 · 展演",
+    span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
   },
   {
     src: "/media/scene/demo-outdoor.jpg",
     title: "宜小智工作台 · 现场演示",
     desc: "宜昌市中小学生人工智能教育成果交流研讨会，工作台现场跑通全流程。",
     tag: "成果交流会",
-    span: "md:col-span-2",
+    span: "md:col-span-4",
+    height: "h-[260px] sm:h-[340px] md:h-[400px]",
   },
   {
     src: "/media/scene/demo-3d.jpg",
@@ -367,6 +701,31 @@ export const SCENE_PHOTOS: ScenePhoto[] = [
     desc: "现场生成、随时可打印。课堂里的想法，走出屏幕就成了实物。",
     tag: "真实交付",
     span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+  },
+  {
+    src: "/media/scene/adult-workshop.jpg",
+    title: "企业内训 · 现场",
+    desc: "按岗位拆任务、按任务做演练，课后继续陪跑到落地。",
+    tag: "企业 · 内训",
+    span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+  },
+  {
+    src: "/media/gallery/11.jpg",
+    title: "Python 冒险岛 · 课堂发布",
+    desc: "大屏上是学生做出来的岛，台下是整间教室。",
+    tag: "少儿 · 课堂发布",
+    span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+  },
+  {
+    src: "/media/scene/camp-digital-art.jpg",
+    title: "人文数字探索营",
+    desc: "在数字画笔上复原古画，让两千年前的笔触重新被看见。",
+    tag: "少儿 · 人文",
+    span: "md:col-span-2",
+    height: "h-[240px] sm:h-[300px] md:h-[340px]",
   },
 ];
 
@@ -701,12 +1060,12 @@ export const GALLERY_IMAGES = [
   { src: "/media/gallery/ebe3db8e9e230e42fa4a3821dc906ca8.jpg", alt: "活动现场" },
 ];
 
-// KPI: 使用全中文，避免任何西文字体回退导致的乱码。
+// KPI: 数字进场滚动，避免任何西文字体回退导致的乱码。
 export const KPI = [
-  { value: "06", suffix: "+", label: "年一线教学" },
-  { value: "1000", suffix: "+", label: "累计学员" },
-  { value: "120", suffix: "+", label: "上线作品" },
-  { value: "10", suffix: " 项", label: "AI 实战能力" },
+  { value: 6, suffix: "+", label: "年一线教学" },
+  { value: 1000, suffix: "+", label: "累计学员" },
+  { value: 120, suffix: "+", label: "上线作品" },
+  { value: 10, suffix: " 项", label: "AI 实战能力" },
 ];
 
 export const CONTACT = {

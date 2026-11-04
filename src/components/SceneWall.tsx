@@ -1,10 +1,15 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { Maximize2 } from "lucide-react";
 import WordsPullUpMultiStyle from "./WordsPullUpMultiStyle";
+import ImageViewer from "./ImageViewer";
 import { SCENE_PHOTOS } from "../content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function SceneWall() {
+  const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
+
   return (
     <section id="scene" className="relative bg-black px-4 py-24 md:py-32">
       <div className="relative mx-auto max-w-[1400px]">
@@ -21,7 +26,7 @@ export default function SceneWall() {
             />
           </div>
           <p className="max-w-sm text-xs leading-[1.6] text-gray-500 sm:text-sm">
-            教室里的投影、机位前的操作、研讨会上的演示——都是这两年的真实现场。
+            教室里的投影、机位前的操作、研讨会上的演示——都是这两年的真实现场。点图可放大。
           </p>
         </div>
 
@@ -33,22 +38,33 @@ export default function SceneWall() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.85, ease: EASE, delay: (i % 3) * 0.1 }}
-              className={`group relative h-[240px] overflow-hidden rounded-2xl border border-white/10 bg-[#101010] sm:h-[300px] md:h-[340px] ${photo.span}`}
+              className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-[#101010] ${photo.span} ${photo.height}`}
             >
-              <img
-                src={photo.src}
-                alt={photo.title}
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500 group-hover:from-black/95" />
+              <button
+                type="button"
+                onClick={() => setZoom({ src: photo.src, alt: photo.title })}
+                aria-label={`放大查看 ${photo.title}`}
+                className="absolute inset-0 h-full w-full cursor-zoom-in"
+              >
+                <img
+                  src={photo.src}
+                  alt={photo.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500 group-hover:from-black/95" />
+              </button>
 
-              <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[10px] tracking-[0.12em] text-white/80 backdrop-blur">
+              <span className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[10px] tracking-[0.12em] text-white/80 backdrop-blur">
                 {photo.tag}
               </span>
 
-              <figcaption className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+              <span className="pointer-events-none absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur transition group-hover:opacity-100">
+                <Maximize2 size={13} />
+              </span>
+
+              <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 p-4 sm:p-5">
                 <h3
                   className="text-base font-medium leading-snug text-white sm:text-lg"
                   style={{ fontFamily: "var(--font-display)" }}
@@ -63,6 +79,13 @@ export default function SceneWall() {
           ))}
         </div>
       </div>
+
+      <ImageViewer
+        src={zoom?.src ?? null}
+        alt={zoom?.alt ?? ""}
+        onClose={() => setZoom(null)}
+      />
     </section>
   );
 }
+
