@@ -105,7 +105,7 @@ export const TRACKS: Track[] = [
     id: "adult",
     label: "成人 · AI 实战与交付",
     note: "职场人 · 创业者 · 大学生",
-    grid: "sm:grid-cols-2 lg:grid-cols-3",
+    grid: "md:grid-cols-3",
     cards: [
       {
         id: "ai-class",
