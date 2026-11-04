@@ -175,14 +175,14 @@ export default function Apps() {
 
       <div className="relative mx-auto max-w-[1400px]">
         <div className="mb-12 flex flex-col items-start justify-between gap-6 md:mb-16 md:flex-row md:items-end">
-          <div>
-            <span className="mb-5 inline-block text-[10px] uppercase tracking-[0.25em] text-primary/70 sm:text-[11px]">
-              项目应用
+          <div className="flex flex-col items-start gap-5">
+            <span className="inline-block text-[10px] uppercase tracking-[0.25em] text-primary/70 sm:text-[11px]">
+              我的产品
             </span>
             <WordsPullUpMultiStyle
               segments={[
                 {
-                  text: "把每一节课都做成可以上线的产品。",
+                  text: "从课堂里长出来的产品，我自己做的。",
                   className: "text-primary",
                 },
               ]}
@@ -190,7 +190,7 @@ export default function Apps() {
             />
           </div>
           <p className="max-w-sm text-xs leading-[1.55] text-gray-500 sm:text-sm">
-            三件学生作品，三件开源项目。悬停查看高光，点击任意卡片进入对应仓库或演示。
+            三件自研产品，三件开源项目，全部已上线可用。悬停查看高光，点击任意卡片进入对应仓库或演示。
           </p>
         </div>
 

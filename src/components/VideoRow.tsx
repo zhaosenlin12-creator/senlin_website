@@ -55,7 +55,12 @@ export default function VideoRow() {
                 <span className="shrink-0 text-[10px] uppercase tracking-[0.2em] text-white/40">channel 0{i + 1}</span>
               </div>
               <div className="flex flex-1 items-center justify-center py-6">
-                <div className="relative aspect-square w-28 shrink-0 overflow-hidden rounded-2xl bg-white p-2 sm:w-36 lg:w-40">
+                <div
+                  className={
+                    "relative aspect-square w-28 shrink-0 overflow-hidden rounded-2xl sm:w-36 lg:w-40 " +
+                    (ch.qrTone === "brand" ? "bg-[#3A4C7A]" : "bg-white p-2")
+                  }
+                >
                   <img src={ch.qrSrc} alt={`${ch.name} 抖音码`} className="h-full w-full object-contain" loading="eager" decoding="async" />
                 </div>
               </div>

@@ -8,6 +8,7 @@ export default {
     extend: {
       colors: {
         primary: "#DEDBC8",
+        mint: "#5ED29C",
       },
       fontFamily: {
         sans: ['"Almarai"', "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "sans-serif"],

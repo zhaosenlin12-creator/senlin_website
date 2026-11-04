@@ -200,7 +200,10 @@ test("Both Douyin channels are present with local QR codes", async () => {
     const qrs = await page.locator('#video img[src^="/media/qr/"]').evaluateAll((images) =>
       images.map((image) => image.getAttribute("src"))
     );
-    assert.deepEqual(qrs.sort(), ["/media/qr/ai4k.jpg", "/media/qr/douyin-code.jpg"]);
+    assert.deepEqual(qrs.sort(), [
+      "/media/qr/ai4k-official-mark.png",
+      "/media/qr/douyin-code.jpg",
+    ]);
     for (const src of qrs) {
       const file = path.join(process.cwd(), "public", src);
       await access(file);

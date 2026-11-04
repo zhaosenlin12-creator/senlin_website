@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Quote } from "lucide-react";
-import WordsPullUpMultiStyle from "./WordsPullUpMultiStyle";
 import { KPI, HEAD_LINES, STORY } from "../content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -35,7 +34,7 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.05 }}
             transition={{ duration: 0.9, ease: EASE }}
-            className="md:col-span-5"
+            className="md:col-span-4"
           >
             <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#101010]">
               <div className="relative aspect-[4/5] w-full overflow-hidden">
@@ -72,18 +71,26 @@ export default function About() {
             </div>
           </motion.div>
 
-          <div className="md:col-span-7 md:py-2">
+          <div className="md:col-span-8 md:py-2">
             <h2
-              className="text-[clamp(32px,5.6vw,64px)] font-medium leading-[1.05] tracking-[-0.02em] text-[#E1E0CC]"
+              className="text-[clamp(30px,5.2vw,60px)] font-medium leading-[1.08] tracking-[-0.02em] text-[#E1E0CC]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              <WordsPullUpMultiStyle
-                className="flex flex-col gap-1"
-                segments={HEAD_LINES.map((l) => ({
-                  text: l.text,
-                  className: l.italic ? "italic text-primary" : "text-[#E1E0CC]",
-                }))}
-              />
+              {HEAD_LINES.map((l, i) => (
+                <span key={i} className="block">
+                  <motion.span
+                    initial={{ opacity: 0, y: 18 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.8, ease: EASE, delay: i * 0.12 }}
+                    className={
+                      "block " + (l.italic ? "italic text-primary" : "text-[#E1E0CC]")
+                    }
+                  >
+                    {l.text}
+                  </motion.span>
+                </span>
+              ))}
             </h2>
 
             <div className="mt-6 max-w-xl space-y-5 text-[15px] leading-[1.85] text-gray-300 sm:text-base md:text-[17px]">

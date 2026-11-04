@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ArrowRight, X, Maximize2 } from "lucide-react";
+import { ArrowRight, X, Maximize2, Phone, Globe, MapPin } from "lucide-react";
 import { CONTACT } from "../content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-type Channel = (typeof CONTACT)[keyof typeof CONTACT] & { sub: string; label: string };
+type Channel = (typeof CONTACT.channels)[number];
 
 const cAlt = (label: string) => label + " 二维码";
 
@@ -22,7 +22,7 @@ export default function Contact() {
     document.body.style.overflow = active ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [active]);
-  const channels: Channel[] = [CONTACT.wechat as Channel, CONTACT.douyin as Channel];
+  const channels: Channel[] = CONTACT.channels;
 
   const yr = new Date().getFullYear();
 
@@ -32,7 +32,7 @@ export default function Contact() {
       <div className="relative mx-auto max-w-[1100px]">
         <div className="mb-12 text-center md:mb-16">
           <span className="mb-5 inline-block text-[10px] uppercase tracking-[0.25em] text-primary/70 sm:text-[11px]">联系我</span>
-          <h2 className="mx-auto max-w-2xl text-3xl font-medium leading-[0.95] tracking-tight text-[#E1E0CC] sm:text-4xl md:text-5xl lg:text-6xl">想聊一个班级、工作坊，或学生作品展示？</h2>
+          <h2 className="mx-auto max-w-3xl text-3xl font-medium leading-[0.95] tracking-tight text-[#E1E0CC] sm:text-4xl md:text-5xl lg:text-6xl">想聊一个班级、一次内训，还是来跟我学？</h2>
           <p className="mx-auto mt-5 max-w-md text-xs leading-[1.55] text-gray-400 sm:text-sm md:text-base">点击二维码查看大图，通过任意渠道留言——每一条消息我都会在两个工作日内回复。</p>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
@@ -51,6 +51,49 @@ export default function Contact() {
               <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-30 blur-3xl transition group-hover:opacity-50" style={{ background: "rgba(222,219,200,0.18)" }} />
             </motion.button>
           ))}
+        </div>
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+          <a
+            href={`tel:${CONTACT.phone}`}
+            className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition hover:border-white/25 hover:bg-white/[0.05]"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[#E1E0CC] transition group-hover:bg-white group-hover:text-black">
+              <Phone size={16} />
+            </span>
+            <span className="flex min-w-0 flex-col">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-primary/70">电话</span>
+              <span className="mt-1 truncate text-sm font-medium text-[#E1E0CC] sm:text-base">
+                {CONTACT.phone}
+              </span>
+            </span>
+          </a>
+          <a
+            href={`https://${CONTACT.site}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition hover:border-white/25 hover:bg-white/[0.05]"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[#E1E0CC] transition group-hover:bg-white group-hover:text-black">
+              <Globe size={16} />
+            </span>
+            <span className="flex min-w-0 flex-col">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-primary/70">官网</span>
+              <span className="mt-1 truncate text-sm font-medium text-[#E1E0CC] sm:text-base">
+                {CONTACT.site}
+              </span>
+            </span>
+          </a>
+          <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[#E1E0CC]">
+              <MapPin size={16} />
+            </span>
+            <span className="flex min-w-0 flex-col">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-primary/70">地点</span>
+              <span className="mt-1 truncate text-sm font-medium text-[#E1E0CC] sm:text-base">
+                {CONTACT.place}
+              </span>
+            </span>
+          </div>
         </div>
         <div className="mt-16 flex flex-col items-center gap-3 border-t border-white/10 pt-8 text-center text-[11px] uppercase tracking-[0.2em] text-white/40 sm:flex-row sm:justify-between sm:text-left">
           <span>© {yr} 森林工作室 · 乐启享</span>

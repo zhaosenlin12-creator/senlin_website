@@ -2,8 +2,12 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import Hero from "./components/Hero";
 import About from "./components/About";
 import Features from "./components/Features";
+import Deliverables from "./components/Deliverables";
+import Courses from "./components/Courses";
+import SceneWall from "./components/SceneWall";
 import VideoRow from "./components/VideoRow";
 import Apps from "./components/Apps";
+import Mentorship from "./components/Mentorship";
 import Contact from "./components/Contact";
 
 // 只在接近视口时才下载 DomeGallery(use-gesture ~30KB)
@@ -37,6 +41,9 @@ export default function App() {
       <Hero />
       <About />
       <Features />
+      <Deliverables />
+      <Courses />
+      <SceneWall />
       <div ref={sentinelRef} aria-hidden style={{ height: 1 }} />
       {showGallery && (
         <Suspense fallback={null}>
@@ -45,6 +52,7 @@ export default function App() {
       )}
       <VideoRow />
       <Apps />
+      <Mentorship />
       <Contact />
     </div>
   );
