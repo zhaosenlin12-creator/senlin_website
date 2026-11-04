@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 interface TypewriterLoopProps {
   phrases: string[];
+  /** 始终保留的前缀，删除时不会退到空字符串 */
+  base?: string;
   typingMs?: number;
   holdMs?: number;
   deletingMs?: number;
@@ -12,6 +14,7 @@ interface TypewriterLoopProps {
 
 export default function TypewriterLoop({
   phrases,
+  base = "",
   typingMs = 90,
   holdMs = 1600,
   deletingMs = 45,
@@ -29,7 +32,7 @@ export default function TypewriterLoop({
 
     let delay = typingMs;
     if (deleting) {
-      if (text.length === 0) {
+      if (text.length <= base.length) {
         // 已删完，切到下一句
         setDeleting(false);
         setIdx((i) => i + 1);
@@ -51,7 +54,7 @@ export default function TypewriterLoop({
       );
     }, delay);
     return () => window.clearTimeout(t);
-  }, [text, deleting, idx, phrases, typingMs, holdMs, deletingMs, pauseMs]);
+  }, [text, deleting, idx, phrases, base, typingMs, holdMs, deletingMs, pauseMs]);
 
   return (
     <span className={className}>

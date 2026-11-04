@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { Play, X, ArrowRight, Heart, Users, Bookmark } from "lucide-react";
+import { Play, X, ArrowRight, Heart, Users, Bookmark, Eye } from "lucide-react";
 import { DOUYIN_CHANNELS, DOUYIN_WORKS, VIDEOS } from "../content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -25,8 +25,6 @@ export default function VideoRow() {
     setActiveIdx(i);
     setModalOpen(true);
   };
-
-  const ai4k = DOUYIN_CHANNELS.find((c) => c.id === "ai4k") ?? DOUYIN_CHANNELS[0];
 
   return (
     <section id="video" className="relative bg-black px-4 py-24 md:py-32">
@@ -108,44 +106,62 @@ export default function VideoRow() {
         </div>
 
         <div className="mt-12 border-t border-white/10 pt-8 md:mt-16 md:pt-10">
-          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <span className="mb-3 inline-block text-[10px] uppercase tracking-[0.25em] text-primary/70 sm:text-[11px]">抖音作品</span>
-              <h3 className="text-xl font-medium text-[#E1E0CC] sm:text-2xl">
-                {ai4k.name} · 最新与高互动
-              </h3>
-            </div>
-            <a
-              href={ai4k.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 text-xs font-medium text-[#E1E0CC] transition hover:text-white sm:text-sm"
-            >
-              进入主页<ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-            </a>
+          <div className="mb-10">
+            <span className="mb-3 inline-block text-[10px] uppercase tracking-[0.25em] text-primary/70 sm:text-[11px]">抖音作品</span>
+            <h3 className="text-xl font-medium text-[#E1E0CC] sm:text-2xl">
+              两个账号，最新与高互动
+            </h3>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {DOUYIN_WORKS.map((w) => (
-              <a
-                key={w.id}
-                href={`https://www.douyin.com/video/${w.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition hover:border-white/25 hover:bg-white/[0.05]"
-              >
-                <span className="mt-0.5 shrink-0 rounded-full border border-white/10 px-2 py-0.5 text-[10px] tracking-[0.08em] text-white/55">{w.tag}</span>
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-medium leading-[1.5] text-[#E1E0CC] transition-colors group-hover:text-white">{w.title}</div>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-white/40">
-                    <span>{w.date}</span>
-                    <span className="inline-flex items-center gap-1"><Heart size={11} /> {w.likes}</span>
-                    <span className="inline-flex items-center gap-1"><Bookmark size={11} /> {w.favorites}</span>
+          {DOUYIN_CHANNELS.map((channel) => {
+            const works = DOUYIN_WORKS[channel.id] ?? [];
+            if (works.length === 0) return null;
+            return (
+              <div key={channel.id} className="mb-10 last:mb-0 md:mb-12">
+                <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-end">
+                  <div className="flex items-center gap-3">
+                    <h4 className="text-base font-medium text-[#E1E0CC] sm:text-lg">{channel.name}</h4>
+                    <span className="rounded-full border border-white/10 px-2.5 py-0.5 text-[10px] tracking-[0.08em] text-white/50">{channel.alias}</span>
                   </div>
+                  <a
+                    href={channel.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2 text-xs font-medium text-[#E1E0CC] transition hover:text-white sm:text-sm"
+                  >
+                    进入主页<ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                  </a>
                 </div>
-              </a>
-            ))}
-          </div>
+
+                <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {works.map((w) => (
+                    <a
+                      key={w.id}
+                      href={`https://www.douyin.com/video/${w.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition hover:border-white/25 hover:bg-white/[0.05]"
+                    >
+                      <span className="mt-0.5 shrink-0 rounded-full border border-white/10 px-2 py-0.5 text-[10px] tracking-[0.08em] text-white/55">{w.tag}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-medium leading-[1.5] text-[#E1E0CC] transition-colors group-hover:text-white">{w.title}</div>
+                        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-white/40">
+                          <span>{w.date}</span>
+                          <span className="inline-flex items-center gap-1"><Heart size={11} /> {w.likes}</span>
+                          {w.favorites ? (
+                            <span className="inline-flex items-center gap-1"><Bookmark size={11} /> {w.favorites}</span>
+                          ) : null}
+                          {w.plays ? (
+                            <span className="inline-flex items-center gap-1"><Eye size={11} /> {w.plays}</span>
+                          ) : null}
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

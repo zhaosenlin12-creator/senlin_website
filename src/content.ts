@@ -86,8 +86,8 @@ export const DOUYIN_CHANNELS = [
     href: "https://www.douyin.com/user/MS4wLjABAAAAxHHFo-1JZJ3GPL_HYbgUo6X7hN5jWrk5wJUYl42rgW0",
     qrSrc: "/media/qr/douyin-code.jpg",
     subtitle: "持续分享课堂工具、学习资源与应用作品。",
-    followers: "1.2w",
-    likes: "36w",
+    followers: "922",
+    likes: "9062",
     accent: "primary",
   },
   {
@@ -98,8 +98,8 @@ export const DOUYIN_CHANNELS = [
     href: "https://www.douyin.com/user/MS4wLjABAAAAQg5TgrTfWN0FphobcDhritBsLl8V3SS5H3ckUfdrXrI",
     qrSrc: "/media/qr/ai4k.jpg",
     subtitle: "做产品、打比赛、训模型：把 AI 用在真事上。",
-    followers: "2826",
-    likes: "1.6w",
+    followers: "4408",
+    likes: "2.6w",
     accent: "mint",
   },
 ];
@@ -110,57 +110,119 @@ export const VIDEOS = [
   { id: "color-english", title: "色彩英语 · AI 演示", poster: "/media/posters/color-english.jpg", src: "/media/videos/color-english.mp4", duration: "01:47", tag: "人工智能 · 教学" },
 ];
 
-// 抖音作品：数据来自 2026-10-31 账号抓取（点赞 / 收藏为公开互动数）
-export const DOUYIN_WORKS = [
-  {
-    id: "7676115863665333169",
-    title: "刚接触 AI？一定要先搭个人知识库！",
-    date: "2026-08-21",
-    likes: "1.5w",
-    favorites: "1.2w",
-    tag: "爆款",
-  },
-  {
-    id: "7678756921637716465",
-    title: "20 多万人在看的知识库搭建思路，详细版来啦！",
-    date: "2026-08-28",
-    likes: "6714",
-    favorites: "5774",
-    tag: "爆款",
-  },
-  {
-    id: "7700608943311332091",
-    title: "想问下个人知识库搭建完就要一直更新吗",
-    date: "2026-10-25",
-    likes: "127",
-    favorites: "53",
-    tag: "知识库",
-  },
-  {
-    id: "7688227097130823601",
-    title: "提升 AI 审美方法来了，你们看看可行不",
-    date: "2026-09-22",
-    likes: "202",
-    favorites: "148",
-    tag: "方法论",
-  },
-  {
-    id: "7702455367150564709",
-    title: "普通人用 AI 的这三个常见误区",
-    date: "2026-10-30",
-    likes: "14",
-    favorites: "0",
-    tag: "最新",
-  },
-  {
-    id: "7701733459970870961",
-    title: "小学生 vibecoding 踩坑没？",
-    date: "2026-10-28",
-    likes: "14",
-    favorites: "0",
-    tag: "最新",
-  },
-];
+export type DouyinWork = {
+  id: string;
+  title: string;
+  date: string;
+  likes: string;
+  favorites?: string;
+  plays?: string;
+  tag: string;
+};
+
+// 抖音作品：2026-11-04 实抓两个账号主页，取最新与高互动各半
+export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
+  senlin: [
+    {
+      id: "7701303350285351835",
+      title: "眼看就要 vibecoding 完一个项目了，最近状态快要绷不住了",
+      date: "2026-10-27",
+      likes: "16",
+      tag: "最新",
+    },
+    {
+      id: "7700646094896466587",
+      title: "普通人靠 AI 两天就能做出这款游戏？除了不能商用，别的方面基本都很完美",
+      date: "2026-10-26",
+      likes: "31",
+      tag: "最新",
+    },
+    {
+      id: "7699500562203466673",
+      title: "挖到微软出的普通人 AI 入门 18 次课，完全面向零基础",
+      date: "2026-10-22",
+      likes: "120",
+      tag: "合拍",
+    },
+    {
+      id: "7699894298053369802",
+      title: "分享我自己开源的待办事项工具，支持自配后端同步和智能整理",
+      date: "2026-10-24",
+      likes: "39",
+      tag: "51CodeTodo",
+    },
+    {
+      id: "7698406791009669746",
+      title: "靠完整提示词五分钟做出高级页面，不需要登录也不需要付费",
+      date: "2026-10-19",
+      likes: "43",
+      tag: "高互动",
+    },
+    {
+      id: "7696548374560262986",
+      title: "这个逆向项目已经 231k 星，各路大神都用它复刻了多款收费软件",
+      date: "2026-10-14",
+      likes: "33",
+      tag: "高互动",
+    },
+  ],
+  ai4k: [
+    {
+      id: "7676115863665333169",
+      title: "刚接触 AI 的朋友，可以先试试搭个人知识库",
+      date: "2026-08-21",
+      likes: "1.5w",
+      favorites: "1.2w",
+      plays: "46w",
+      tag: "爆款",
+    },
+    {
+      id: "7678756921637716465",
+      title: "20 多万人在看的知识库搭建思路，详细版来啦！",
+      date: "2026-08-28",
+      likes: "6711",
+      favorites: "5774",
+      plays: "18w",
+      tag: "爆款",
+    },
+    {
+      id: "7699866315155411377",
+      title: "把 AI 装进 U 盘里？这个真的有用吗",
+      date: "2026-10-23",
+      likes: "112",
+      favorites: "48",
+      plays: "4395",
+      tag: "高互动",
+    },
+    {
+      id: "7695821381725332465",
+      title: "为啥你的 AI 总是答非所问",
+      date: "2026-10-13",
+      likes: "40",
+      favorites: "16",
+      plays: "1238",
+      tag: "高互动",
+    },
+    {
+      id: "7700608943311332091",
+      title: "想问下个人知识库搭建完就要一直更新吗",
+      date: "2026-10-25",
+      likes: "129",
+      favorites: "53",
+      plays: "2851",
+      tag: "最新",
+    },
+    {
+      id: "7702455367150564709",
+      title: "普通人用 AI 的这三个常见误区",
+      date: "2026-10-30",
+      likes: "14",
+      favorites: "0",
+      plays: "306",
+      tag: "最新",
+    },
+  ],
+};
 
 export type AppLink = { label: string; href: string };
 

@@ -176,6 +176,7 @@ export default function Hero() {
                     "跟森林一起玩 AI。",
                     "跟森林一起搭机器人。",
                   ]}
+                  base="跟森林一起"
                   typingMs={85}
                   holdMs={1700}
                   deletingMs={40}
