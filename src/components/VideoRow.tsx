@@ -140,9 +140,21 @@ export default function VideoRow() {
                       href={`https://www.douyin.com/video/${w.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition hover:border-white/25 hover:bg-white/[0.05]"
+                      className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3 transition hover:border-white/25 hover:bg-white/[0.05]"
                     >
-                      <span className="mt-0.5 shrink-0 rounded-full border border-white/10 px-2 py-0.5 text-[10px] tracking-[0.08em] text-white/55">{w.tag}</span>
+                      <span className="relative block h-[68px] w-[68px] shrink-0 overflow-hidden rounded-lg bg-white/[0.06]">
+                        {w.cover ? (
+                          <img
+                            src={w.cover}
+                            alt=""
+                            loading="lazy"
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : null}
+                        <span className="absolute bottom-1 left-1 rounded bg-black/75 px-1.5 py-0.5 text-[9px] tracking-[0.06em] text-white/85 backdrop-blur-sm">
+                          {w.tag}
+                        </span>
+                      </span>
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-medium leading-[1.5] text-[#E1E0CC] transition-colors group-hover:text-white">{w.title}</div>
                         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-white/40">

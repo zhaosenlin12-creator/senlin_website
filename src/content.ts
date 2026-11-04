@@ -117,6 +117,7 @@ export type DouyinWork = {
   likes: string;
   favorites?: string;
   plays?: string;
+  cover?: string;
   tag: string;
 };
 
@@ -125,6 +126,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
   senlin: [
     {
       id: "7701303350285351835",
+      cover: "/media/douyin/7701303350285351835.jpg",
       title: "眼看就要 vibecoding 完一个项目了，最近状态快要绷不住了",
       date: "2026-10-27",
       likes: "16",
@@ -132,6 +134,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
     },
     {
       id: "7700646094896466587",
+      cover: "/media/douyin/7700646094896466587.jpg",
       title: "普通人靠 AI 两天就能做出这款游戏？除了不能商用，别的方面基本都很完美",
       date: "2026-10-26",
       likes: "31",
@@ -139,6 +142,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
     },
     {
       id: "7699500562203466673",
+      cover: "/media/douyin/7699500562203466673.jpg",
       title: "挖到微软出的普通人 AI 入门 18 次课，完全面向零基础",
       date: "2026-10-22",
       likes: "120",
@@ -146,6 +150,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
     },
     {
       id: "7699894298053369802",
+      cover: "/media/douyin/7699894298053369802.jpg",
       title: "分享我自己开源的待办事项工具，支持自配后端同步和智能整理",
       date: "2026-10-24",
       likes: "39",
@@ -153,6 +158,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
     },
     {
       id: "7698406791009669746",
+      cover: "/media/douyin/7698406791009669746.jpg",
       title: "靠完整提示词五分钟做出高级页面，不需要登录也不需要付费",
       date: "2026-10-19",
       likes: "43",
@@ -160,6 +166,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
     },
     {
       id: "7696548374560262986",
+      cover: "/media/douyin/7696548374560262986.jpg",
       title: "这个逆向项目已经 231k 星，各路大神都用它复刻了多款收费软件",
       date: "2026-10-14",
       likes: "33",
@@ -169,6 +176,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
   ai4k: [
     {
       id: "7676115863665333169",
+      cover: "/media/douyin/7676115863665333169.jpg",
       title: "刚接触 AI 的朋友，可以先试试搭个人知识库",
       date: "2026-08-21",
       likes: "1.5w",
@@ -178,6 +186,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
     },
     {
       id: "7678756921637716465",
+      cover: "/media/douyin/7678756921637716465.jpg",
       title: "20 多万人在看的知识库搭建思路，详细版来啦！",
       date: "2026-08-28",
       likes: "6711",
@@ -187,6 +196,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
     },
     {
       id: "7699866315155411377",
+      cover: "/media/douyin/7699866315155411377.jpg",
       title: "把 AI 装进 U 盘里？这个真的有用吗",
       date: "2026-10-23",
       likes: "112",
@@ -196,6 +206,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
     },
     {
       id: "7695821381725332465",
+      cover: "/media/douyin/7695821381725332465.jpg",
       title: "为啥你的 AI 总是答非所问",
       date: "2026-10-13",
       likes: "40",
@@ -205,6 +216,7 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
     },
     {
       id: "7700608943311332091",
+      cover: "/media/douyin/7700608943311332091.jpg",
       title: "想问下个人知识库搭建完就要一直更新吗",
       date: "2026-10-25",
       likes: "129",
@@ -213,12 +225,13 @@ export const DOUYIN_WORKS: Record<string, DouyinWork[]> = {
       tag: "最新",
     },
     {
-      id: "7702455367150564709",
-      title: "普通人用 AI 的这三个常见误区",
-      date: "2026-10-30",
+      id: "7701733459970870961",
+      cover: "/media/douyin/7701733459970870961.jpg",
+      title: "小学生 vibecoding 踩坑没？",
+      date: "2026-10-28",
       likes: "14",
       favorites: "0",
-      plays: "306",
+      plays: "0",
       tag: "最新",
     },
   ],

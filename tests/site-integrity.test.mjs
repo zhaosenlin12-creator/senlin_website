@@ -225,3 +225,22 @@ test("Douyin works list links to real videos", async () => {
     await context.close();
   }
 });
+
+test("Douyin works ship local cover images", async () => {
+  const { context, page } = await openMobilePage();
+  try {
+    const covers = await page
+      .locator('#video img[src^="/media/douyin/"]')
+      .evaluateAll((images) => images.map((image) => image.getAttribute("src")));
+    assert.ok(covers.length >= 12, `expected 12 douyin covers, got ${covers.length}`);
+    assert.equal(new Set(covers).size, covers.length, "cover paths should be unique");
+    for (const src of covers) {
+      assert.match(src, /^\/media\/douyin\/\d+\.jpg$/);
+      const file = path.join(process.cwd(), "public", src);
+      await access(file);
+      assert((await stat(file)).size > 8_000, `${src} is unexpectedly small`);
+    }
+  } finally {
+    await context.close();
+  }
+});
