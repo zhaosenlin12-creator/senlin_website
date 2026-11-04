@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { Play, X, ArrowRight, Heart, Users } from "lucide-react";
-import { DOUYIN, VIDEOS } from "../content";
+import { Play, X, ArrowRight, Heart, Users, Bookmark } from "lucide-react";
+import { DOUYIN_CHANNELS, DOUYIN_WORKS, VIDEOS } from "../content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -26,6 +26,8 @@ export default function VideoRow() {
     setModalOpen(true);
   };
 
+  const ai4k = DOUYIN_CHANNELS.find((c) => c.id === "ai4k") ?? DOUYIN_CHANNELS[0];
+
   return (
     <section id="video" className="relative bg-black px-4 py-24 md:py-32">
       <div className="mx-auto max-w-[1400px]">
@@ -34,34 +36,56 @@ export default function VideoRow() {
             <span className="mb-5 inline-block text-[10px] uppercase tracking-[0.25em] text-primary/70 sm:text-[11px]">作品视频</span>
             <h2 className="text-3xl font-medium leading-[0.95] tracking-tight text-[#E1E0CC] sm:text-5xl md:text-6xl">课堂<span className="italic text-primary" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>现场</span></h2>
           </div>
-          <p className="max-w-sm text-xs leading-[1.55] text-gray-500 sm:text-sm">抖音看日常更新,这里看完整作品视频。点击任意缩略图全屏播放。</p>
+          <p className="max-w-sm text-xs leading-[1.55] text-gray-500 sm:text-sm">两个抖音账号持续更新，这里看完整作品视频。点击任意缩略图全屏播放。</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-5">
-          <motion.a href={DOUYIN.href} target="_blank" rel="noopener noreferrer" initial={{ opacity: 1, y: 0 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.9, ease: EASE, delay: 0 }} className="group relative col-span-1 flex h-[280px] flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#101010] p-5 text-left transition hover:border-white/20 sm:h-[320px] sm:p-7 md:h-[420px]">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-primary/70">抖音</span>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-white/40">channel 01</span>
-            </div>
-            <div className="flex flex-1 items-center justify-center">
-              <div className="relative h-32 w-32 overflow-hidden rounded-2xl bg-white p-2 sm:h-40 sm:w-40">
-                <img src={DOUYIN.qrSrc} alt="抖音二维码" className="h-full w-full object-contain" loading="eager" decoding="async" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6 lg:gap-5">
+          {DOUYIN_CHANNELS.map((ch, i) => (
+            <motion.a
+              key={ch.id}
+              href={ch.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.05 }}
+              transition={{ duration: 0.9, ease: EASE, delay: i * 0.1 }}
+              className="group relative order-2 flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#101010] p-5 text-left transition hover:border-white/20 sm:col-span-1 sm:p-7 lg:col-span-3"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="truncate text-[10px] uppercase tracking-[0.2em] text-primary/70">抖音 · {ch.alias}</span>
+                <span className="shrink-0 text-[10px] uppercase tracking-[0.2em] text-white/40">channel 0{i + 1}</span>
               </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-medium text-[#E1E0CC] sm:text-2xl">{DOUYIN.name}</span>
-              <p className="mt-1 text-xs text-gray-400 sm:text-sm">{DOUYIN.subtitle}</p>
-              <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 text-[10px] uppercase tracking-[0.18em] text-white/45 sm:text-[11px]">
-                <span className="inline-flex items-center gap-1.5"><Users size={12} /> {DOUYIN.followers} 粉丝</span>
-                <span className="inline-flex items-center gap-1.5"><Heart size={12} /> {DOUYIN.likes} 获赞</span>
+              <div className="flex flex-1 items-center justify-center py-6">
+                <div className="relative aspect-square w-28 shrink-0 overflow-hidden rounded-2xl bg-white p-2 sm:w-36 lg:w-40">
+                  <img src={ch.qrSrc} alt={`${ch.name} 抖音码`} className="h-full w-full object-contain" loading="eager" decoding="async" />
+                </div>
               </div>
-            </div>
-            <span className="mt-4 inline-flex items-center gap-2 text-xs font-medium text-[#E1E0CC] sm:text-sm">打开抖音主页<ArrowRight size={14} className="transition-transform group-hover:translate-x-1" /></span>
-            <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full opacity-25 blur-3xl" style={{ background: "rgba(222,219,200,0.15)" }} />
-          </motion.a>
+              <div className="flex flex-col">
+                <span className="text-xl font-medium text-[#E1E0CC] sm:text-2xl">{ch.name}</span>
+                <p className="mt-1 text-xs leading-[1.5] text-gray-400 sm:text-sm">{ch.subtitle}</p>
+                <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/10 pt-3 text-[10px] uppercase tracking-[0.18em] text-white/45 sm:text-[11px]">
+                  <span className="inline-flex items-center gap-1.5"><Users size={12} /> {ch.followers} 粉丝</span>
+                  <span className="inline-flex items-center gap-1.5"><Heart size={12} /> {ch.likes} 获赞</span>
+                </div>
+                <div className="mt-1 text-[10px] tracking-[0.12em] text-white/30">抖音号 {ch.douyinId}</div>
+              </div>
+              <span className="mt-4 inline-flex items-center gap-2 text-xs font-medium text-[#E1E0CC] sm:text-sm">打开抖音主页<ArrowRight size={14} className="transition-transform group-hover:translate-x-1" /></span>
+              <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full opacity-25 blur-3xl" style={{ background: ch.accent === "mint" ? "rgba(94,210,156,0.22)" : "rgba(222,219,200,0.15)" }} />
+            </motion.a>
+          ))}
 
           {VIDEOS.slice(0, 3).map((v, i) => (
-            <motion.button key={v.id} type="button" onClick={() => openWith(i)} initial={{ opacity: 1, y: 0 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.9, ease: EASE, delay: (i + 1) * 0.1 }} className="group relative col-span-1 flex aspect-square flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-[#101010] text-left transition hover:border-white/20">
+            <motion.button
+              key={v.id}
+              type="button"
+              onClick={() => openWith(i)}
+              initial={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.05 }}
+              transition={{ duration: 0.9, ease: EASE, delay: (i + 1) * 0.1 }}
+              className="group relative order-1 flex aspect-square flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-[#101010] text-left transition hover:border-white/20 sm:col-span-1 lg:col-span-2"
+            >
               <div className="absolute inset-0">
                 <img src={v.poster} alt={v.title} loading="lazy" decoding="async" fetchPriority="low" className="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
@@ -81,6 +105,47 @@ export default function VideoRow() {
               </div>
             </motion.button>
           ))}
+        </div>
+
+        <div className="mt-12 border-t border-white/10 pt-8 md:mt-16 md:pt-10">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <span className="mb-3 inline-block text-[10px] uppercase tracking-[0.25em] text-primary/70 sm:text-[11px]">抖音作品</span>
+              <h3 className="text-xl font-medium text-[#E1E0CC] sm:text-2xl">
+                {ai4k.name} · 最新与高互动
+              </h3>
+            </div>
+            <a
+              href={ai4k.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 text-xs font-medium text-[#E1E0CC] transition hover:text-white sm:text-sm"
+            >
+              进入主页<ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+            </a>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {DOUYIN_WORKS.map((w) => (
+              <a
+                key={w.id}
+                href={`https://www.douyin.com/video/${w.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition hover:border-white/25 hover:bg-white/[0.05]"
+              >
+                <span className="mt-0.5 shrink-0 rounded-full border border-white/10 px-2 py-0.5 text-[10px] tracking-[0.08em] text-white/55">{w.tag}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-medium leading-[1.5] text-[#E1E0CC] transition-colors group-hover:text-white">{w.title}</div>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-white/40">
+                    <span>{w.date}</span>
+                    <span className="inline-flex items-center gap-1"><Heart size={11} /> {w.likes}</span>
+                    <span className="inline-flex items-center gap-1"><Bookmark size={11} /> {w.favorites}</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -122,7 +187,7 @@ function VideoModal({ videos, activeIdx, setActiveIdx, onClose }: { videos: type
             <video ref={mainRef} key={active.id} controls autoPlay playsInline className="max-h-full max-w-full rounded-lg" src={active.src} poster={active.poster} />
             <button type="button" onClick={requestFullscreen} className="absolute bottom-5 right-5 z-10 rounded-full border border-white/20 bg-black/60 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white backdrop-blur-md transition hover:border-white/40">全屏</button>
           </div>
-          <aside className="flex flex-col gap-2 border-l border-white/10 bg-[#101010] p-3 sm:p-4">
+          <aside className="flex flex-col gap-2 overflow-y-auto border-l border-white/10 bg-[#101010] p-3 sm:p-4">
             <span className="px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-white/45">播放列表</span>
             {videos.map((v, i) => (
               <button key={v.id} onClick={() => setActiveIdx(i)} className={"flex items-center gap-3 rounded-xl p-2 text-left transition " + cls(i)}>

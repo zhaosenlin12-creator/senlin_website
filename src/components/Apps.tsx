@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import type { MouseEvent } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, GitBranch } from "lucide-react";
 import WordsPullUpMultiStyle from "./WordsPullUpMultiStyle";
 import LazyVideo from "./LazyVideo";
-import { APPS } from "../content";
+import { APPS, GITHUB_PROFILE, MORE_APPS } from "../content";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -27,26 +27,28 @@ function AppCard({
   const accentBg = ACCENT_BG[app.accent] ?? "rgba(255,255,255,0.06)";
   let mx = 50;
   let my = 50;
-  const onMove = (e: MouseEvent<HTMLAnchorElement>) => {
+  const onMove = (e: MouseEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
     mx = ((e.clientX - r.left) / r.width) * 100;
     my = ((e.clientY - r.top) / r.height) * 100;
   };
 
   return (
-    <motion.a
-      href={app.href}
-      target="_blank"
-      rel="noopener noreferrer"
+    <motion.div
       onMouseMove={onMove}
       initial={{ opacity: 1, y: 0 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.05 }}
-      transition={{ duration: 0.9, ease: EASE, delay: (index % 4) * 0.12 + Math.floor(index / 4) * 0.05 }}
+      transition={{ duration: 0.9, ease: EASE, delay: (index % 3) * 0.1 }}
       className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#101010] transition duration-500 hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_60px_-30px_rgba(0,0,0,0.8)]"
-      style={{ opacity: 1 }}
     >
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#0a0a0a]">
+      <a
+        href={app.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="relative block aspect-[16/10] w-full overflow-hidden bg-[#0a0a0a]"
+        aria-label={`${app.name}（${app.action ?? "查看项目"}）`}
+      >
         {app.kind === "video" ? (
           <LazyVideo
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -79,7 +81,7 @@ function AppCard({
           style={{ background: accentBg }}
         />
 
-        <div className="absolute left-4 top-4 flex items-center gap-2">
+        <div className="absolute left-4 top-4 flex flex-wrap items-center gap-2">
           <span className="rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/80 backdrop-blur">
             {app.category}
           </span>
@@ -94,7 +96,7 @@ function AppCard({
             <ArrowUpRight size={14} />
           </span>
         </div>
-      </div>
+      </a>
 
       <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
         <div>
@@ -105,9 +107,11 @@ function AppCard({
             className="mt-2 text-xl font-medium tracking-tight text-[#E1E0CC] transition-colors group-hover:text-white sm:text-2xl"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            {app.name}
+            <a href={app.href} target="_blank" rel="noopener noreferrer" className="transition hover:text-white">
+              {app.name}
+            </a>
           </h3>
-          <p className="mt-2 text-xs leading-[1.6] text-gray-400 sm:text-sm">
+          <p className="mt-2 text-xs leading-[1.65] text-gray-400 sm:text-sm">
             {app.description}
           </p>
         </div>
@@ -121,9 +125,40 @@ function AppCard({
               {h}
             </span>
           ))}
+          {app.badges?.map((b) => (
+            <span
+              key={b}
+              className="rounded-full border border-primary/25 bg-primary/[0.08] px-2.5 py-1 text-[10px] text-primary sm:text-[11px]"
+            >
+              {b}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <a
+            href={app.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#E1E0CC] transition hover:text-white sm:text-sm"
+          >
+            {app.action ?? "查看项目"}
+            <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+          {app.links?.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-white/50 underline-offset-4 transition hover:text-white hover:underline"
+            >
+              {l.label}
+            </a>
+          ))}
         </div>
       </div>
-    </motion.a>
+    </motion.div>
   );
 }
 
@@ -155,14 +190,58 @@ export default function Apps() {
             />
           </div>
           <p className="max-w-sm text-xs leading-[1.55] text-gray-500 sm:text-sm">
-            我和学生们一起把课堂沉淀成真实可用的应用。悬停查看高光,点击任意卡片进入对应站点。
+            三件学生作品，三件开源项目。悬停查看高光，点击任意卡片进入对应仓库或演示。
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
           {APPS.map((a, i) => (
             <AppCard key={a.id} app={a} index={i} />
           ))}
+        </div>
+
+        <div className="mt-14 border-t border-white/10 pt-8 md:mt-20 md:pt-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-md">
+              <span className="mb-3 inline-block text-[10px] uppercase tracking-[0.25em] text-primary/70 sm:text-[11px]">
+                其他上线应用
+              </span>
+              <p className="text-xs leading-[1.7] text-gray-500 sm:text-sm">
+                乐启享平台上的常驻应用，日常教学直接用。
+              </p>
+            </div>
+            <div className="flex flex-1 flex-wrap gap-2 lg:max-w-2xl">
+              {MORE_APPS.map((app) => (
+                <a
+                  key={app.id}
+                  href={app.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-2 text-xs text-white/70 transition hover:border-white/25 hover:bg-white/[0.07] hover:text-white"
+                >
+                  <span className="text-[10px] uppercase tracking-[0.12em] text-white/35">{app.tag}</span>
+                  <span>{app.name}</span>
+                  <ArrowUpRight size={12} className="text-white/35 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white/70" />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <a
+            href={GITHUB_PROFILE.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group mt-8 inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-4 transition hover:border-white/25 hover:bg-white/[0.05]"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.06] text-[#E1E0CC]">
+              <GitBranch size={18} />
+            </span>
+            <span className="flex flex-col">
+              <span className="text-sm font-medium text-[#E1E0CC]">{GITHUB_PROFILE.handle}</span>
+              <span className="text-[11px] text-white/40">GitHub · {GITHUB_PROFILE.note}</span>
+            </span>
+            <ArrowUpRight size={16} className="text-white/40 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+          </a>
         </div>
       </div>
     </section>

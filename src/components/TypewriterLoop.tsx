@@ -30,7 +30,7 @@ export default function TypewriterLoop({
     let delay = typingMs;
     if (deleting) {
       if (text.length === 0) {
-        // 已删完,切到下一句
+        // 已删完，切到下一句
         setDeleting(false);
         setIdx((i) => i + 1);
         return;
@@ -38,7 +38,7 @@ export default function TypewriterLoop({
       delay = deletingMs;
     } else {
       if (text === current) {
-        // 输入完成,停留一会后开始删除
+        // 输入完成，停留一会后开始删除
         delay = holdMs;
         const t = window.setTimeout(() => setDeleting(true), holdMs);
         return () => window.clearTimeout(t);

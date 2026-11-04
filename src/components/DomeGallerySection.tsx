@@ -45,7 +45,7 @@ export default function DomeGallerySection() {
           >掠影</span>
         </h2>
         <p className="mt-3 max-w-xs text-xs text-white/55 sm:text-sm">
-          点击图片放大,拖拽画布在穹顶中旋转浏览。
+          点击图片放大，拖拽画布在穹顶中旋转浏览。
         </p>
       </div>
     </section>

@@ -1,21 +1,9 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Quote } from "lucide-react";
 import WordsPullUpMultiStyle from "./WordsPullUpMultiStyle";
-import { KPI } from "../content";
+import { KPI, HEAD_LINES, STORY } from "../content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-
-const HEAD_LINES = [
-  { text: "我叫森林。", italic: false },
-  { text: "六年来,", italic: false },
-  { text: "我和学生一起写代码。", italic: true },
-];
-
-const STORY = [
-  "我教 Python、C++、网页与人工智能,也教机器人。",
-  "课堂像一棵树,每片叶子都是孩子自己长出来的;我能做的是浇水、点灯、让他们相信自己的手可以造出东西。",
-  "他们带走的,不是一摞笔记,是一个能站上舞台的、属于他们自己的作品。",
-];
 
 export default function About() {
   return (
@@ -115,12 +103,12 @@ export default function About() {
               </span>
               <p className="text-[15px] leading-[1.7] text-white/75 sm:text-base">
                 <span className="text-primary">「</span>
-                教育的本质,是一棵树摇动另一棵树,一朵云推动另一朵云。
+                教育的本质，是一棵树摇动另一棵树，一朵云推动另一朵云。
                 <span className="text-primary">」</span>
               </p>
             </div>
 
-            <div className="mt-10 grid grid-cols-4 gap-3 sm:gap-5">
+            <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5">
               {KPI.map((k) => (
                 <div key={k.label} className="flex flex-col gap-1 border-l border-white/15 pl-3 sm:pl-4">
                   <span

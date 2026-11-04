@@ -11,15 +11,35 @@ const EXPECTED_HERO_VIDEOS = [
 ];
 
 const EXPECTED_APP_LINKS = [
+  "https://github.com/zhaosenlin12-creator/yxz-3d",
+  "https://github.com/zhaosenlin12-creator/gaokao_design",
+  "https://github.com/zhaosenlin12-creator/animal-world-cup",
+  "https://github.com/zhaosenlin12-creator/vibe-know--skill",
+  "https://github.com/zhaosenlin12-creator/create-photo-shop",
+  "https://github.com/zhaosenlin12-creator/51CodeTodo",
   "https://game.codebn.cn/",
   "https://class.codebn.cn/",
   "https://ai.codebn.cn/",
   "https://game.codebn.cn/code-research",
-  "https://game.codebn.cn/typing/index.html?source=game-google&apiBase=%2Fapi%2Ftyping&returnUrl=https%3A%2F%2Fgame.codebn.cn%2F&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwicHdkdiI6IjFiMTFhMWI5ZjMxOWFjMTUiLCJleHAiOjE3ODY0MTAyMTd9.lJsU1He9TOtnEuYbVFj_vqhZPqeh_CzOw_ciygMfnxg&userId=1&username=senlin&level=93",
-  "https://phet.colorado.edu/zh_CN/",
-  "https://www.aibase.com/de/tool/12518",
-  "https://www.gamestolearnenglish.com/",
   "https://camp.codebn.cn/",
+  "https://game.codebn.cn/typing/index.html",
+  "https://www.gamestolearnenglish.com/",
+  "https://phet.colorado.edu/zh_CN/",
+  "https://github.com/zhaosenlin12-creator",
+];
+
+const EXPECTED_APP_MEDIA = [
+  "/media/apps/yixiaozhi.jpg",
+  "/media/apps/gaokao-simulator.jpg",
+  "/media/apps/animal-cup.jpg",
+  "/media/apps/vibe-know.jpg",
+  "/media/apps/create-photo-shop.jpg",
+  "/media/apps/51codetodo.jpg",
+];
+
+const EXPECTED_DOUYIN_CHANNELS = [
+  "https://www.douyin.com/user/MS4wLjABAAAAxHHFo-1JZJ3GPL_HYbgUo6X7hN5jWrk5wJUYl42rgW0",
+  "https://www.douyin.com/user/MS4wLjABAAAAQg5TgrTfWN0FphobcDhritBsLl8V3SS5H3ckUfdrXrI",
 ];
 
 const WECHAT_USER_AGENT =
@@ -104,7 +124,7 @@ test("Hero videos expose WeChat inline autoplay attributes", async () => {
       assert.equal(video.autoPlay, true);
       assert.equal(video.muted, true);
       assert.equal(video.playsInline, true);
-      assert.equal(video.poster, "/media/photo-hero.jpg");
+      assert.equal(video.poster, null);
       assert.equal(video.webkitPlaysInline, "true");
       assert.equal(video.x5PlaysInline, "true");
       assert.equal(video.x5PlayerType, "h5-page");
@@ -114,24 +134,30 @@ test("Hero videos expose WeChat inline autoplay attributes", async () => {
   }
 });
 
-test("Hero keeps an image fallback beneath both videos", async () => {
+test("Hero fallback is a gradient instead of a static portrait", async () => {
   const { context, page } = await openMobilePage();
   try {
-    const fallback = page.locator("[data-hero-fallback] img");
+    const fallback = page.locator("[data-hero-fallback]");
     assert.equal(await fallback.count(), 1);
-    assert.equal(await fallback.getAttribute("src"), "/media/photo-hero.jpg");
+    assert.equal(await page.locator("[data-hero-fallback] img").count(), 0);
+    const background = await fallback.evaluate((el) => el.style.background || "");
+    assert.ok(background.includes("gradient"), "fallback should paint a gradient");
+    assert.ok(!background.includes("photo-hero"), "fallback must not use the portrait image");
+    assert.equal(await page.locator('img[src*="photo-hero"]').count(), 0);
   } finally {
     await context.close();
   }
 });
 
-test("Application cards use verified destinations", async () => {
+test("Application cards link to the published projects", async () => {
   const { context, page } = await openMobilePage();
   try {
     const links = await page.locator("#apps a[target='_blank']").evaluateAll((anchors) =>
-      anchors.map((anchor) => anchor.getAttribute("href"))
+      [...new Set(anchors.map((anchor) => anchor.getAttribute("href")))]
     );
-    assert.deepEqual(links, EXPECTED_APP_LINKS);
+    for (const expected of EXPECTED_APP_LINKS) {
+      assert.ok(links.includes(expected), `missing app link ${expected}`);
+    }
   } finally {
     await context.close();
   }
@@ -152,6 +178,48 @@ test("Every application card media exists locally", async () => {
       const file = path.join(process.cwd(), "public", item.src);
       await access(file);
       assert((await stat(file)).size > 4_000, `${item.src} is unexpectedly small`);
+    }
+    const used = media.map((item) => item.src);
+    for (const expected of EXPECTED_APP_MEDIA) {
+      assert.ok(used.includes(expected), `missing app media ${expected}`);
+    }
+  } finally {
+    await context.close();
+  }
+});
+
+test("Both Douyin channels are present with local QR codes", async () => {
+  const { context, page } = await openMobilePage();
+  try {
+    const links = await page.locator("#video a[target='_blank']").evaluateAll((anchors) =>
+      anchors.map((anchor) => anchor.getAttribute("href"))
+    );
+    for (const expected of EXPECTED_DOUYIN_CHANNELS) {
+      assert.ok(links.includes(expected), `missing douyin channel ${expected}`);
+    }
+    const qrs = await page.locator('#video img[src^="/media/qr/"]').evaluateAll((images) =>
+      images.map((image) => image.getAttribute("src"))
+    );
+    assert.deepEqual(qrs.sort(), ["/media/qr/ai4k.jpg", "/media/qr/douyin-code.jpg"]);
+    for (const src of qrs) {
+      const file = path.join(process.cwd(), "public", src);
+      await access(file);
+      assert((await stat(file)).size > 4_000, `${src} is unexpectedly small`);
+    }
+  } finally {
+    await context.close();
+  }
+});
+
+test("Douyin works list links to real videos", async () => {
+  const { context, page } = await openMobilePage();
+  try {
+    const works = await page.locator('#video a[href^="https://www.douyin.com/video/"]').evaluateAll((anchors) =>
+      anchors.map((anchor) => anchor.getAttribute("href"))
+    );
+    assert.ok(works.length >= 4, "expected several douyin works");
+    for (const href of works) {
+      assert.match(href, /^https:\/\/www\.douyin\.com\/video\/\d+$/);
     }
   } finally {
     await context.close();

@@ -75,21 +75,16 @@ export default function Hero() {
   return (
     <section className="h-screen w-full p-4 md:p-6">
       <div className="relative h-full w-full overflow-hidden rounded-2xl md:rounded-[2rem]">
+        {/* 视频未加载时的兜底：纯黑渐变，不使用静态形象照 */}
         <div
           data-hero-fallback
           aria-hidden="true"
           className="absolute inset-0"
-          style={{ backgroundImage: "url(/media/photo-hero.jpg)", backgroundSize: "cover", backgroundPosition: "center" }}
-        >
-          <img
-            src="/media/photo-hero.jpg"
-            alt=""
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </div>
+          style={{
+            background:
+              "radial-gradient(120% 90% at 50% 10%, #1c1c1a 0%, #0b0b0b 55%, #000 100%)",
+          }}
+        />
         <video
           ref={v0}
           className="absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out"
@@ -98,7 +93,6 @@ export default function Hero() {
             transitionDuration: `${CROSSFADE_MS}ms`,
           }}
           src={SITE.heroVideos[0]}
-          poster="/media/photo-hero.jpg"
           autoPlay
           muted
           playsInline
@@ -117,7 +111,6 @@ export default function Hero() {
             transitionDuration: `${CROSSFADE_MS}ms`,
           }}
           src={SITE.heroVideos[1]}
-          poster="/media/photo-hero.jpg"
           autoPlay
           muted
           playsInline
@@ -134,14 +127,14 @@ export default function Hero() {
 
         <div className="absolute inset-x-0 top-0 z-20 flex justify-center pt-0">
           <nav
-            className="flex items-center gap-3 rounded-b-2xl bg-black px-4 py-2 sm:gap-6 md:rounded-b-3xl md:px-8"
+            className="flex max-w-full items-center gap-3 overflow-x-auto rounded-b-2xl bg-black px-4 py-2 [scrollbar-width:none] sm:gap-6 md:rounded-b-3xl md:px-8 [&::-webkit-scrollbar]:hidden"
             style={{ color: "rgba(225, 224, 204, 0.8)" }}
           >
             {NAV_ITEMS.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className="text-[10px] transition-colors duration-200 hover:text-[#E1E0CC] sm:text-xs md:text-sm"
+                className="shrink-0 whitespace-nowrap text-[10px] transition-colors duration-200 hover:text-[#E1E0CC] sm:text-xs md:text-sm"
               >
                 {item.label}
               </a>
@@ -149,7 +142,7 @@ export default function Hero() {
           </nav>
         </div>
 
-        <div className="absolute left-5 top-1/2 z-10 -translate-y-1/2 sm:left-8 md:left-12 lg:left-16">
+        <div className="absolute left-5 top-24 z-10 sm:left-8 sm:top-1/2 sm:-translate-y-1/2 md:left-12 lg:left-16">
           <span
             className="rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[10px] uppercase tracking-[0.18em] backdrop-blur-md"
             style={{ color: "#DEDBC8" }}
@@ -196,7 +189,7 @@ export default function Hero() {
                   className="text-[10px] uppercase tracking-[0.3em] text-[#DEDBC8] sm:text-[11px]"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
-                  Senlin Studio ? {SITE.role}
+                  Senlin Studio · {SITE.role}
                 </span>
               </div>
             </div>

@@ -32,8 +32,8 @@ export default function Contact() {
       <div className="relative mx-auto max-w-[1100px]">
         <div className="mb-12 text-center md:mb-16">
           <span className="mb-5 inline-block text-[10px] uppercase tracking-[0.25em] text-primary/70 sm:text-[11px]">联系我</span>
-          <h2 className="mx-auto max-w-2xl text-3xl font-medium leading-[0.95] tracking-tight text-[#E1E0CC] sm:text-4xl md:text-5xl lg:text-6xl">想聊一个班级、工作坊,或学生作品展示?</h2>
-          <p className="mx-auto mt-5 max-w-md text-xs leading-[1.55] text-gray-400 sm:text-sm md:text-base">点击二维码查看大图,通过任意渠道留言——每一条消息我都会在两个工作日内回复。</p>
+          <h2 className="mx-auto max-w-2xl text-3xl font-medium leading-[0.95] tracking-tight text-[#E1E0CC] sm:text-4xl md:text-5xl lg:text-6xl">想聊一个班级、工作坊，或学生作品展示？</h2>
+          <p className="mx-auto mt-5 max-w-md text-xs leading-[1.55] text-gray-400 sm:text-sm md:text-base">点击二维码查看大图，通过任意渠道留言——每一条消息我都会在两个工作日内回复。</p>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
           {channels.map((c, i) => (
