@@ -89,9 +89,9 @@ export const DOUYIN_CHANNELS = [
 ];
 
 export const VIDEOS = [
-  { id: "personal-site", title: "个人站搭建全流程", poster: "/media/posters/personal-site.jpg", src: "/media/videos/personal-site.mp4", duration: "01:24", tag: "网站 · 项目" },
-  { id: "interactive-knowledge", title: "互动知识课堂", poster: "/media/posters/interactive-knowledge.jpg", src: "/media/videos/interactive-knowledge.mp4", duration: "02:08", tag: "课堂记录" },
-  { id: "color-english", title: "色彩英语 · AI 演示", poster: "/media/posters/color-english.jpg", src: "/media/videos/color-english.mp4", duration: "01:47", tag: "人工智能 · 教学" },
+  { id: "vibe-coding", title: "教 AI 写代码 · 从想法到上线", poster: "/media/posters/vibe-coding.jpg", src: "/media/videos/vibe-coding.mp4", duration: "00:57", tag: "AI 编程 · 工作流" },
+  { id: "yolo-vision", title: "YOLO 视觉识别 · 训练到跑通", poster: "/media/posters/yolo-vision.jpg", src: "/media/videos/yolo-vision.mp4", duration: "00:44", tag: "AI 视觉 · 实战" },
+  { id: "51codetodo", title: "51CodeTodo · 个人版到团队版", poster: "/media/posters/51codetodo.jpg", src: "/media/videos/51codetodo.mp4", duration: "01:51", tag: "开源项目 · 产品" },
 ];
 
 // ── 交付成果：交付之后的系统状态 ────────────────────────────────────

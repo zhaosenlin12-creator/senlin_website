@@ -87,11 +87,11 @@ export default function VideoRow() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.05 }}
               transition={{ duration: 0.9, ease: EASE, delay: (i + 1) * 0.1 }}
-              className="group relative order-1 flex aspect-square flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-[#101010] text-left transition hover:border-white/20 sm:col-span-1 lg:col-span-2"
+              className="group relative order-1 flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-[#101010] text-left transition hover:border-white/20 sm:col-span-1 lg:col-span-2"
             >
               <div className="absolute inset-0">
                 <img src={v.poster} alt={v.title} loading="lazy" decoding="async" fetchPriority="low" className="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent" />
               </div>
               <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-5">
                 <div className="flex items-start justify-between">
@@ -216,11 +216,12 @@ function VideoModal({ videos, activeIdx, setActiveIdx, onClose }: { videos: type
       <motion.div initial={{ scale: 0.94, y: 20, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.94, y: 20, opacity: 0 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} className="relative flex h-full max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a]" onClick={(e) => e.stopPropagation()}>
         <button type="button" onClick={onClose} className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-md transition hover:border-white/30" aria-label="关闭"><X size={16} /></button>
         <div className="grid h-full grid-cols-1 md:grid-cols-[1fr_300px]">
-          <div className="relative flex items-center justify-center bg-black p-4 sm:p-6">
-            <video ref={mainRef} key={active.id} controls autoPlay playsInline className="max-h-full max-w-full rounded-lg" src={active.src} poster={active.poster} />
+          <div className="relative flex min-h-0 items-center justify-center bg-black p-4 sm:p-6">
+            {/* 竖屏素材也要完整可见：元素铺满面板，画面按 object-contain 居中，不裁切 */}
+            <video ref={mainRef} key={active.id} controls autoPlay playsInline className="h-full max-h-full w-full max-w-full rounded-lg object-contain" src={active.src} poster={active.poster} />
             <button type="button" onClick={requestFullscreen} className="absolute bottom-5 right-5 z-10 rounded-full border border-white/20 bg-black/60 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white backdrop-blur-md transition hover:border-white/40">全屏</button>
           </div>
-          <aside className="flex flex-col gap-2 overflow-y-auto border-l border-white/10 bg-[#101010] p-3 sm:p-4">
+          <aside className="flex min-h-0 flex-col gap-2 overflow-y-auto border-l border-white/10 bg-[#101010] p-3 sm:p-4">
             <span className="px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-white/45">播放列表</span>
             {videos.map((v, i) => (
               <button key={v.id} onClick={() => setActiveIdx(i)} className={"flex items-center gap-3 rounded-xl p-2 text-left transition " + cls(i)}>
