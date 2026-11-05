@@ -98,7 +98,9 @@ test("Hero videos are bundled local assets", async () => {
     for (const source of EXPECTED_HERO_VIDEOS) {
       const file = path.join(process.cwd(), "public", source);
       await access(file);
-      assert((await stat(file)).size > 1_000_000, `${source} is unexpectedly small`);
+      // 首屏背景视频已按网页规格压过（1600×896 / CRF29，无音轨），
+      // 阈值只用来兜住「文件被截断」，不再要求 1MB 以上。
+      assert((await stat(file)).size > 200_000, `${source} is unexpectedly small`);
     }
   } finally {
     await context.close();
