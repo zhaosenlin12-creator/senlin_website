@@ -75,7 +75,7 @@ export default function Hero() {
   return (
     <section className="h-screen w-full p-4 md:p-6">
       <div className="relative h-full w-full overflow-hidden rounded-2xl md:rounded-[2rem]">
-        {/* 视频未加载时的兜底：纯黑渐变，不使用静态形象照 */}
+        {/* 视频未加载时的兜底：纯黑渐变垫底 + 静态首屏图，先出画面再接视频 */}
         <div
           data-hero-fallback
           aria-hidden="true"
@@ -85,6 +85,15 @@ export default function Hero() {
               "radial-gradient(120% 90% at 50% 10%, #1c1c1a 0%, #0b0b0b 55%, #000 100%)",
           }}
         />
+        <img
+          data-hero-poster
+          src={SITE.heroPoster}
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
         <video
           ref={v0}
           className="absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out"
@@ -93,6 +102,7 @@ export default function Hero() {
             transitionDuration: `${CROSSFADE_MS}ms`,
           }}
           src={SITE.heroVideos[0]}
+          poster={SITE.heroPoster}
           autoPlay
           muted
           playsInline
@@ -111,6 +121,7 @@ export default function Hero() {
             transitionDuration: `${CROSSFADE_MS}ms`,
           }}
           src={SITE.heroVideos[1]}
+          poster={SITE.heroPoster}
           autoPlay
           muted
           playsInline
@@ -127,19 +138,24 @@ export default function Hero() {
 
         <div className="absolute inset-x-0 top-0 z-20 flex justify-center pt-0">
           <nav
-            className="flex max-w-full items-center gap-3 overflow-x-auto rounded-b-2xl bg-black px-4 py-2 [scrollbar-width:none] sm:gap-6 md:rounded-b-3xl md:px-8 [&::-webkit-scrollbar]:hidden"
+            className="flex max-w-full items-center gap-2.5 overflow-x-auto rounded-b-2xl bg-black px-3 py-2 [scrollbar-width:none] sm:gap-6 sm:px-4 md:rounded-b-3xl md:px-8 [&::-webkit-scrollbar]:hidden"
             style={{ color: "rgba(225, 224, 204, 0.8)" }}
           >
             {NAV_ITEMS.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className="shrink-0 whitespace-nowrap text-[10px] transition-colors duration-200 hover:text-[#E1E0CC] sm:text-xs md:text-sm"
+                className="shrink-0 whitespace-nowrap py-1 text-[11px] leading-none transition-colors duration-200 hover:text-[#E1E0CC] sm:text-xs md:py-0 md:text-sm"
               >
                 {item.label}
               </a>
             ))}
           </nav>
+          {/* 窄屏导航放不下，右侧渐隐提示还能继续横向滑动 */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black via-black/70 to-transparent sm:hidden"
+          />
         </div>
 
         <div className="absolute left-5 top-24 z-10 sm:left-8 sm:top-1/2 sm:-translate-y-1/2 md:left-12 lg:left-16">

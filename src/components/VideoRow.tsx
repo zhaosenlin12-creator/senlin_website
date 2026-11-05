@@ -61,7 +61,7 @@ export default function VideoRow() {
                     (ch.qrTone === "brand" ? "bg-[#3A4C7A]" : "bg-white p-2")
                   }
                 >
-                  <img src={ch.qrSrc} alt={`${ch.name} 抖音码`} className="h-full w-full object-contain" loading="eager" decoding="async" />
+              <img src={ch.qrSrc} alt={`${ch.name} 抖音码`} className="h-full w-full object-contain" loading="lazy" decoding="async" />
                 </div>
               </div>
               <div className="flex flex-col">
@@ -153,6 +153,7 @@ export default function VideoRow() {
                             src={w.cover}
                             alt=""
                             loading="lazy"
+                            decoding="async"
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                         ) : null}

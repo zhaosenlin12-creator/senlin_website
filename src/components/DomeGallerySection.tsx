@@ -4,26 +4,20 @@ import { GALLERY_IMAGES } from "../content";
 // 球体自转:每秒 3 度。组件内部已实现暂停(放大/拖拽)。
 export default function DomeGallerySection() {
   return (
-    <section
-      id="gallery"
-      className="relative bg-black"
-      style={{ height: "100vh" }}
-    >
-      <div className="absolute inset-0">
-        <DomeGallery
-          images={GALLERY_IMAGES}
-          fit={0.5}
-          minRadius={500}
-          segments={36}
-          grayscale={false}
-          autoRotateDegPerSec={5}
-          overlayBlurColor="#070707"
-          imageBorderRadius="18px"
-          openedImageWidth="min(92vw, 1120px)"
-          openedImageHeight="min(86vh, 630px)"
-          openedImageBorderRadius="24px"
-        />
-      </div>
+    <div className="absolute inset-0">
+      <DomeGallery
+        images={GALLERY_IMAGES}
+        fit={0.5}
+        minRadius={500}
+        segments={36}
+        grayscale={false}
+        autoRotateDegPerSec={5}
+        overlayBlurColor="#070707"
+        imageBorderRadius="18px"
+        openedImageWidth="min(92vw, 1120px)"
+        openedImageHeight="min(86vh, 630px)"
+        openedImageBorderRadius="24px"
+      />
 
       <div className="pointer-events-none absolute left-5 top-5 z-10 sm:left-8 sm:top-8">
         <span
@@ -48,7 +42,7 @@ export default function DomeGallerySection() {
           产品界面、交付课件和课堂现场。点击放大后可左右切换，拖拽旋转。
         </p>
       </div>
-    </section>
+    </div>
   );
 }
 

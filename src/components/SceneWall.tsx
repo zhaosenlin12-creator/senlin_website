@@ -56,6 +56,7 @@ export default function SceneWall() {
                   aria-hidden
                   loading="lazy"
                   decoding="async"
+                  fetchPriority="low"
                   className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
                 />
                 <img
@@ -63,6 +64,7 @@ export default function SceneWall() {
                   alt={photo.title}
                   loading="lazy"
                   decoding="async"
+                  fetchPriority="low"
                   className="absolute inset-0 h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.03]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500 group-hover:from-black/95" />

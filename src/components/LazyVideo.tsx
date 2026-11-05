@@ -44,7 +44,8 @@ export default function LazyVideo({
       ref={ref}
       className={className}
       src={shouldLoad ? src : undefined}
-      poster={poster}
+      // poster 不受 preload="none" 约束，提前挂上会让下方几张大图在首屏就被拉下来
+      poster={shouldLoad ? poster : undefined}
       autoPlay={shouldLoad}
       loop
       muted

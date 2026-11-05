@@ -1,5 +1,5 @@
 {
-  "name": "prisma-web",
+  "name": "senlin-website",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -18,9 +18,6 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@fontsource-variable/inter": "^5.2.8",
-    "@fontsource-variable/plus-jakarta-sans": "^5.2.8",
-    "@fontsource/instrument-serif": "^5.2.8",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

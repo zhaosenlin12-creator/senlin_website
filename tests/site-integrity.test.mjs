@@ -126,11 +126,32 @@ test("Hero videos expose WeChat inline autoplay attributes", async () => {
       assert.equal(video.autoPlay, true);
       assert.equal(video.muted, true);
       assert.equal(video.playsInline, true);
-      assert.equal(video.poster, null);
+      // 微信里点开首屏不能是黑屏：视频必须带本地静态底图
+      assert.equal(video.poster, "/media/posters/hero-poster.jpg");
       assert.equal(video.webkitPlaysInline, "true");
       assert.equal(video.x5PlaysInline, "true");
       assert.equal(video.x5PlayerType, "h5-page");
     }
+  } finally {
+    await context.close();
+  }
+});
+
+test("Hero shows a static poster before the background video decodes", async () => {
+  const { context, page } = await openMobilePage();
+  try {
+    const poster = page.locator("[data-hero-poster]");
+    assert.equal(await poster.count(), 1);
+    const src = await poster.getAttribute("src");
+    assert.equal(src, "/media/posters/hero-poster.jpg");
+    await access(path.join(process.cwd(), "public", src));
+
+    // 首屏底图要在视频之前抢到，index.html 里必须有 preload
+    const html = await readFile(path.join(process.cwd(), "index.html"), "utf8");
+    assert.ok(
+      html.includes('rel="preload"') && html.includes("/media/posters/hero-poster.jpg"),
+      "index.html should preload the hero poster"
+    );
   } finally {
     await context.close();
   }

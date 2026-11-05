@@ -1,0 +1,2 @@
+# SPA fallback：刷新 /story /apps 等子路径不 404
+/*    /index.html   200

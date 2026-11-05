@@ -43,11 +43,20 @@ export default function App() {
       <Courses />
       <SceneWall />
       <div ref={sentinelRef} aria-hidden style={{ height: 1 }} />
-      {showGallery && (
-        <Suspense fallback={null}>
-          <DomeGallerySection />
-        </Suspense>
-      )}
+      {/* 穹顶本身懒加载，但占位区块始终存在：否则顶部「作品墙」锚点第一次点会落空，
+          而且区块挂载时的插入会让整页位移、把后面的锚点全部带偏 */}
+      <section
+        id="gallery"
+        aria-label="作品穹顶"
+        className="relative bg-black"
+        style={{ height: "100vh" }}
+      >
+        {showGallery && (
+          <Suspense fallback={null}>
+            <DomeGallerySection />
+          </Suspense>
+        )}
+      </section>
       <Apps />
       <VideoRow />
       <Mentorship />

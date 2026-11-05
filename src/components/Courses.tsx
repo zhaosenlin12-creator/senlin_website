@@ -252,7 +252,6 @@ function CourseCard({
               alt={course.title}
               interval={5200}
               showDots
-              showArrows={false}
               className="absolute inset-0 h-full w-full"
               imgClassName="object-contain"
               backdrop
@@ -340,6 +339,8 @@ function FeaturedCourse({
                 key={slides[page]}
                 src={slides[page]}
                 alt={`${course.title} 课件页 ${page + 1}`}
+                loading="lazy"
+                decoding="async"
                 initial={{ opacity: 0, scale: 1.015 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
@@ -541,6 +542,7 @@ function AdultCard({
             aria-hidden
             loading="lazy"
             decoding="async"
+            fetchPriority="low"
             className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
           />
           <img
@@ -548,6 +550,7 @@ function AdultCard({
             alt={`${course.title} 课程海报`}
             loading="lazy"
             decoding="async"
+            fetchPriority="low"
             className="absolute inset-0 h-full w-full object-contain"
           />
           {wide ? (

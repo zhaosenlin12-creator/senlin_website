@@ -20,8 +20,16 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="森林 · Senlin Studio" />
     <meta name="twitter:description" content="六年项目式编程课堂,带学生从一行代码到一份作品。" />
+    <meta property="og:image" content="https://zsl.codebn.cn/media/posters/hero-poster.jpg" />
+    <meta name="twitter:image" content="https://zsl.codebn.cn/media/posters/hero-poster.jpg" />
 
-    
+    <!-- 首屏静态底图：抢在视频解码前先出画面，微信里点开不会黑屏 -->
+    <link
+      rel="preload"
+      as="image"
+      href="/media/posters/hero-poster.jpg"
+      fetchpriority="high"
+    />
 
         <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-wght-normal.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/plus-jakarta-sans-latin-wght-normal.woff2" crossorigin />

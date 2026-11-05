@@ -12,6 +12,8 @@ export const SITE = {
     "/media/videos/hero-teaching.mp4",
     "/media/videos/hero-studio.mp4",
   ],
+  // 静态首屏底图：动态视频还没解码出来时先顶上，避免微信里点开是一片黑
+  heroPoster: "/media/posters/hero-poster.jpg",
 };
 
 export const NAV_ITEMS = [
