@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import TypewriterLoop from "./TypewriterLoop";
 import { SITE, NAV_ITEMS } from "../content";
+import { pickVideoSrc, prefersReducedMotion, canAutoplayVideo } from "../lib/media";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const CROSSFADE_MS = 1200;
@@ -10,6 +11,13 @@ const SWITCH_MS = 12000;
 
 export default function Hero() {
   const [active, setActive] = useState(0);
+  // 第二段背景视频等到第一次切过去才下载，别和首屏抢带宽
+  const [srcB, setSrcB] = useState<string | null>(null);
+  // 弱网 / 省流量 / 减少动态效果：首屏就用静态图，一个字节视频都不下
+  const [srcA] = useState(() =>
+    canAutoplayVideo() ? pickVideoSrc(SITE.heroVideos[0], SITE.heroVideosSmall[0]) : null
+  );
+  const [still] = useState(() => prefersReducedMotion());
   const v0 = useRef<HTMLVideoElement | null>(null);
   const v1 = useRef<HTMLVideoElement | null>(null);
 
@@ -44,7 +52,6 @@ export default function Hero() {
     };
 
     const cleanupA = tryPlay(a);
-    const cleanupB = tryPlay(b);
     const id = window.setInterval(() => {
       if (killed) return;
       setActive((cur) => 1 - cur);
@@ -53,9 +60,15 @@ export default function Hero() {
       killed = true;
       window.clearInterval(id);
       cleanupA();
-      cleanupB();
     };
   }, []);
+
+  // 切到第二段时再挂它的 src
+  useEffect(() => {
+    if (active === 1 && srcB === null && canAutoplayVideo()) {
+      setSrcB(pickVideoSrc(SITE.heroVideos[1], SITE.heroVideosSmall[1]));
+    }
+  }, [active, srcB]);
 
   useEffect(() => {
     const a = v0.current;
@@ -66,11 +79,13 @@ export default function Hero() {
       a.currentTime = 0;
       a.play().catch(() => {});
     } else {
+      // 第二段还在路上，先让第一段继续顶着
+      if (!srcB) return;
       a.pause();
       b.currentTime = 0;
       b.play().catch(() => {});
     }
-  }, [active]);
+  }, [active, srcB]);
 
   return (
     <section className="h-screen w-full p-4 md:p-6">
@@ -94,44 +109,47 @@ export default function Hero() {
           decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <video
-          ref={v0}
-          className="absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out"
-          style={{
-            opacity: active === 0 ? 1 : 0,
-            transitionDuration: `${CROSSFADE_MS}ms`,
-          }}
-          src={SITE.heroVideos[0]}
-          poster={SITE.heroPoster}
-          autoPlay
-          muted
-          playsInline
-          loop
-          preload="auto"
-          x5-video-player-type="h5-page"
-          x5-playsinline="true"
-          x5-video-orientation="portrait"
-          webkit-playsinline="true"
-        />
-        <video
-          ref={v1}
-          className="absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out"
-          style={{
-            opacity: active === 1 ? 1 : 0,
-            transitionDuration: `${CROSSFADE_MS}ms`,
-          }}
-          src={SITE.heroVideos[1]}
-          poster={SITE.heroPoster}
-          autoPlay
-          muted
-          playsInline
-          loop
-          preload="auto"
-          x5-video-player-type="h5-page"
-          x5-playsinline="true"
-          x5-video-orientation="portrait"
-          webkit-playsinline="true"
-        />
+        {!still && srcA && (
+          <>
+            <video
+              ref={v0}
+              className="absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out"
+              style={{
+                opacity: active === 0 ? 1 : 0,
+                transitionDuration: `${CROSSFADE_MS}ms`,
+              }}
+              src={srcA}
+              poster={SITE.heroPoster}
+              autoPlay
+              muted
+              playsInline
+              loop
+              preload="auto"
+              x5-video-player-type="h5-page"
+              x5-playsinline="true"
+              x5-video-orientation="portrait"
+              webkit-playsinline="true"
+            />
+            <video
+              ref={v1}
+              className="absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out"
+              style={{
+                opacity: active === 1 ? 1 : 0,
+                transitionDuration: `${CROSSFADE_MS}ms`,
+              }}
+              src={srcB ?? undefined}
+              poster={SITE.heroPoster}
+              muted
+              playsInline
+              loop
+              preload="none"
+              x5-video-player-type="h5-page"
+              x5-playsinline="true"
+              x5-video-orientation="portrait"
+              webkit-playsinline="true"
+            />
+          </>
+        )}
 
         <div className="noise-overlay pointer-events-none absolute inset-0 opacity-[0.7] mix-blend-overlay" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/70" />

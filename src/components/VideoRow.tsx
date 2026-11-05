@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { Play, X, ArrowRight, Heart, Users, Bookmark, Eye } from "lucide-react";
+import { Play, X, ArrowRight, Heart, Users, Bookmark, Eye, RotateCcw, Loader2 } from "lucide-react";
 import { DOUYIN_CHANNELS, DOUYIN_WORKS, VIDEOS } from "../content";
+import { pickVideoSrc } from "../lib/media";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -192,13 +193,26 @@ export default function VideoRow() {
 
 function VideoModal({ videos, activeIdx, setActiveIdx, onClose }: { videos: typeof VIDEOS; activeIdx: number; setActiveIdx: (n: number) => void; onClose: () => void; }) {
   const mainRef = useRef<HTMLVideoElement | null>(null);
+  const active = videos[activeIdx];
+  // 窄屏 / 弱网自动降一档，避免手机上一次性拉几 MB
+  const [src, setSrc] = useState(() => pickVideoSrc(active.src, active.srcSmall));
+  const [failed, setFailed] = useState(false);
+  const [buffering, setBuffering] = useState(true);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  useEffect(() => {
+    setSrc(pickVideoSrc(active.src, active.srcSmall));
+    setFailed(false);
+    setBuffering(true);
+  }, [active]);
+
   useEffect(() => {
     const v = mainRef.current;
     if (!v) return;
     v.muted = false;
     v.currentTime = 0;
     v.play().catch(() => {});
-  }, [activeIdx]);
+  }, [src, reloadKey]);
 
   const requestFullscreen = () => {
     const v = mainRef.current;
@@ -209,7 +223,6 @@ function VideoModal({ videos, activeIdx, setActiveIdx, onClose }: { videos: type
     else if (el.msRequestFullscreen) el.msRequestFullscreen();
   };
 
-  const active = videos[activeIdx];
   const cls = (i: number) => i === activeIdx ? "bg-white/[0.08]" : "bg-white/[0.03] hover:bg-white/[0.06]";
 
   return (
@@ -219,7 +232,51 @@ function VideoModal({ videos, activeIdx, setActiveIdx, onClose }: { videos: type
         <div className="grid h-full grid-cols-1 md:grid-cols-[1fr_300px]">
           <div className="relative flex min-h-0 items-center justify-center bg-black p-4 sm:p-6">
             {/* 竖屏素材也要完整可见：元素铺满面板，画面按 object-contain 居中，不裁切 */}
-            <video ref={mainRef} key={active.id} controls autoPlay playsInline className="h-full max-h-full w-full max-w-full rounded-lg object-contain" src={active.src} poster={active.poster} />
+            {failed ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setFailed(false);
+                  setBuffering(true);
+                  setReloadKey((k) => k + 1);
+                }}
+                className="flex flex-col items-center gap-3 rounded-xl px-6 py-10 text-center"
+              >
+                <img src={active.poster} alt={active.title} className="max-h-56 rounded-lg opacity-70" />
+                <span className="inline-flex items-center gap-2 text-xs tracking-[0.16em] text-white/70">
+                  <RotateCcw size={13} /> 视频加载失败，点此重试
+                </span>
+              </button>
+            ) : (
+              <>
+                <video
+                  ref={mainRef}
+                  key={`${src}-${reloadKey}`}
+                  controls
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  className="h-full max-h-full w-full max-w-full rounded-lg object-contain"
+                  src={src}
+                  poster={active.poster}
+                  x5-video-player-type="h5-page"
+                  x5-playsinline="true"
+                  x5-video-orientation="portrait"
+                  webkit-playsinline="true"
+                  onError={() => setFailed(true)}
+                  onWaiting={() => setBuffering(true)}
+                  onPlaying={() => setBuffering(false)}
+                  onCanPlay={() => setBuffering(false)}
+                />
+                {buffering && (
+                  <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <span className="flex items-center gap-2 rounded-full bg-black/70 px-4 py-2 text-[11px] tracking-[0.16em] text-white/80 backdrop-blur">
+                      <Loader2 size={13} className="animate-spin" /> 缓冲中
+                    </span>
+                  </span>
+                )}
+              </>
+            )}
             <button type="button" onClick={requestFullscreen} className="absolute bottom-5 right-5 z-10 rounded-full border border-white/20 bg-black/60 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white backdrop-blur-md transition hover:border-white/40">全屏</button>
           </div>
           <aside className="flex min-h-0 flex-col gap-2 overflow-y-auto border-l border-white/10 bg-[#101010] p-3 sm:p-4">

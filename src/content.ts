@@ -12,6 +12,11 @@ export const SITE = {
     "/media/videos/hero-teaching.mp4",
     "/media/videos/hero-studio.mp4",
   ],
+  // 窄屏 / 弱网用的小一档 Hero 背景（960x540），避免手机上一上来就拉 1MB+
+  heroVideosSmall: [
+    "/media/videos/hero-teaching-sm.mp4",
+    "/media/videos/hero-studio-sm.mp4",
+  ],
   // 静态首屏底图：动态视频还没解码出来时先顶上，避免微信里点开是一片黑
   heroPoster: "/media/posters/hero-poster.jpg",
 };
@@ -91,9 +96,9 @@ export const DOUYIN_CHANNELS = [
 ];
 
 export const VIDEOS = [
-  { id: "vibe-coding", title: "教 AI 写代码 · 从想法到上线", poster: "/media/posters/vibe-coding.jpg", src: "/media/videos/vibe-coding.mp4", duration: "00:57", tag: "AI 编程 · 工作流" },
-  { id: "yolo-vision", title: "YOLO 视觉识别 · 训练到跑通", poster: "/media/posters/yolo-vision.jpg", src: "/media/videos/yolo-vision.mp4", duration: "00:44", tag: "AI 视觉 · 实战" },
-  { id: "51codetodo", title: "51CodeTodo · 个人版到团队版", poster: "/media/posters/51codetodo.jpg", src: "/media/videos/51codetodo.mp4", duration: "01:51", tag: "开源项目 · 产品" },
+  { id: "vibe-coding", title: "教 AI 写代码 · 从想法到上线", poster: "/media/posters/vibe-coding.jpg", src: "/media/videos/vibe-coding.mp4", srcSmall: "/media/videos/vibe-coding-sm.mp4", duration: "00:57", tag: "AI 编程 · 工作流" },
+  { id: "yolo-vision", title: "YOLO 视觉识别 · 训练到跑通", poster: "/media/posters/yolo-vision.jpg", src: "/media/videos/yolo-vision.mp4", srcSmall: "/media/videos/yolo-vision-sm.mp4", duration: "00:44", tag: "AI 视觉 · 实战" },
+  { id: "51codetodo", title: "51CodeTodo · 个人版到团队版", poster: "/media/posters/51codetodo.jpg", src: "/media/videos/51codetodo.mp4", srcSmall: "/media/videos/51codetodo-sm.mp4", duration: "01:51", tag: "开源项目 · 产品" },
 ];
 
 // ── 交付成果：交付之后的系统状态 ────────────────────────────────────

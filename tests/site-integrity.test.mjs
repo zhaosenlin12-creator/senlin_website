@@ -10,6 +10,12 @@ const EXPECTED_HERO_VIDEOS = [
   "/media/videos/hero-studio.mp4",
 ];
 
+// 窄屏 / 弱网用的小一档 Hero 背景
+const EXPECTED_HERO_VIDEOS_SMALL = [
+  "/media/videos/hero-teaching-sm.mp4",
+  "/media/videos/hero-studio-sm.mp4",
+];
+
 const EXPECTED_APP_LINKS = [
   "https://github.com/zhaosenlin12-creator/yxz-3d",
   "https://github.com/zhaosenlin12-creator/gaokao_design",
@@ -93,14 +99,20 @@ test("Hero videos are bundled local assets", async () => {
     const sources = await page.locator("section video").evaluateAll((videos) =>
       videos.slice(0, 2).map((video) => video.getAttribute("src"))
     );
-    assert.deepEqual(sources, EXPECTED_HERO_VIDEOS);
+    // 窄屏优先用小一档；桌面用完整档。两档都必须是站内资源。
+    assert.ok(
+      EXPECTED_HERO_VIDEOS.includes(sources[0]) ||
+        EXPECTED_HERO_VIDEOS_SMALL.includes(sources[0]),
+      `unexpected hero source: ${sources[0]}`
+    );
+    // 第二段背景视频按需加载：首屏不该把它一起拖下来
+    assert.equal(sources[1], null, "second hero video must not load on first paint");
 
-    for (const source of EXPECTED_HERO_VIDEOS) {
+    for (const source of [...EXPECTED_HERO_VIDEOS, ...EXPECTED_HERO_VIDEOS_SMALL]) {
       const file = path.join(process.cwd(), "public", source);
       await access(file);
-      // 首屏背景视频已按网页规格压过（1600×896 / CRF29，无音轨），
-      // 阈值只用来兜住「文件被截断」，不再要求 1MB 以上。
-      assert((await stat(file)).size > 200_000, `${source} is unexpectedly small`);
+      // 阈值只用来兜住「文件被截断」
+      assert((await stat(file)).size > 150_000, `${source} is unexpectedly small`);
     }
   } finally {
     await context.close();
@@ -123,7 +135,6 @@ test("Hero videos expose WeChat inline autoplay attributes", async () => {
     );
 
     for (const video of videos) {
-      assert.equal(video.autoPlay, true);
       assert.equal(video.muted, true);
       assert.equal(video.playsInline, true);
       // 微信里点开首屏不能是黑屏：视频必须带本地静态底图
@@ -132,6 +143,9 @@ test("Hero videos expose WeChat inline autoplay attributes", async () => {
       assert.equal(video.x5PlaysInline, "true");
       assert.equal(video.x5PlayerType, "h5-page");
     }
+    // 只有当前在播的那段自动播放；备用的那段等切过去再下载
+    assert.equal(videos[0].autoPlay, true);
+    assert.equal(videos[1].autoPlay, false);
   } finally {
     await context.close();
   }
@@ -155,6 +169,43 @@ test("Hero shows a static poster before the background video decodes", async () 
   } finally {
     await context.close();
   }
+});
+
+test("Work videos ship a smaller tier for weak networks", async () => {
+  const pairs = [
+    ["vibe-coding", "vibe-coding"],
+    ["yolo-vision", "yolo-vision"],
+    ["51codetodo", "51codetodo"],
+  ];
+  for (const [id, clip] of pairs) {
+    const full = path.join(process.cwd(), "public", "media", "videos", `${clip}.mp4`);
+    const small = path.join(process.cwd(), "public", "media", "videos", `${clip}-sm.mp4`);
+    await access(full);
+    await access(small);
+    const fullSize = (await stat(full)).size;
+    const smallSize = (await stat(small)).size;
+    assert(
+      smallSize < fullSize,
+      `${id}: small tier (${smallSize}) must be smaller than full tier (${fullSize})`
+    );
+    // 小档至少要压到主档的 60% 以下，否则等于没做多档
+    assert(smallSize < fullSize * 0.6, `${id}: small tier is not aggressive enough`);
+  }
+});
+
+test("Deliverable loops are lightweight background clips", async () => {
+  const loops = ["delivery", "douyin", "office", "yolo"];
+  let total = 0;
+  for (const name of loops) {
+    const file = path.join(process.cwd(), "public", "media", "loops", `${name}.mp4`);
+    await access(file);
+    const size = (await stat(file)).size;
+    total += size;
+    // 卡片背景视频，单个不该超过 600KB
+    assert(size < 600_000, `${name}.mp4 is unexpectedly heavy (${size})`);
+  }
+  // 4 段背景加起来不超过 1.6MB
+  assert(total < 1_600_000, `loops total ${total} is too heavy`);
 });
 
 test("Hero fallback is a gradient instead of a static portrait", async () => {
