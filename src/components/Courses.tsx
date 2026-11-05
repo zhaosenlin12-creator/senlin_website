@@ -1,6 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+  X,
+} from "lucide-react";
 import WordsPullUpMultiStyle from "./WordsPullUpMultiStyle";
 import ImageCarousel from "./ImageCarousel";
 import ImageViewer from "./ImageViewer";
@@ -15,7 +21,11 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function Courses() {
   const [openId, setOpenId] = useState<string | null>(null);
-  const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
+  const [zoom, setZoom] = useState<{
+    images: string[];
+    index: number;
+    alts?: string[];
+  } | null>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -57,7 +67,7 @@ export default function Courses() {
             <WordsPullUpMultiStyle
               segments={[
                 {
-                  text: "两条年龄线，六门课，一张交付地图。",
+                  text: "六门课，从孩子的启蒙到成人的交付。",
                   className: "text-primary",
                 },
               ]}
@@ -65,7 +75,7 @@ export default function Courses() {
             />
           </div>
           <p className="max-w-sm text-xs leading-[1.6] text-gray-500 sm:text-sm">
-            少儿线从启蒙到创赛，成人线从实战到高阶定制。海报可点开看完整介绍，图可点开放大。
+            少儿 4 门，成人 2 门。海报点开看完整介绍，图点开放大。
           </p>
         </div>
 
@@ -100,7 +110,7 @@ export default function Courses() {
           {COURSE_LINES.map((line) => {
             const list = line.id === "k12" ? k12 : adult;
             return (
-              <div key={line.id}>
+              <div key={line.id} id={`course-${line.id}`} className="scroll-mt-24">
                 <Reveal className="mb-6 md:mb-8">
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-white/10 pb-4">
                     <h3
@@ -130,17 +140,19 @@ export default function Courses() {
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.35fr_1fr]">
+                  <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.15fr_1fr]">
                     {featuredAdult ? (
                       <FeaturedCourse
                         course={featuredAdult}
                         onOpen={() => setOpenId(featuredAdult.id)}
-                        onZoom={(src, alt) => setZoom({ src, alt })}
+                        onZoom={(images, index, alts) =>
+                          setZoom({ images, index, alts })
+                        }
                       />
                     ) : null}
                     <div className="flex flex-col gap-5">
                       {otherAdult.map((course) => (
-                        <CourseCard
+                        <AdultCard
                           key={course.id}
                           course={course}
                           delay={0.1}
@@ -180,13 +192,15 @@ export default function Courses() {
           <CourseLightbox
             course={active}
             onClose={() => setOpenId(null)}
-            onZoom={(src, alt) => setZoom({ src, alt })}
+            onZoom={(images, index, alts) => setZoom({ images, index, alts })}
           />
         ) : null}
       </AnimatePresence>
       <ImageViewer
-        src={zoom?.src ?? null}
-        alt={zoom?.alt ?? ""}
+        images={zoom?.images ?? []}
+        alts={zoom?.alts}
+        index={zoom ? zoom.index : null}
+        onIndexChange={(i) => setZoom((z) => (z ? { ...z, index: i } : z))}
         onClose={() => setZoom(null)}
       />
     </section>
@@ -213,22 +227,30 @@ function CourseCard({
           transition={{ duration: 0.8, ease: EASE }}
           className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#101010] transition duration-500 hover:border-white/25"
         >
-          <button
-            type="button"
+          <div
+            role="button"
+            tabIndex={0}
             onClick={onOpen}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onOpen();
+              }
+            }}
             className="relative block aspect-[4/5] w-full overflow-hidden bg-[#0a0a0a] text-left sm:aspect-[3/4]"
             aria-label={`查看 ${course.title} 完整介绍`}
           >
             <ImageCarousel
-              images={course.gallery}
+              images={course.covers?.length ? course.covers : course.gallery}
               alt={course.title}
               interval={5200}
               showDots
               showArrows={false}
               className="absolute inset-0 h-full w-full"
-              imgClassName="object-cover"
+              imgClassName="object-contain"
+              backdrop
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#101010] via-black/10 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#101010] via-transparent to-transparent" />
             <span
               className="pointer-events-none absolute left-4 top-4 z-20 rounded-full px-2.5 py-1 text-[10px] font-medium tracking-[0.12em] backdrop-blur"
               style={{ color: c.text, background: "rgba(0,0,0,0.62)" }}
@@ -238,7 +260,7 @@ function CourseCard({
             <span className="pointer-events-none absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition group-hover:bg-white group-hover:text-black">
               <Maximize2 size={14} />
             </span>
-          </button>
+          </div>
 
           <div className="flex flex-1 flex-col p-5 sm:p-6">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-white/45">
@@ -286,9 +308,14 @@ function FeaturedCourse({
 }: {
   course: Course;
   onOpen: () => void;
-  onZoom: (src: string, alt: string) => void;
+  onZoom: (images: string[], index: number, alts?: string[]) => void;
 }) {
   const c = accent(course.accent);
+  const slides = course.slides?.length ? course.slides : course.gallery;
+  const [page, setPage] = useState(0);
+  const go = (d: number) =>
+    setPage((v) => (v + d + slides.length) % slides.length);
+
   return (
     <Reveal>
       <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#101010]">
@@ -298,20 +325,91 @@ function FeaturedCourse({
             background: `radial-gradient(90% 60% at 15% 0%, ${c.glow}, transparent 62%)`,
           }}
         />
-        <div className="relative grid flex-1 grid-cols-1 md:grid-cols-2">
-          <div className="relative min-h-[300px] overflow-hidden md:min-h-[520px]">
-            <ImageCarousel
-              images={course.gallery}
-              alt={course.title}
-              interval={5000}
-              onOpen={(i) => onZoom(course.gallery[i], course.title)}
-              className="absolute inset-0 h-full w-full"
-              imgClassName="object-cover"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#101010] via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#101010]" />
+        <div className="relative flex flex-col">
+          {/* 课件预览器：整页显示，不裁切 */}
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#05080f]">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={slides[page]}
+                src={slides[page]}
+                alt={`${course.title} 课件页 ${page + 1}`}
+                initial={{ opacity: 0, scale: 1.015 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.45, ease: EASE }}
+                onClick={() =>
+                  onZoom(
+                    slides,
+                    page,
+                    slides.map((_, i) => `${course.title} 课件 ${i + 1}`)
+                  )
+                }
+                className="h-full w-full cursor-zoom-in object-contain"
+              />
+            </AnimatePresence>
+
+            <span className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/12 bg-black/60 px-2.5 py-1 text-[10px] tracking-[0.14em] text-white/70 backdrop-blur">
+              课件页 {page + 1} / {slides.length}
+            </span>
+
+            {slides.length > 1 ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => go(-1)}
+                  aria-label="上一页课件"
+                  className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/65 text-white backdrop-blur transition hover:border-white/45"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => go(1)}
+                  aria-label="下一页课件"
+                  className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/65 text-white backdrop-blur transition hover:border-white/45"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </>
+            ) : null}
           </div>
 
-          <div className="flex flex-col p-6 sm:p-8 md:p-9">
+          {/* 胶片条：一眼看全部课件 */}
+          {slides.length > 1 ? (
+            <div className="flex gap-2 overflow-x-auto border-b border-white/10 px-4 py-3 [scrollbar-width:none] sm:px-5">
+              {slides.map((s, k) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setPage(k)}
+                  aria-label={`第 ${k + 1} 页课件`}
+                  className={
+                    "relative h-14 w-24 shrink-0 overflow-hidden rounded-md border transition " +
+                    (k === page
+                      ? "border-white/35"
+                      : "border-white/10 opacity-60 hover:opacity-100")
+                  }
+                >
+                  <img
+                    src={s}
+                    alt=""
+                    aria-hidden
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                  />
+                  {k === page ? (
+                    <span
+                      className="absolute inset-0"
+                      style={{ boxShadow: `inset 0 0 0 2px ${c.text}` }}
+                    />
+                  ) : null}
+                </button>
+              ))}
+            </div>
+          ) : null}
+
+          <div className="p-6 sm:p-8">
             <div className="flex flex-wrap items-center gap-2">
               <span
                 className="rounded-full px-2.5 py-1 text-[10px] font-medium tracking-[0.14em] backdrop-blur"
@@ -325,24 +423,24 @@ function FeaturedCourse({
             </div>
 
             <h3
-              className="mt-4 text-3xl font-medium leading-[1.15] tracking-tight text-[#E1E0CC] sm:text-4xl"
+              className="mt-4 text-2xl font-medium leading-[1.15] tracking-tight text-[#E1E0CC] sm:text-3xl"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {course.title}
             </h3>
             {course.subtitle ? (
               <p
-                className="mt-2 text-lg sm:text-xl"
+                className="mt-1.5 text-base sm:text-lg"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 <span style={{ color: c.text }}>{course.subtitle}</span>
               </p>
             ) : null}
-            <p className="mt-4 text-[13px] leading-[1.8] text-gray-300 sm:text-sm">
+            <p className="mt-3 text-[13px] leading-[1.8] text-gray-300 sm:text-sm">
               {course.summary}
             </p>
 
-            <div className="mt-5 flex flex-wrap gap-1.5">
+            <div className="mt-4 flex flex-wrap gap-1.5">
               {course.modules.map((m) => (
                 <span
                   key={m}
@@ -354,13 +452,13 @@ function FeaturedCourse({
             </div>
 
             {course.price ? (
-              <p className="mt-5 text-xs text-white/55">
+              <p className="mt-4 text-xs text-white/55">
                 <span className="text-white/35">学费 </span>
                 {course.price}
               </p>
             ) : null}
 
-            <div className="mt-auto flex flex-wrap items-center gap-3 pt-7">
+            <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-white/10 pt-6">
               <button
                 type="button"
                 onClick={onOpen}
@@ -388,6 +486,108 @@ function FeaturedCourse({
   );
 }
 
+/** 成人线第二张卡：海报纸完整显示 + 文字在右 */
+function AdultCard({
+  course,
+  delay = 0,
+  onOpen,
+}: {
+  course: Course;
+  delay?: number;
+  onOpen: () => void;
+}) {
+  const c = accent(course.accent);
+  return (
+    <Reveal delay={delay}>
+      <motion.article
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.8, ease: EASE }}
+        className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#101010] transition duration-500 hover:border-white/25 sm:flex-row"
+      >
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={onOpen}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onOpen();
+            }
+          }}
+          className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#070707] text-left sm:aspect-auto sm:w-[42%]"
+          aria-label={`查看 ${course.title} 完整介绍`}
+        >
+          <img
+            src={course.poster}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
+          />
+          <img
+            src={course.poster}
+            alt={`${course.title} 课程海报`}
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-contain"
+          />
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col p-5 sm:p-6">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-white/45">
+            <span style={{ color: c.text }}>{course.audience}</span>
+            <span>· {course.lessons}</span>
+          </div>
+          <h3
+            className="mt-2 text-xl font-medium leading-snug tracking-tight text-[#E1E0CC] sm:text-2xl"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {course.title}
+          </h3>
+          <p className="mt-2.5 text-xs leading-[1.75] text-gray-400 sm:text-[13.5px]">
+            {course.summary}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {course.modules.slice(0, 5).map((m) => (
+              <span
+                key={m}
+                className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] text-white/70 sm:text-[11px]"
+              >
+                {m}
+              </span>
+            ))}
+            {course.modules.length > 5 ? (
+              <span className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] text-white/45">
+                +{course.modules.length - 5}
+              </span>
+            ) : null}
+          </div>
+          <div className="mt-auto flex flex-wrap items-center gap-3 pt-5">
+            <button
+              type="button"
+              onClick={onOpen}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-black transition hover:gap-3"
+              style={{ background: c.text }}
+            >
+              看完整介绍
+              <ArrowRight size={14} />
+            </button>
+            <a
+              href="#contact"
+              className="text-xs text-white/55 underline-offset-4 transition hover:text-white hover:underline"
+            >
+              咨询
+            </a>
+          </div>
+        </div>
+      </motion.article>
+    </Reveal>
+  );
+}
+
 function CourseLightbox({
   course,
   onClose,
@@ -395,7 +595,7 @@ function CourseLightbox({
 }: {
   course: Course;
   onClose: () => void;
-  onZoom: (src: string, alt: string) => void;
+  onZoom: (images: string[], index: number, alts?: string[]) => void;
 }) {
   const c = accent(course.accent);
   const [index, setIndex] = useState(0);
@@ -447,7 +647,13 @@ function CourseLightbox({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.32 }}
-              onClick={() => onZoom(course.gallery[index], course.title)}
+              onClick={() =>
+                onZoom(
+                  course.gallery,
+                  index,
+                  course.gallery.map(() => course.title)
+                )
+              }
               className="h-full w-full cursor-zoom-in object-contain"
             />
           </AnimatePresence>

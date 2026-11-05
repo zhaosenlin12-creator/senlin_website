@@ -19,8 +19,8 @@ export default function DomeGallerySection() {
           autoRotateDegPerSec={5}
           overlayBlurColor="#070707"
           imageBorderRadius="18px"
-          openedImageWidth="min(92vw, 720px)"
-          openedImageHeight="min(86vh, 720px)"
+          openedImageWidth="min(92vw, 1120px)"
+          openedImageHeight="min(86vh, 630px)"
           openedImageBorderRadius="24px"
         />
       </div>
@@ -30,7 +30,7 @@ export default function DomeGallerySection() {
           className="rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[10px] uppercase tracking-[0.2em] backdrop-blur-md"
           style={{ color: "#DEDBC8" }}
         >
-          穹顶画廊 · 自动播放 · 可拖拽
+          作品穹顶 · 自动旋转 · 可拖拽
         </span>
       </div>
 
@@ -39,13 +39,13 @@ export default function DomeGallerySection() {
           className="text-3xl font-medium leading-[0.95] tracking-tight text-[#E1E0CC] sm:text-5xl md:text-6xl"
           style={{ fontFamily: "var(--font-sans)" }}
         >
-          教学<span
+          作品<span
             className="italic text-primary"
             style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}
-          >掠影</span>
+          >穹顶</span>
         </h2>
         <p className="mt-3 max-w-xs text-xs text-white/55 sm:text-sm">
-          点击图片放大，拖拽画布在穹顶中旋转浏览。
+          产品界面、交付课件和课堂现场。点击放大后可左右切换，拖拽旋转。
         </p>
       </div>
     </section>

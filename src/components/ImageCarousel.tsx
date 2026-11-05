@@ -11,6 +11,8 @@ type ImageCarouselProps = {
   imgClassName?: string;
   showDots?: boolean;
   showArrows?: boolean;
+  /** 图不铺满时，用同一张图做一层模糊底衬，避免出现突兀的空白边 */
+  backdrop?: boolean;
   onOpen?: (index: number) => void;
 };
 
@@ -25,6 +27,7 @@ export default function ImageCarousel({
   imgClassName = "object-cover",
   showDots = true,
   showArrows = true,
+  backdrop = false,
   onOpen,
 }: ImageCarouselProps) {
   const [index, setIndex] = useState(0);
@@ -45,6 +48,19 @@ export default function ImageCarousel({
     };
   }, [index, count, interval, paused, go]);
 
+  // 预加载整组图片：轮播切页时新图已经在浏览器缓存里，不会闪出 alt 文字
+  const imageKey = images.join("|");
+  useEffect(() => {
+    imageKey
+      .split("|")
+      .filter(Boolean)
+      .forEach((src) => {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = src;
+      });
+  }, [imageKey]);
+
   if (count === 0) return null;
 
   return (
@@ -54,12 +70,21 @@ export default function ImageCarousel({
       onMouseLeave={() => setPaused(false)}
     >
       <div className="relative h-full w-full overflow-hidden">
+        {backdrop ? (
+          <img
+            src={images[index]}
+            alt=""
+            aria-hidden
+            decoding="async"
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl"
+          />
+        ) : null}
         <AnimatePresence initial={false} mode="sync">
           <motion.img
             key={images[index]}
             src={images[index]}
             alt={`${alt}（${index + 1}/${count}）`}
-            loading="lazy"
+            loading={index === 0 ? "eager" : "lazy"}
             decoding="async"
             initial={{ opacity: 0, scale: 1.06 }}
             animate={{ opacity: 1, scale: 1 }}

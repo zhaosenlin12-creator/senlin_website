@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import WordsPullUpMultiStyle from "./WordsPullUpMultiStyle";
-import KpiStrip from "./KpiStrip";
 import { CONTACT, MENTORSHIP } from "../content";
 import { accent } from "../lib/accent";
 
@@ -132,7 +131,26 @@ export default function Mentorship() {
               </div>
             </div>
 
-            <KpiStrip columns="two" className="lg:w-[360px]" />
+            <ul className="grid shrink-0 gap-3 sm:grid-cols-2 lg:w-[340px]">
+              {[
+                { k: "带过的学生", v: "1200+" },
+                { k: "结课拿得出的作品", v: "人人一个" },
+                { k: "抖音账号关注", v: "5000+" },
+                { k: "答疑响应", v: "不限次数" },
+              ].map((row) => (
+                <li
+                  key={row.k}
+                  className="border-l border-white/15 pl-3.5"
+                >
+                  <span className="block text-xl font-medium tracking-tight text-[#E1E0CC]">
+                    {row.v}
+                  </span>
+                  <span className="mt-0.5 block text-[10px] uppercase tracking-[0.16em] text-white/45">
+                    {row.k}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

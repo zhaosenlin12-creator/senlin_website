@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Quote } from "lucide-react";
+import { ArrowRight, ArrowDown } from "lucide-react";
 import KpiStrip from "./KpiStrip";
 import ShinyText from "./motion/ShinyText";
-import { HEAD_LINES, STORY } from "../content";
+import { HEAD_LINES, STORY, TRACKS } from "../content";
+import { accent } from "../lib/accent";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -38,27 +39,27 @@ export default function About() {
             transition={{ duration: 0.9, ease: EASE }}
             className="md:col-span-4"
           >
-            <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#101010]">
+            <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#101010]">
               <div className="relative aspect-[4/5] w-full overflow-hidden">
                 <img
                   src="/media/photo-wrcc.jpg"
                   loading="lazy"
                   decoding="async"
-                  alt="森林 · 教学现场"
+                  alt="森林 · WRCC2025 世界机器人大赛宜昌锦标赛领奖台"
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
               </div>
 
               <div className="flex items-center justify-between gap-4 border-t border-white/10 p-5">
                 <div className="min-w-0">
-                  <div className="text-[10px] uppercase tracking-[0.25em] text-primary/70">
-                    现场 / V I D E O
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-primary/70">
+                    WRCC2025 · 宜昌锦标赛
                   </div>
                   <div className="mt-1 text-sm font-medium text-[#E1E0CC] sm:text-base">
-                    森林 · 教学现场
+                    森林 · 乐启享合伙人 / 副校长
                   </div>
                   <div className="text-[11px] text-white/45 sm:text-xs">
-                    湖北宜昌 · 乐启享合伙人 / 副校长
+                    湖北宜昌 · 07 年一线教学
                   </div>
                 </div>
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/15 bg-black/40 backdrop-blur transition group-hover:border-white/30">
@@ -107,22 +108,69 @@ export default function About() {
               ))}
             </div>
 
-            <div className="mt-10 flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-5 backdrop-blur-sm sm:gap-5 sm:p-6">
-              <span
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-                style={{ background: "rgba(222,219,200,0.08)", color: "#DEDBC8" }}
-              >
-                <Quote size={16} />
-              </span>
-              <p className="text-[15px] leading-[1.7] text-white/75 sm:text-base">
-                <span className="text-primary">「</span>
-                教育的本质，是一棵树摇动另一棵树，一朵云推动另一朵云。
-                <span className="text-primary">」</span>
-              </p>
-            </div>
-
             <KpiStrip className="mt-10" />
           </div>
+        </div>
+
+        {/* 两条赛道：全站只在这里分流一次 */}
+        <div className="mt-14 grid grid-cols-1 gap-4 md:mt-20 md:grid-cols-2">
+          {TRACKS.map((track, i) => {
+            const c = accent(track.accent);
+            return (
+              <motion.div
+                key={track.id}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.8, ease: EASE, delay: i * 0.1 }}
+                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#101010] p-6 transition duration-500 hover:border-white/25 sm:p-7"
+              >
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-70"
+                  style={{
+                    background: `radial-gradient(80% 70% at 100% 0%, ${c.glow}, transparent 65%)`,
+                  }}
+                />
+                <div className="relative flex flex-wrap items-center gap-3">
+                  <span
+                    className="rounded-full px-2.5 py-1 text-[10px] font-medium tracking-[0.14em]"
+                    style={{ color: c.text, background: c.glow }}
+                  >
+                    {track.label}
+                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.16em] text-white/40">
+                    {track.note}
+                  </span>
+                </div>
+                <h3
+                  className="relative mt-4 text-xl font-medium leading-snug tracking-tight text-[#E1E0CC] sm:text-2xl"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {track.headline}
+                </h3>
+                <p className="relative mt-2.5 text-xs leading-[1.75] text-gray-400 sm:text-[13.5px]">
+                  {track.desc}
+                </p>
+                <ul className="relative mt-5 flex flex-wrap gap-1.5">
+                  {track.points.map((p) => (
+                    <li
+                      key={p}
+                      className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] text-white/70"
+                    >
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={track.id === "k12" ? "#course-k12" : "#course-adult"}
+                  className="relative mt-6 inline-flex items-center gap-2 text-xs font-medium text-[#E1E0CC] transition hover:gap-3 sm:text-sm"
+                >
+                  {track.id === "k12" ? "看少儿 4 门课" : "看成人 2 门课"}
+                  <ArrowDown size={14} className="transition-transform" />
+                </a>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

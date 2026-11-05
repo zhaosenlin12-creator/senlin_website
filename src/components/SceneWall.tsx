@@ -8,7 +8,10 @@ import { SCENE_PHOTOS } from "../content";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function SceneWall() {
-  const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
+  // 整面墙的图串成一组，放大后左右键就能一张张翻下去
+  const [zoom, setZoom] = useState<number | null>(null);
+
+  const photos = SCENE_PHOTOS;
 
   return (
     <section id="scene" className="relative bg-black px-4 py-24 md:py-32">
@@ -42,16 +45,25 @@ export default function SceneWall() {
             >
               <button
                 type="button"
-                onClick={() => setZoom({ src: photo.src, alt: photo.title })}
+                onClick={() => setZoom(i)}
                 aria-label={`放大查看 ${photo.title}`}
                 className="absolute inset-0 h-full w-full cursor-zoom-in"
               >
+                {/* 竖图 / 方图用同一张做模糊底衬，保证主体完整不被裁掉 */}
+                <img
+                  src={photo.src}
+                  alt=""
+                  aria-hidden
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
+                />
                 <img
                   src={photo.src}
                   alt={photo.title}
                   loading="lazy"
                   decoding="async"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                  className="absolute inset-0 h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.03]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500 group-hover:from-black/95" />
               </button>
@@ -81,8 +93,10 @@ export default function SceneWall() {
       </div>
 
       <ImageViewer
-        src={zoom?.src ?? null}
-        alt={zoom?.alt ?? ""}
+        images={photos.map((p) => p.src)}
+        alts={photos.map((p) => p.title)}
+        index={zoom}
+        onIndexChange={setZoom}
         onClose={() => setZoom(null)}
       />
     </section>

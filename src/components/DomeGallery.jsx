@@ -366,6 +366,65 @@ export default function DomeGallery({
     { target: mainRef, eventOptions: { passive: true } }
   );
 
+  // 放大后左右切换：直接换图，不走关闭/重开的动画
+  const openIndexRef = useRef(-1);
+  const navRef = useRef(null);
+  const counterRef = useRef(null);
+
+  const getTiles = () =>
+    Array.from(
+      (() => {
+        const seen = new Map();
+        const els = Array.from(
+          sphereRef.current?.querySelectorAll(
+            '.item__image:not(.item__image--reference)'
+          ) || []
+        );
+        for (const el of els) {
+          const src =
+            el.parentElement?.dataset?.src || el.dataset?.src || '';
+          if (src && !seen.has(src)) seen.set(src, el);
+        }
+        return Array.from(seen.values());
+      })()
+    );
+
+  const syncNav = useCallback(() => {
+    const total = getTiles().length;
+    if (counterRef.current) {
+      counterRef.current.textContent = `${String(openIndexRef.current + 1).padStart(
+        2,
+        '0'
+      )} / ${String(total).padStart(2, '0')}`;
+    }
+    if (navRef.current) {
+      navRef.current.style.display = total > 1 ? 'flex' : 'none';
+    }
+  }, []);
+
+  const gotoTile = useCallback(
+    delta => {
+      const tiles = getTiles();
+      if (tiles.length < 2) return;
+      const overlay = viewerRef.current?.querySelector('.enlarge');
+      const img = overlay?.querySelector('img');
+      if (!img) return;
+      openIndexRef.current =
+        (openIndexRef.current + delta + tiles.length) % tiles.length;
+      const next = tiles[openIndexRef.current];
+      const src = next?.parentElement?.dataset?.src || next?.dataset?.src || '';
+      if (!src) return;
+      img.style.transition = 'opacity 160ms ease';
+      img.style.opacity = '0';
+      window.setTimeout(() => {
+        img.src = src;
+        img.style.opacity = '1';
+      }, 70);
+      syncNav();
+    },
+    [syncNav]
+  );
+
   useEffect(() => {
     const scrim = scrimRef.current;
     if (!scrim) return;
@@ -373,6 +432,7 @@ export default function DomeGallery({
       if (performance.now() - openStartedAtRef.current < 250) return;
       const el = focusedElRef.current;
       if (!el) return;
+      if (navRef.current) navRef.current.style.display = 'none';
       const parent = el.parentElement;
       const overlay = viewerRef.current?.querySelector('.enlarge');
       if (!overlay) return;
@@ -411,7 +471,7 @@ export default function DomeGallery({
       const originalImg = overlay.querySelector('img');
       if (originalImg) {
         const img = originalImg.cloneNode();
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+        img.style.cssText = 'width:100%;height:100%;object-fit:contain;';
         animatingOverlay.appendChild(img);
       }
       overlay.remove();
@@ -459,13 +519,15 @@ export default function DomeGallery({
     scrim.addEventListener('click', close);
     const onKey = e => {
       if (e.key === 'Escape') close();
+      if (e.key === 'ArrowRight') gotoTile(1);
+      if (e.key === 'ArrowLeft') gotoTile(-1);
     };
     window.addEventListener('keydown', onKey);
     return () => {
       scrim.removeEventListener('click', close);
       window.removeEventListener('keydown', onKey);
     };
-  }, [enlargeTransitionMs, unlockScroll]);
+  }, [enlargeTransitionMs, unlockScroll, gotoTile]);
 
   const openItemFromElement = useCallback(
     el => {
@@ -475,6 +537,7 @@ export default function DomeGallery({
       lockScroll();
       const parent = el.parentElement;
       focusedElRef.current = el;
+      openIndexRef.current = Math.max(0, getTiles().indexOf(el));
       el.setAttribute('data-focused', 'true');
       const offsetX = getDataNumber(parent, 'offsetX', 0);
       const offsetY = getDataNumber(parent, 'offsetY', 0);
@@ -543,6 +606,7 @@ export default function DomeGallery({
         overlay.style.opacity = '1';
         overlay.style.transform = 'translate(0px, 0px) scale(1, 1)';
         rootRef.current?.setAttribute('data-enlarging', 'true');
+        syncNav();
       }, 16);
 
       const wantsResize = openedImageWidth || openedImageHeight;
@@ -578,7 +642,7 @@ export default function DomeGallery({
         overlay.addEventListener('transitionend', onFirstEnd);
       }
     },
-    [enlargeTransitionMs, lockScroll, openedImageHeight, openedImageWidth, segments, unlockScroll]
+    [enlargeTransitionMs, lockScroll, openedImageHeight, openedImageWidth, segments, syncNav, unlockScroll]
   );
 
   const onTileClick = useCallback(
@@ -665,6 +729,27 @@ export default function DomeGallery({
         <div className="viewer" ref={viewerRef}>
           <div ref={scrimRef} className="scrim" />
           <div ref={frameRef} className="frame" />
+          <div ref={navRef} className="dg-nav" style={{ display: 'none' }}>
+            <button
+              type="button"
+              className="dg-nav__btn dg-nav__btn--prev"
+              aria-label="上一张"
+              onClick={() => gotoTile(-1)}
+            >
+              ‹
+            </button>
+            <span ref={counterRef} className="dg-nav__count">
+              01 / 01
+            </span>
+            <button
+              type="button"
+              className="dg-nav__btn dg-nav__btn--next"
+              aria-label="下一张"
+              onClick={() => gotoTile(1)}
+            >
+              ›
+            </button>
+          </div>
         </div>
       </main>
     </div>

@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import Hero from "./components/Hero";
 import About from "./components/About";
-import Features from "./components/Features";
 import Deliverables from "./components/Deliverables";
 import Courses from "./components/Courses";
 import SceneWall from "./components/SceneWall";
@@ -40,7 +39,6 @@ export default function App() {
     <div className="min-h-screen w-full bg-black">
       <Hero />
       <About />
-      <Features />
       <Deliverables />
       <Courses />
       <SceneWall />
@@ -50,8 +48,8 @@ export default function App() {
           <DomeGallerySection />
         </Suspense>
       )}
-      <VideoRow />
       <Apps />
+      <VideoRow />
       <Mentorship />
       <Contact />
     </div>

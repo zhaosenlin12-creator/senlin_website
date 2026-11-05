@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import TypewriterLoop from "./TypewriterLoop";
-import { SITE, NAV_ITEMS, KPI } from "../content";
+import { SITE, NAV_ITEMS } from "../content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const CROSSFADE_MS = 1200;
@@ -236,20 +236,15 @@ export default function Hero() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.05 }}
                 transition={{ duration: 0.9, ease: EASE, delay: 0.9 }}
-                className="mt-4 grid grid-cols-4 gap-2 border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.18em] text-white/55 sm:gap-4 sm:text-[11px]"
+                className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.18em] text-white/45 sm:text-[11px]"
               >
-                {KPI.map((k) => (
-                  <div key={k.label} className="flex flex-col">
-                    <span
-                      className="text-base font-medium text-[#E1E0CC] sm:text-lg"
-                      style={{ letterSpacing: "-0.02em" }}
-                    >
-                      {k.value}
-                      <span className="text-mint">{k.suffix}</span>
-                    </span>
-                    <span className="mt-0.5 leading-tight text-white/45">{k.label}</span>
-                  </div>
-                ))}
+                <span>少儿编程</span>
+                <span className="text-white/20">/</span>
+                <span>AI 实战</span>
+                <span className="text-white/20">/</span>
+                <span>企业内训</span>
+                <span className="text-white/20">/</span>
+                <span>系统交付</span>
               </motion.div>
             </div>
           </div>

@@ -7,7 +7,7 @@ export const SITE = {
   kicker: "少儿编程教师 / AI 实战讲师 / 独立开发者",
   badge: "2026 课程招生中",
   statement:
-    "我是森林，乐启享合伙人兼副校长，坐标湖北宜昌。这六年，我一边在教室里带学生写代码、造机器人，一边给企业和普通人做 AI 培训——左边是孩子的课堂，右边是真交付的系统与智能体。",
+    "我在宜昌做了七年教育：一边带 8–18 岁的孩子写代码、造机器人，一边给企业和普通人做 AI 培训与系统交付。",
   heroVideos: [
     "/media/videos/hero-teaching.mp4",
     "/media/videos/hero-studio.mp4",
@@ -16,10 +16,10 @@ export const SITE = {
 
 export const NAV_ITEMS = [
   { id: "story", label: "关于我" },
-  { id: "practice", label: "教学方向" },
   { id: "deliver", label: "交付成果" },
   { id: "courses", label: "课程体系" },
   { id: "scene", label: "真实现场" },
+  { id: "gallery", label: "作品墙" },
   { id: "video", label: "作品视频" },
   { id: "apps", label: "我的产品" },
   { id: "mentor", label: "收徒" },
@@ -29,148 +29,32 @@ export type Track = {
   id: string;
   label: string;
   note: string;
-  grid: string;
-  cards: ExpertiseCard[];
-};
-
-export type ExpertiseCard = {
-  id: string;
-  number: string;
-  title: string;
-  summary: string;
-  description: string;
-  bullets: string[];
-  media: string;
-  kind: "image";
+  headline: string;
+  desc: string;
+  points: string[];
   accent: string;
-  badge?: string;
 };
 
-// 两条轨道：少儿编程造物 / 成人 AI 实战与交付
+// 两条赛道：少儿编程造物 / 成人 AI 实战与交付。
+// 只在这里分流一次，课程体系那一屏不再重复讲。
 export const TRACKS: Track[] = [
   {
     id: "k12",
     label: "少儿 · 编程与造物",
-    note: "8–18 岁 · 课堂项目式推进",
-    grid: "sm:grid-cols-2 lg:grid-cols-3",
-    cards: [
-      {
-        id: "scene",
-        number: "00",
-        title: "教学现场",
-        summary: "一个课堂、一个舞台、一个创作者。",
-        description: "",
-        bullets: ["课堂幻灯片", "学生作品镜头", "每届人都上台"],
-        media: "/media/posters/star-creation.jpg",
-        kind: "image" as const,
-        accent: "cream",
-      },
-      {
-        id: "python",
-        number: "01",
-        title: "Python · 项目式",
-        summary: "从一行代码到一份作品。",
-        description: "Python 入门像是一座一座小岛。每座岛上都有任务、有同伴、有可带走的作品。",
-        bullets: ["从第一行到第一个作品", "5 个半天做出参赛作品", "对接白名单赛事"],
-        media: "/media/posters/camp-arcade.jpg",
-        kind: "image" as const,
-        accent: "mint",
-        badge: "Python Arcade 创赛",
-      },
-      {
-        id: "cpp",
-        number: "02",
-        title: "C++ · NOI / CSP",
-        summary: "从爱好走向系统。",
-        description: "从一道题、一份训练，走到一个能上台面的自己。",
-        bullets: ["从爱好走向系统", "习题与复盘", "信奥竞赛指导教师"],
-        media: "/media/scenes/cpp-noi-path.jpg",
-        kind: "image" as const,
-        accent: "cyan",
-        badge: "信奥 · 竞赛指导",
-      },
-      {
-        id: "robotics",
-        number: "03",
-        title: "机器人 · 赛场",
-        summary: "从一台机器到一场比赛。",
-        description: "从一台机器到一场比赛。拼装、调试、上台，孩子学到的远不止是机械。",
-        bullets: ["从零拼装到调试", "队友间的思考", "WRC 赛场实战"],
-        media: "/media/gallery/wrc7.jpg",
-        kind: "image" as const,
-        accent: "amber",
-      },
-      {
-        id: "creation",
-        number: "04",
-        title: "创赛 · 少年创意秀",
-        summary: "把作品搬上台面。",
-        description:
-          "少年创意秀、科创赛、创客答辩——孩子不只做完，还要讲得清它为什么值得做。",
-        bullets: ["获奖作品展示", "现场讲解与答辩", "把想法讲给评委听"],
-        media: "/media/posters/space-explore.jpg",
-        kind: "image" as const,
-        accent: "rose",
-        badge: "创赛 · 上台展示",
-      },
-      {
-        id: "geometry",
-        number: "05",
-        title: "图形化 · 几何世界",
-        summary: "用积木搭出一个世界。",
-        description:
-          "图形化编程 × 数字几何 × 创意游戏。孩子在拖拽与拼搭里理解坐标、形状与规则。",
-        bullets: ["5 个半天三大任务", "几何角色与场景搭建", "可参展的原创作品"],
-        media: "/media/posters/camp-geometry.jpg",
-        kind: "image" as const,
-        accent: "violet",
-        badge: "5 个半天",
-      },
-    ],
+    note: "8–18 岁",
+    headline: "孩子的作品，从课堂走上赛场。",
+    desc: "从 AI 启蒙到信奥、机器人与白名单赛事，每学期一个能上台的成品。",
+    points: ["Python · C++ 信奥辅导", "机器人 · 3D 打印造物", "两期 16 节 AI 启蒙营"],
+    accent: "cream",
   },
   {
     id: "adult",
     label: "成人 · AI 实战与交付",
     note: "职场人 · 创业者 · 大学生",
-    grid: "md:grid-cols-3",
-    cards: [
-      {
-        id: "ai-class",
-        number: "04",
-        title: "AI 实战课堂",
-        summary: "把 AI 用进真实的工作。",
-        description:
-          "Codex & WorkBuddy 全流程实战：提示词工程、Agent 原理、知识库搭建、自动化工作流，用完就能交付。",
-        bullets: ["提示词工程", "Agent 与工作流", "知识库搭建"],
-        media: "/media/scene/prompt-wall.jpg",
-        kind: "image" as const,
-        accent: "cyan",
-      },
-      {
-        id: "corp",
-        number: "05",
-        title: "企业内训",
-        summary: "按岗位定制，不讲空话。",
-        description:
-          "为企业员工做定制内训，围绕真实任务：文档表格自动化、资料与知识库、岗位专属提示词，把工具落到工位上。",
-        bullets: ["岗位任务拆解", "定制课程与演练", "课后落地陪跑"],
-        media: "/media/scene/adult-workshop.jpg",
-        kind: "image" as const,
-        accent: "violet",
-      },
-      {
-        id: "office",
-        number: "06",
-        title: "职场 AI 提效",
-        summary: "零基础也能用起来。",
-        description:
-          "给普通人普及 AI：写材料、做表格、剪视频、做海报，把 AI 变成日常生产力，而不是新闻里的一个词。",
-        bullets: ["办公场景实操", "从 0 到 1 交付", "一人也能上手"],
-        media: "/media/scene/adult-office.jpg",
-        kind: "image" as const,
-        accent: "mint",
-      },
-    ],
+    headline: "把 AI 从「会用」做到「能交付」。",
+    desc: "十项实战能力打底，高阶定制课只做你手上那一件事，最后交出一个能用的东西。",
+    points: ["办公 · 知识库 · Agent · 建站", "8 次课的高阶定制", "企业内训与公众普及"],
+    accent: "cyan",
   },
 ];
 
@@ -210,14 +94,28 @@ export const VIDEOS = [
   { id: "color-english", title: "色彩英语 · AI 演示", poster: "/media/posters/color-english.jpg", src: "/media/videos/color-english.mp4", duration: "01:47", tag: "人工智能 · 教学" },
 ];
 
-// ── 交付成果：真实做出来、系统在被用的东西 ──────────────────────────
+// ── 交付成果：交付之后的系统状态 ────────────────────────────────────
+// 这一屏不摆人物照，只摆「系统长什么样、跑通了哪几步」。
 export type DeliverableItem = {
   id: string;
   name: string;
+  /** 终端标题栏里的模块名 */
+  code: string;
+  /** 右上角状态灯 */
+  status: string;
+  headline: string;
   desc: string;
   tags: string[];
-  meta?: string;
+  /** Remotion 渲染的运行画面（无声循环），比静态截图更能说明「还跑着」 */
+  video?: { src: string; poster: string };
+  /** 真实系统界面 / 课件画面，放大后可左右翻 */
+  shots: { src: string; alt: string; label: string }[];
+  /** 交付流程节点 */
+  steps: string[];
+  /** 关键指标 */
+  metrics: { label: string; value: string }[];
   href?: string;
+  accent: string;
 };
 
 export type DeliverableGroup = {
@@ -226,7 +124,6 @@ export type DeliverableGroup = {
   label: string;
   title: string;
   intro: string;
-  accent: string;
   items: DeliverableItem[];
 };
 
@@ -235,26 +132,82 @@ export const DELIVERABLE_GROUPS: DeliverableGroup[] = [
     id: "systems",
     index: "01",
     label: "AI 系统与智能体",
-    title: "交付过的系统，不止是演示",
+    title: "交出去的系统，现在还跑着",
     intro:
-      "有人每天在用的东西才算交付。下面两件是真实客户项目：从模型训练到业务侧对接，从爆款拆解到批量生产。",
-    accent: "cyan",
+      "演示会散场，系统不会。下面两件是真实客户项目：一条接进业务线，一条接进内容线。",
     items: [
       {
         id: "yolo",
         name: "YOLO 视觉识别系统",
+        code: "YOLO 实时检测 · 推理服务控制台",
+        status: "在线 · 已接入业务线",
+        headline: "实时检出，图片视频双路稳定跑。",
         desc:
-          "基于 YOLO 系列模型搭建的实时视觉识别系统。完成数据集处理、模型训练与迭代、推理服务部署，并把检测结果以结构化形式对接进业务侧流程，图片与视频双路稳定检出。",
+          "数据集处理、模型训练与迭代、推理服务部署全流程做完，检测结果以结构化 JSON 回灌到客户业务流程里。",
         tags: ["目标检测", "模型训练与调优", "推理服务部署"],
-        meta: "真实交付",
+        video: {
+          src: "/media/loops/yolo.mp4",
+          poster: "/media/scene/dl-yolo.jpg",
+        },
+        shots: [
+          {
+            src: "/media/scene/dl-yolo.jpg",
+            alt: "YOLO 实时检测 · 推理服务控制台全貌",
+            label: "控制台全貌",
+          },
+          {
+            src: "/media/scene/dl-yolo-panel.jpg",
+            alt: "YOLO 推理服务控制台：实时检测结果与置信度",
+            label: "检测结果",
+          },
+          {
+            src: "/media/scene/dl-yolo-bars.jpg",
+            alt: "YOLO 本帧检测结果：5 个目标的置信度",
+            label: "置信度",
+          },
+        ],
+        steps: ["数据集处理", "模型训练与迭代", "推理服务部署", "业务侧对接"],
+        metrics: [
+          { label: "模型", value: "yolov8n" },
+          { label: "单帧目标", value: "5" },
+          { label: "实时帧率", value: "24 FPS" },
+          { label: "置信度阈值", value: "0.80" },
+        ],
+        accent: "cyan",
       },
       {
         id: "douyin-agent",
         name: "爆款卖货视频复刻工作流智能体",
+        code: "爆款复刻工作流 · 内容生产线",
+        status: "在用 · 批量生产",
+        headline: "丢一条爆款，产出一整套二创方案。",
         desc:
-          "拆解抖音爆火卖货视频的脚本结构、镜头节奏与钩子设计，做成一条可复用的工作流智能体：丢进一条爆款，产出可二次创作的脚本、分镜与素材方案，批量跑不靠人肉。",
+          "把爆款视频的钩子、痛点、演示、逼单四段结构拆出来，做成可复用的工作流：脚本、分镜、成片批量出，不靠人肉。",
         tags: ["工作流智能体", "爆款结构拆解", "批量内容生产"],
-        meta: "真实交付",
+        video: {
+          src: "/media/loops/douyin.mp4",
+          poster: "/media/scene/dl-douyin-agent.jpg",
+        },
+        shots: [
+          {
+            src: "/media/scene/dl-douyin-agent.jpg",
+            alt: "爆款复刻工作流：爆款源、结构拆解、二创产出",
+            label: "工作流全貌",
+          },
+          {
+            src: "/media/scene/dl-douyin-mid.jpg",
+            alt: "爆款结构拆解：钩子、痛点、演示、逼单四段",
+            label: "结构拆解",
+          },
+        ],
+        steps: ["丢一条爆款", "自动拆结构", "出脚本分镜", "批量生产"],
+        metrics: [
+          { label: "源片时长", value: "42s" },
+          { label: "结构段落", value: "4 段" },
+          { label: "出稿速度", value: "分钟级" },
+          { label: "生产方式", value: "可复用" },
+        ],
+        accent: "rose",
       },
     ],
   },
@@ -262,26 +215,92 @@ export const DELIVERABLE_GROUPS: DeliverableGroup[] = [
     id: "training",
     index: "02",
     label: "企业与公众培训",
-    title: "把 AI 带进真实的工作流",
+    title: "把 AI 带进真实的工作流里",
     intro:
-      "不做概念搬运。面向企业员工和普通人的两套训练，讲的全是今天回去就能用的做法。",
-    accent: "mint",
+      "不做概念搬运。企业按岗位出课，普通人从零学会就用在今天手头的事上。",
     items: [
       {
         id: "corp-training",
         name: "企业员工 AI 培训",
+        code: "企业内训 · 岗位定制课件",
+        status: "已交付 · 按岗位定制",
+        headline: "按岗位出课，课后陪跑到工位上。",
         desc:
-          "为企业员工做定制内训。先把岗位上的真实任务拆出来，再围绕它设计课程：文档与表格自动化、部门知识库搭建、提示词工程、AI 辅助办公流程演练。课后继续陪跑，确保真的落到工位上。",
+          "先把岗位上的真实任务拆出来，再围绕它设计文档表格自动化、知识库搭建、提示词工程与 AI 办公演练，课后继续陪跑。",
         tags: ["企业内训", "岗位任务定制", "落地陪跑"],
-        meta: "已交付",
+        video: {
+          src: "/media/loops/delivery.mp4",
+          poster: "/media/delivery/ai-delivery-menu.jpg",
+        },
+        shots: [
+          {
+            src: "/media/delivery/ai-delivery-menu.jpg",
+            alt: "AI 交付定制课：八个可定制方向",
+            label: "方向菜单",
+          },
+          {
+            src: "/media/delivery/ai-delivery-scope.jpg",
+            alt: "AI 交付定制课：交付范围与场景清单",
+            label: "交付范围",
+          },
+          {
+            src: "/media/delivery/ai-delivery-skill.jpg",
+            alt: "AI 交付定制课：把规矩封装成 Skill",
+            label: "封装 Skill",
+          },
+          {
+            src: "/media/delivery/ai-delivery-assets.jpg",
+            alt: "AI 交付定制课：六年沉淀的公开资产",
+            label: "交付资产",
+          },
+        ],
+        steps: ["岗位任务拆解", "定制课件", "现场实操", "课后陪跑"],
+        metrics: [
+          { label: "出课方式", value: "按岗位" },
+          { label: "课时", value: "8 次" },
+          { label: "交付物", value: "岗位工作流" },
+          { label: "课后", value: "持续陪跑" },
+        ],
+        accent: "mint",
       },
       {
         id: "public-training",
         name: "普通人 AI 办公提效培训",
+        code: "AI 办公提效训练营 · 公众课程",
+        status: "常年开课 · 第 1–8 课",
+        headline: "零基础，学完就把 AI 用进日常。",
         desc:
-          "面向大众的 AI 普及课：AI 到底是什么、怎么用、用在哪些日常活儿上——写材料、整表格、剪视频、做海报、搭个人知识库。不需要技术背景，学完就能把 AI 变成日常生产力。",
+          "AI 是什么、怎么用、用在哪些日常活儿上——写材料、整表格、剪视频、做海报、搭个人知识库，全程动手做。",
         tags: ["公众普及", "办公提效", "零基础可上手"],
-        meta: "常年开课",
+        video: {
+          src: "/media/loops/office.mp4",
+          poster: "/media/delivery/office-bootcamp-lesson.jpg",
+        },
+        shots: [
+          {
+            src: "/media/delivery/office-bootcamp-cover.jpg",
+            alt: "AI 办公提效训练营：第 1 课 AI 全景认知",
+            label: "第 1 课",
+          },
+          {
+            src: "/media/delivery/office-bootcamp-lesson.jpg",
+            alt: "AI 办公提效训练营课堂页面",
+            label: "课堂实操",
+          },
+          {
+            src: "/media/delivery/office-bootcamp-about.jpg",
+            alt: "AI 办公提效训练营课程说明",
+            label: "训练营说明",
+          },
+        ],
+        steps: ["AI 全景认知", "办公实操", "个人工作台", "落地流程"],
+        metrics: [
+          { label: "课次", value: "8 课" },
+          { label: "每课实操", value: "1 次" },
+          { label: "入门门槛", value: "零基础" },
+          { label: "结课产出", value: "个人工作流" },
+        ],
+        accent: "amber",
       },
     ],
   },
@@ -296,8 +315,12 @@ export type Course = {
   audience: string;
   lessons: string;
   poster: string;
-  /** 轮播图组：第一张是主海报 */
+  /** 弹窗里的完整图集（海报 + 课堂实拍），可左右翻 */
   gallery: string[];
+  /** 卡片上轮播的海报组：只用海报，保证完整显示不裁切 */
+  covers?: string[];
+  /** 主视觉用的课件页（16:9），只在成人线的主卡上用 */
+  slides?: string[];
   summary: string;
   modules: string[];
   /** 亮点条，弹窗里展示 */
@@ -321,11 +344,12 @@ export const COURSES: Course[] = [
     poster: "/media/posters/ai-magic-camp.jpg",
     gallery: [
       "/media/posters/ai-magic-camp.jpg",
+      "/media/gallery/11.jpg",
       "/media/gallery/4e7cde1d67137f31dbbaceea09b3ba97.jpg",
-      "/media/scene/camp-project.jpg",
     ],
+    covers: ["/media/posters/ai-magic-camp.jpg"],
     summary:
-      "让孩子从「AI」开始，爱上创造。六大趣味主题，从和 AI 聊第一句开始，到用 vibe coding 做出人生第一个互动小游戏。",
+      "从和 AI 聊第一句，到用 vibe coding 做出人生第一个互动小游戏。",
     modules: ["AI 初体验", "提示词魔法", "AI 创意绘画", "故事创作", "动画小剧场", "AI 编程入门"],
     highlights: ["零基础第一节课就能做出东西", "每节一作品，结课可展示", "课堂同款项目可带走"],
     outline: [
@@ -353,11 +377,12 @@ export const COURSES: Course[] = [
     poster: "/media/posters/ai-humanities-camp.jpg",
     gallery: [
       "/media/posters/ai-humanities-camp.jpg",
-      "/media/scene/camp-digital-art.jpg",
+      "/media/gallery/cpp-course.jpg",
       "/media/gallery/7ea7aec2c2fc24cdff315baf30e19994.jpg",
     ],
+    covers: ["/media/posters/ai-humanities-camp.jpg"],
     summary:
-      "把 AI 用起来，让知识变成作品。六大主题都在真实场景里用 AI 创造：修复老照片、复原古画、画古诗意境、搭自己的小工具。",
+      "真实场景里用 AI 创造：修复老照片、复原古画、画古诗意境、搭自己的小工具。",
     modules: ["老照片修复", "古画数字复原", "古诗意境画", "英语对话工具", "个人记账工具", "智能问答助手"],
     highlights: ["人文 + 工具的双线", "每个主题都产出一个真作品", "可作为科创赛参赛选题"],
     outline: [
@@ -386,11 +411,12 @@ export const COURSES: Course[] = [
     poster: "/media/posters/camp-arcade.jpg",
     gallery: [
       "/media/posters/camp-arcade.jpg",
-      "/media/gallery/11.jpg",
-      "/media/scene/k12-stage.jpg",
+      "/media/gallery/wrc7.jpg",
+      "/media/gallery/4c034334db22d80ecae7cd665b142e62.jpg",
     ],
+    covers: ["/media/posters/camp-arcade.jpg"],
     summary:
-      "Python Arcade 面向对象编程创赛课。从对象建模到关卡系统，5 个半天完成结构完整的创意编程作品，对接《星际科考先锋》参赛方向。",
+      "从对象建模到关卡系统，5 个半天做出结构完整的作品，对接《星际科考先锋》参赛方向。",
     modules: [
       "对象建模与角色系统",
       "跳跃物理与碰撞规则",
@@ -431,9 +457,15 @@ export const COURSES: Course[] = [
       "/media/posters/camp-mars.jpg",
       "/media/posters/camp-geometry.jpg",
       "/media/posters/space-explore.jpg",
+      "/media/gallery/ebe3db8e9e230e42fa4a3821dc906ca8.jpg",
+    ],
+    covers: [
+      "/media/posters/camp-mars.jpg",
+      "/media/posters/camp-geometry.jpg",
+      "/media/posters/space-explore.jpg",
     ],
     summary:
-      "图形化编程 × 动画创作 × 游戏设计。火星移民、几何世界、星际创赛三条线并行推进，做完就是一件能上台面的原创作品，对接电教馆白名单赛事。",
+      "火星移民、几何世界、星际创赛三条线并行，做完就是一件能上台的原创作品，对接电教馆白名单赛事。",
     modules: [
       "火星移民创作营",
       "几何世界游戏创作营",
@@ -473,11 +505,11 @@ export const COURSES: Course[] = [
     poster: "/media/posters/ai-combat-course.jpg",
     gallery: [
       "/media/posters/ai-combat-course.jpg",
-      "/media/scene/adult-workshop.jpg",
-      "/media/scene/adult-office.jpg",
+      "/media/delivery/office-bootcamp-about.jpg",
+      "/media/delivery/office-bootcamp-lesson.jpg",
     ],
     summary:
-      "从入门到实战交付，用 AI 解决真实工作问题。十项能力覆盖自动化办公、知识库、Agent、提示词工程、智能体与生产级建站，学完直接交付项目。",
+      "十项能力覆盖自动化办公、知识库、Agent、提示词工程与生产级建站，学完直接交付项目。",
     modules: [
       "自动化办公",
       "个人知识库搭建",
@@ -521,12 +553,21 @@ export const COURSES: Course[] = [
     poster: "/media/posters/adult-delivery.jpg",
     gallery: [
       "/media/posters/adult-delivery.jpg",
-      "/media/scene/adult-1on1.jpg",
-      "/media/scene/adult-workshop.jpg",
-      "/media/scene/adult-office.jpg",
+      "/media/delivery/ai-delivery-cover.jpg",
+      "/media/delivery/ai-delivery-scope.jpg",
+      "/media/delivery/ai-delivery-menu.jpg",
+      "/media/delivery/ai-delivery-skill.jpg",
+      "/media/delivery/ai-delivery-assets.jpg",
+    ],
+    slides: [
+      "/media/delivery/ai-delivery-cover.jpg",
+      "/media/delivery/ai-delivery-scope.jpg",
+      "/media/delivery/ai-delivery-menu.jpg",
+      "/media/delivery/ai-delivery-skill.jpg",
+      "/media/delivery/ai-delivery-assets.jpg",
     ],
     summary:
-      "按你的场景定制 syllabus，现场把你的东西做出来。8 次课只做一个方向：从定目标、搭流程，到接真实数据、封装成 Skill，最后上线交付。",
+      "按你的场景定制 syllabus，现场把你的东西做出来：定目标、搭流程、接真实数据、封装成 Skill，最后上线。",
     modules: [
       "工作流自动化",
       "智能体与 Skill",
@@ -600,15 +641,13 @@ export const COURSE_LINES: {
     id: "k12",
     label: "少儿 · 编程与造物",
     note: "启蒙 → 进阶 → 创赛",
-    intro:
-      "从「AI 是什么」到「做出一个能上台的作品」。两阶营打底，创赛营出作品，每一阶段都有可带走的成品。",
+    intro: "两期 16 节课营打底，两期 5 天创赛营出作品，每一阶段都有能带走的成品。",
   },
   {
     id: "adult",
     label: "成人 · AI 实战与交付",
     note: "实战 → 高阶定制",
-    intro:
-      "一条主线：把 AI 从「工具」变成「交付」。十项实战能力打底，高阶定制课按你的场景定制，只做你的一件事。",
+    intro: "十项实战能力打底，高阶定制课只做你的一件事。",
   },
 ];
 
@@ -624,20 +663,44 @@ export type ScenePhoto = {
 
 export const SCENE_PHOTOS: ScenePhoto[] = [
   {
-    src: "/media/scene/prompt-class-wide.jpg",
-    title: "提示词工程 · 实战课堂",
-    desc: "同一个问题，两种问法。投影上是对比，桌面上是每个人自己的答案。",
-    tag: "成人 · AI 赋能",
+    src: "/media/scene/dl-enterprise.jpg",
+    title: "企业内训 · 现场",
+    desc: "按岗位出课，白板上是他们自己的业务流程，讲完就上手做。",
+    tag: "企业 · 内训",
     span: "md:col-span-4",
-    height: "h-[260px] sm:h-[340px] md:h-[400px]",
+    height: "h-[280px] sm:h-[340px] md:h-[420px]",
   },
   {
-    src: "/media/scene/prompt-wall.jpg",
-    title: "工作坊现场",
-    desc: "学员跟着屏幕上的对比，一边改自己的提问，一边改自己的流程。",
-    tag: "成人 · 实战工作坊",
+    src: "/media/scene/dl-office.jpg",
+    title: "AI 办公提效 · 零基础课堂",
+    desc: "职场人、创业者、大学生坐在一起，从第一句对话开始练。",
+    tag: "公众 · 训练营",
     span: "md:col-span-2",
-    height: "h-[260px] sm:h-[340px] md:h-[400px]",
+    height: "h-[280px] sm:h-[340px] md:h-[420px]",
+  },
+  {
+    src: "/media/gallery/yxz-live-demo.jpg",
+    title: "成果交流会 · 现场演示",
+    desc: "宜昌市中小学生人工智能教育成果交流研讨会，工作台现场跑通全流程。",
+    tag: "成果 · 展示",
+    span: "md:col-span-3",
+    height: "h-[240px] sm:h-[300px] md:h-[360px]",
+  },
+  {
+    src: "/media/gallery/cpp-course.jpg",
+    title: "课件与作业 · 真实页面",
+    desc: "每节课结束，屏幕上留的是学生自己交上来的那份作业。",
+    tag: "课程内容",
+    span: "md:col-span-3",
+    height: "h-[240px] sm:h-[300px] md:h-[360px]",
+  },
+  {
+    src: "/media/gallery/11.jpg",
+    title: "Python 初级班 · 课堂大屏",
+    desc: "投影上是刚敲完的代码，下面坐着二十多个孩子。",
+    tag: "少儿 · 课堂",
+    span: "md:col-span-2",
+    height: "h-[230px] sm:h-[280px] md:h-[320px]",
   },
   {
     src: "/media/gallery/4e7cde1d67137f31dbbaceea09b3ba97.jpg",
@@ -645,87 +708,31 @@ export const SCENE_PHOTOS: ScenePhoto[] = [
     desc: "手把手教到能跑通为止——一个一个学生看，不放手。",
     tag: "少儿 · 课堂",
     span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+    height: "h-[230px] sm:h-[280px] md:h-[320px]",
   },
   {
-    src: "/media/scene/student-lab.jpg",
-    title: "少年造物课",
-    desc: "学生在自己那台机器上动手，切模型、贴纹理、一点点把想法变成形状。",
-    tag: "少儿 · 3D 造物",
+    src: "/media/gallery/ebe3db8e9e230e42fa4a3821dc906ca8.jpg",
+    title: "作品发布 · 课堂现场",
+    desc: "站在大屏前讲自己做的项目，讲得清才算做完。",
+    tag: "少儿 · 课堂",
     span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+    height: "h-[230px] sm:h-[280px] md:h-[320px]",
   },
   {
-    src: "/media/posters/camp-mars.jpg",
-    title: "火星移民创作营",
-    desc: "图形化编程 × 动画创作 × 游戏设计，5 个半天一个原创作品。",
-    tag: "创赛营 · 少儿",
-    span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+    src: "/media/gallery/wrc7.jpg",
+    title: "机器人赛场 · WRCC2025",
+    desc: "BoxBot 格斗赛项轻量级中学组，冠军上台领奖。",
+    tag: "少儿 · 机器人赛场",
+    span: "md:col-span-3",
+    height: "h-[240px] sm:h-[300px] md:h-[360px]",
   },
   {
-    src: "/media/posters/space-explore.jpg",
-    title: "星际创赛 · 少年创意秀",
-    desc: "孩子站在台上讲自己的作品——做完不算完，讲得清才算。",
-    tag: "创赛 · 上台展示",
-    span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
-  },
-  {
-    src: "/media/scene/camp-project.jpg",
-    title: "创赛营 · 作品调试现场",
-    desc: "一台小车、一段代码、一个失败三次才通过的关卡。",
-    tag: "创赛营 · 现场",
-    span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
-  },
-  {
-    src: "/media/scene/k12-stage.jpg",
-    title: "少年创意秀 · 现场",
-    desc: "大屏上是自己做的作品，台下是真的评委和同学。",
-    tag: "创赛 · 展演",
-    span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
-  },
-  {
-    src: "/media/scene/demo-outdoor.jpg",
-    title: "宜小智工作台 · 现场演示",
-    desc: "宜昌市中小学生人工智能教育成果交流研讨会，工作台现场跑通全流程。",
-    tag: "成果交流会",
-    span: "md:col-span-4",
-    height: "h-[260px] sm:h-[340px] md:h-[400px]",
-  },
-  {
-    src: "/media/scene/demo-3d.jpg",
-    title: "从一句话到 3D 模型",
-    desc: "现场生成、随时可打印。课堂里的想法，走出屏幕就成了实物。",
-    tag: "真实交付",
-    span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
-  },
-  {
-    src: "/media/scene/adult-workshop.jpg",
-    title: "企业内训 · 现场",
-    desc: "按岗位拆任务、按任务做演练，课后继续陪跑到落地。",
-    tag: "企业 · 内训",
-    span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
-  },
-  {
-    src: "/media/gallery/11.jpg",
-    title: "Python 冒险岛 · 课堂发布",
-    desc: "大屏上是学生做出来的岛，台下是整间教室。",
-    tag: "少儿 · 课堂发布",
-    span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
-  },
-  {
-    src: "/media/scene/camp-digital-art.jpg",
-    title: "人文数字探索营",
-    desc: "在数字画笔上复原古画，让两千年前的笔触重新被看见。",
-    tag: "少儿 · 人文",
-    span: "md:col-span-2",
-    height: "h-[240px] sm:h-[300px] md:h-[340px]",
+    src: "/media/gallery/4c034334db22d80ecae7cd665b142e62.jpg",
+    title: "乐博士机器人 · 北京锦标赛",
+    desc: "从宜昌赛区一路打进北京决赛的队伍。",
+    tag: "少儿 · 机器人赛场",
+    span: "md:col-span-3",
+    height: "h-[240px] sm:h-[300px] md:h-[360px]",
   },
 ];
 
@@ -1042,30 +1049,41 @@ export const MORE_APPS = [
 export const GITHUB_PROFILE = {
   href: "https://github.com/zhaosenlin12-creator",
   handle: "@zhaosenlin12-creator",
-  note: "90+ 个开源仓库",
+  note: "115 个公开仓库",
 };
 
+// 成果穹顶：全部是我自己做出来的东西——产品界面与交付课件，没有人物照。
 export const GALLERY_IMAGES = [
-  { src: "/media/gallery/wrc7.jpg", alt: "WRC 训练体系" },
-  { src: "/media/gallery/python-course.jpg", alt: "Python 课程" },
-  { src: "/media/gallery/cpp-course.jpg", alt: "C++ 竞赛路径" },
-  { src: "/media/gallery/robot-detail1.jpg", alt: "机器人项目细节" },
-  { src: "/media/gallery/4e7cde1d67137f31dbbaceea09b3ba97.jpg", alt: "课堂辅导瞬间" },
-  { src: "/media/gallery/5532032ec1ecd25b5aab600c3c66653e.jpg", alt: "工作坊瞬间" },
+  { src: "/media/works/gaokao-ui.jpg", alt: "高考志愿填报模拟器 · 山河地图" },
+  { src: "/media/works/gaokao-02.jpg", alt: "高考志愿填报模拟器 · 院校详情" },
+  { src: "/media/works/animal-ui.jpg", alt: "动物足球 · 阵容排布" },
+  { src: "/media/works/animal-03.jpg", alt: "动物足球 · 实时比分" },
+  { src: "/media/works/shop-online.jpg", alt: "照片纪念品店 · 3D 空间" },
+  { src: "/media/works/shop-gallery.jpg", alt: "照片纪念品店 · 商品陈列" },
+  { src: "/media/works/vibe-pigeon.jpg", alt: "Vibe 知识大赏 · 视频成片" },
+  { src: "/media/works/vibe-stim.jpg", alt: "Vibe 知识大赏 · 动效成片" },
+  { src: "/media/works/vibe-fold.jpg", alt: "Vibe 知识大赏 · 折叠成片" },
+  { src: "/media/works/yxz-ui.jpg", alt: "宜小智工作台界面" },
+  { src: "/media/works/yxz-02.jpg", alt: "宜小智工作台 · AI 生成预览" },
+  { src: "/media/works/yxz-03.jpg", alt: "宜小智工作台 · 3D 模型生成" },
+  { src: "/media/delivery/ai-delivery-cover.jpg", alt: "AI 交付定制课 · 课程体系" },
+  { src: "/media/delivery/ai-delivery-menu.jpg", alt: "AI 交付定制课 · 能力菜单" },
+  { src: "/media/delivery/ai-delivery-scope.jpg", alt: "AI 交付定制课 · 交付范围" },
+  { src: "/media/delivery/office-bootcamp-cover.jpg", alt: "AI 办公提效训练营 · 课程体系" },
+  { src: "/media/gallery/yxz-live-demo.jpg", alt: "宜小智工作台 · 成果交流会现场演示" },
+  { src: "/media/gallery/03e58ed3352bb2c5b6c34475e3ef5c05.jpg", alt: "学员合影" },
   { src: "/media/gallery/7ea7aec2c2fc24cdff315baf30e19994.jpg", alt: "学生作品展示" },
-  { src: "/media/gallery/bf42704d89c36b8f7175792f2c6406df.jpg", alt: "幕后现场" },
-  { src: "/media/gallery/03e58ed3352bb2c5b6c34475e3ef5c05.jpg", alt: "教学现场" },
-  { src: "/media/gallery/11.jpg", alt: "学生作品" },
-  { src: "/media/gallery/4c034334db22d80ecae7cd665b142e62.jpg", alt: "课堂剪影" },
-  { src: "/media/gallery/ebe3db8e9e230e42fa4a3821dc906ca8.jpg", alt: "活动现场" },
+  { src: "/media/gallery/5532032ec1ecd25b5aab600c3c66653e.jpg", alt: "班级合影" },
+  { src: "/media/gallery/python-course.jpg", alt: "Python 课程课件" },
+  { src: "/media/gallery/robot-detail1.jpg", alt: "机器人作品细节" },
 ];
 
 // KPI: 数字进场滚动，避免任何西文字体回退导致的乱码。
 export const KPI = [
-  { value: 6, suffix: "+", label: "年一线教学" },
-  { value: 1000, suffix: "+", label: "累计学员" },
-  { value: 120, suffix: "+", label: "上线作品" },
-  { value: 10, suffix: " 项", label: "AI 实战能力" },
+  { value: 1200, suffix: "+", label: "在读学员" },
+  { value: 7, suffix: " 年", label: "一线教学" },
+  { value: 115, suffix: " 个", label: "GitHub 仓库" },
+  { value: 135, suffix: " 篇", label: "Agent Skill" },
 ];
 
 export const CONTACT = {
@@ -1073,9 +1091,9 @@ export const CONTACT = {
     { src: "/media/qr/wechat.jpg", label: "微信", sub: "扫码加我" },
     { src: "/media/qr/douyin.jpg", label: "抖音", sub: "看作品与更新" },
   ],
-  phone: "13071210697",
+  phone: "17371701272",
   site: "codebn.cn",
-  place: "宜昌市乐启享科创中心",
+  place: "宜昌市猇亭区金岭路 59-1 号",
 };
 
 export const HEAD_LINES = [
@@ -1085,16 +1103,6 @@ export const HEAD_LINES = [
 ];
 
 export const STORY = [
-  "我是森林，乐启享合伙人兼副校长。六年里，我在宜昌带少儿编程，也给企业和普通人做 AI 培训——左边是孩子的课堂，右边是真实交付的系统和智能体。",
-  "我能拿出的不只是课：YOLO 视觉识别系统、自动复刻抖音爆款卖货视频的工作流智能体，还有从 0 到 1 自己做出来的宜小智工作台、高考志愿填报模拟器和动物足球。",
-  "课堂上，AI 不是新闻里的一个词，是学生桌面上的一件工具；工作坊里，AI 也不是概念，是把表格、文档、剪辑、交付真真切切跑通一遍。",
+  "乐启享合伙人兼副校长，坐标宜昌。七年里，我在课堂上带 8–18 岁的孩子写代码、造机器人，也给企业和普通人做 AI 培训与系统交付。",
+  "课堂上，AI 是学生桌面上的一件工具；工作坊里，AI 是把表格、文档、剪辑、交付真真切切跑通一遍。做出来的东西我都摆在明面上：YOLO 视觉识别系统、爆款复刻工作流智能体，还有我自己从 0 到 1 写的宜小智工作台、高考志愿填报模拟器和动物足球。",
 ];
-
-export const BIO_LINES = [
-  "我叫森林，",
-  "一位手艺人出身的教育者。",
-  "六年来，我教孩子写代码，也教大人把 AI 用起来。",
-];
-
-export const BIO_PARAGRAPH =
-  "六年来，我陪 8 到 18 岁的孩子写代码、上台、讲自己的故事，也陪企业和普通人把 AI 装进日常流程。每一届人走出教室时，手里都握着一样东西——一个他自己造出来、愿意拿给世界看的小作品。";
