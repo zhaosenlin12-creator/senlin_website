@@ -328,6 +328,8 @@ export type Course = {
   /** 逐课明细 / 方向拆解 */
   outline?: { title: string; items: string[] }[];
   price?: string;
+  /** 卡片版式：poster = 竖版海报在左，slide = 横版课件在上 */
+  cardLayout?: "poster" | "slide";
   /** k12 = 少儿线，adult = 成人线 */
   line: "k12" | "adult";
   accent: string;
@@ -497,6 +499,62 @@ export const COURSES: Course[] = [
     featured: true,
   },
   {
+    id: "ai-office",
+    stage: "大众 · 普及",
+    title: "AI 办公提效训练营",
+    subtitle: "8 节课，把 AI 变成日常习惯",
+    audience: "职场人 · 创业者 · 大学生",
+    lessons: "8 节课 · 每节 60 分钟",
+    poster: "/media/delivery/office-bootcamp-cover.jpg",
+    gallery: [
+      "/media/delivery/office-bootcamp-cover.jpg",
+      "/media/delivery/office-bootcamp-about.jpg",
+      "/media/delivery/office-bootcamp-lesson.jpg",
+    ],
+    covers: ["/media/delivery/office-bootcamp-cover.jpg"],
+    summary:
+      "不讲难概念，先把 AI 用起来：从第一次有效对话，到写出文档、做表格、出课件、搭出自己的日常工作流。",
+    modules: [
+      "AI 全景认知与第一次有效对话",
+      "提示词：把需求说清楚",
+      "AI 写作与文档处理",
+      "AI 表格与数据整理",
+      "AI 做 PPT 与课件",
+      "AI 图片与视频素材",
+      "个人工作流搭建",
+      "实战复盘与答疑",
+    ],
+    highlights: ["零基础可跟，60 分钟一节", "课上就做，产出带走", "企业内训同款课程"],
+    outline: [
+      {
+        title: "8 节课怎么上",
+        items: [
+          "第 1 课 AI 全景认知：装好工具，说出第一句让 AI 真能干活的话",
+          "第 2 课 提示词入门：把想做的事说清楚，拿到能用的结果",
+          "第 3 课 写作与文档：周报、方案、总结，让 AI 起草你来定稿",
+          "第 4 课 表格与数据：清洗、汇总、出图，不再对着公式发呆",
+          "第 5 课 PPT 与课件：从一页提纲到一整套能讲的课件",
+          "第 6 课 图片与视频：做图、做封面、做短视频素材",
+          "第 7 课 个人工作流：把重复的活固化成一条能反复跑的流程",
+          "第 8 课 复盘与答疑：带走一份属于自己的 AI 使用手册",
+        ],
+      },
+      {
+        title: "特别适合",
+        items: [
+          "被杂事淹没的职场人",
+          "想自己搭站点、做小工具的创业者",
+          "要做课件、做教研的一线老师",
+          "想用 AI 提效的大学生与求职者",
+        ],
+      },
+    ],
+    price: "公开课 8 节 · 企业内训与定制单独排期",
+    cardLayout: "slide",
+    line: "adult",
+    accent: "mint",
+  },
+  {
     id: "ai-combat",
     stage: "成人 · 职场",
     title: "Codex & WorkBuddy AI 实战",
@@ -646,8 +704,8 @@ export const COURSE_LINES: {
   {
     id: "adult",
     label: "成人 · AI 实战与交付",
-    note: "实战 → 高阶定制",
-    intro: "十项实战能力打底，高阶定制课只做你的一件事。",
+    note: "普及 → 实战 → 高阶定制",
+    intro: "办公提效普及、十项实战能力打底，高阶定制课只做你的一件事。",
   },
 ];
 

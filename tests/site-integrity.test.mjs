@@ -274,13 +274,13 @@ test("Course cards expose a gallery and open a zoomable lightbox", async () => {
   const { context, page } = await openMobilePage();
   try {
     const cards = page.locator("#courses article");
-    assert.ok((await cards.count()) >= 6, "expected six course cards");
+    assert.ok((await cards.count()) >= 7, "expected seven course cards");
 
     // 卡片外层是 role="button" 的容器（避免嵌套 button），主卡是真实 button，
     // 这里按 aria-label 统一取，两种写法都能命中。
     const openers = page.locator('#courses [aria-label*="完整介绍"]');
     const count = await openers.count();
-    assert.equal(count, 6, `expected six course openers, got ${count}`);
+    assert.equal(count, 7, `expected seven course openers, got ${count}`);
 
     const overlay = page.locator("div.fixed.z-\\[100\\]");
     for (let i = 0; i < count; i++) {

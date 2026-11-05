@@ -67,7 +67,7 @@ export default function Courses() {
             <WordsPullUpMultiStyle
               segments={[
                 {
-                  text: "六门课，从孩子的启蒙到成人的交付。",
+                  text: "七门课，从孩子的启蒙到成人的交付。",
                   className: "text-primary",
                 },
               ]}
@@ -75,7 +75,7 @@ export default function Courses() {
             />
           </div>
           <p className="max-w-sm text-xs leading-[1.6] text-gray-500 sm:text-sm">
-            少儿 4 门，成人 2 门。海报点开看完整介绍，图点开放大。
+            少儿 4 门，成人 3 门。海报点开看完整介绍，图点开放大。
           </p>
         </div>
 
@@ -140,36 +140,43 @@ export default function Courses() {
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.15fr_1fr]">
-                    {featuredAdult ? (
-                      <FeaturedCourse
-                        course={featuredAdult}
-                        onOpen={() => setOpenId(featuredAdult.id)}
-                        onZoom={(images, index, alts) =>
-                          setZoom({ images, index, alts })
-                        }
-                      />
-                    ) : null}
-                    <div className="flex flex-col gap-5">
-                      {otherAdult.map((course) => (
-                        <AdultCard
-                          key={course.id}
-                          course={course}
-                          delay={0.1}
-                          onOpen={() => setOpenId(course.id)}
+                  <div className="space-y-5">
+                    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.12fr_1fr]">
+                      {featuredAdult ? (
+                        <FeaturedCourse
+                          course={featuredAdult}
+                          onOpen={() => setOpenId(featuredAdult.id)}
+                          onZoom={(images, index, alts) =>
+                            setZoom({ images, index, alts })
+                          }
                         />
-                      ))}
-                      <div className="flex flex-1 flex-col justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent p-6 sm:p-7">
-                        <p className="text-[10px] uppercase tracking-[0.22em] text-white/40">
-                          怎么报名
-                        </p>
-                        <p className="mt-3 text-sm leading-[1.75] text-gray-300">
-                          课程按班级推进，企业内训与高阶定制课按场景单独排期。
-                          带上你手上那件一直靠手工的活，我们先聊 15 分钟，看清卡在哪一步。
-                        </p>
+                      ) : null}
+                      <div className="flex flex-col gap-5">
+                        {otherAdult.map((course, i) => (
+                          <AdultCard
+                            key={course.id}
+                            course={course}
+                            delay={0.1 + i * 0.08}
+                            onOpen={() => setOpenId(course.id)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <Reveal>
+                      <div className="flex flex-col gap-5 rounded-2xl border border-white/10 bg-gradient-to-r from-white/[0.05] via-white/[0.02] to-transparent p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:p-6">
+                        <div className="max-w-2xl">
+                          <p className="text-[10px] uppercase tracking-[0.22em] text-white/40">
+                            怎么报名
+                          </p>
+                          <p className="mt-2 text-sm leading-[1.75] text-gray-300">
+                            课程按班级推进，企业内训与高阶定制课按场景单独排期。
+                            带上你手上那件一直靠手工的活，我们先聊 15 分钟，看清卡在哪一步。
+                          </p>
+                        </div>
                         <a
                           href="#contact"
-                          className="group mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-black transition hover:gap-3"
+                          className="group inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-black transition hover:gap-3 sm:self-auto"
                         >
                           先聊 15 分钟
                           <ArrowRight
@@ -178,7 +185,7 @@ export default function Courses() {
                           />
                         </a>
                       </div>
-                    </div>
+                    </Reveal>
                   </div>
                 )}
               </div>
@@ -497,6 +504,7 @@ function AdultCard({
   onOpen: () => void;
 }) {
   const c = accent(course.accent);
+  const wide = course.cardLayout === "slide";
   return (
     <Reveal delay={delay}>
       <motion.article
@@ -504,7 +512,10 @@ function AdultCard({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.15 }}
         transition={{ duration: 0.8, ease: EASE }}
-        className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#101010] transition duration-500 hover:border-white/25 sm:flex-row"
+        className={
+          "group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#101010] transition duration-500 hover:border-white/25" +
+          (wide ? "" : " sm:flex-row")
+        }
       >
         <div
           role="button"
@@ -516,7 +527,12 @@ function AdultCard({
               onOpen();
             }
           }}
-          className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#070707] text-left sm:aspect-auto sm:w-[42%]"
+          className={
+            "relative w-full shrink-0 overflow-hidden bg-[#070707] text-left " +
+            (wide
+              ? "aspect-[16/9]"
+              : "aspect-[3/4] sm:aspect-[2/3] sm:w-[40%]")
+          }
           aria-label={`查看 ${course.title} 完整介绍`}
         >
           <img
@@ -534,6 +550,14 @@ function AdultCard({
             decoding="async"
             className="absolute inset-0 h-full w-full object-contain"
           />
+          {wide ? (
+            <span className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/12 bg-black/60 px-2.5 py-1 text-[10px] tracking-[0.14em] text-white/70 backdrop-blur">
+              真实课件页
+            </span>
+          ) : null}
+          <span className="pointer-events-none absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition group-hover:bg-white group-hover:text-black">
+            <Maximize2 size={14} />
+          </span>
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col p-5 sm:p-6">
